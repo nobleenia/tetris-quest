@@ -7,15 +7,32 @@
   background: radial-gradient(1200px 600px at 50% 120%, #1b2a52, #070a12);
   box-shadow: 0 12px 40px rgba(0,0,0,0.45);
   /* performance-friendly isolation */
+  /* isolate board rendering for performance */
   contain: layout paint;
-}
-
-.board__placeholder {
-  position: absolute;
-  inset: 0;
   display: grid;
   place-items: center;
-  text-align: centre;
-  opacity: 0.85;
-  line-height: 1.5;
 }
+
+.board__grid {
+  /* 10 columns, 20 rows */
+  display: grid;
+  grid-template-columns: repeat(10, 24px);
+  grid-template-rows: repeat(20, 24px);
+  gap: 2px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.20);
+}
+
+.cell {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* cell states (later we map piece IDs to these) */
+.cell--1 { background: rgba(255, 215, 106, 0.85); } /* example colour */
+.cell--2 { background: rgba(140, 180, 255, 0.85); }
+.cell--3 { background: rgba(220, 150, 255, 0.85); }
