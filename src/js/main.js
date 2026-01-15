@@ -5,6 +5,8 @@ import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM } from './ui/dom.js';
 import { renderBoardDiff } from './ui/render.js';
+import { spawnPiece } from "./game/spawn.js";
+import { canPlace, buildNextBoard } from "./game/board.js";
 
 // Phase 1 boot
 const state = createInitialState();
@@ -16,7 +18,7 @@ const hud = createHUD();
 const boardEl = document.querySelector("#board");
 const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 
-boardDOM.cells[0].className = "cell cell--1";
+// boardDOM.cells[0].className = "cell cell--1";
 
 // Board rendering (diff-based)
 // Pause overlay
@@ -26,6 +28,7 @@ bindPauseUI({
     },
     onRestart: () => {
         resetGame(state);
+        spawnPiece(state);
         state.paused = false;
     },
 });
@@ -38,13 +41,20 @@ window.addEventListener("keydown", (e) => {
     }
 });
 
-function demoFillNextBoard(t) {
-    // This proves diff rendering works and paints are minimal.
-    state.nextBoard.fill(0);
+// Spawn initial piece
+spawnPiece(state);
 
-    const idx = Math.floor((t * 10) % state.nextBoard.length);
-    state.nextBoard[idx] = 1;
-}
+// Simple key edge detection (rookie-friendly)
+let prevLeft = false;
+let prevRight = false;
+
+// function demoFillNextBoard(t) {
+//     // This proves diff rendering works and paints are minimal.
+//     state.nextBoard.fill(0);
+
+//     const idx = Math.floor((t * 10) % state.nextBoard.length);
+//     state.nextBoard[idx] = 1;
+// }
 
 // Main loop
 const loop = createLoop({
@@ -55,14 +65,34 @@ const loop = createLoop({
         // (In Phase 2/3 we’ll run simulation here)
         state.timeSec += dt;
 
+        // Move left/right once per press (we’ll upgrade to key-hold DAS/ARR in 3.2)
+        const left = input.isDown("ArrowLeft") || input.isDown("KeyA");
+        const right = input.isDown("ArrowRight") || input.isDown("KeyD");
+
+        if (state.active) {
+            if (left && !prevLeft) tryMove(state, -1, 0);
+            if (right && !prevRight) tryMove(state, 1, 0);
+        }
+
+        prevLeft = left;
+        prevRight = right;
+
+        // Build nextBoard = lockedBoard + active overlay
+        buildNextBoard({
+            locked: state.lockedBoard,
+            next: state.nextBoard,
+            cols: state.cols,
+            rows: state.rows,
+            active: state.active,
+        });
         // demo movement: show one changing cell
-        demoFillNextBoard(state.timeSec);
+        // demoFillNextBoard(state.timeSec);
 
         // Here would go game update logic (movement, collisions, etc)
 
         // Example: if you hold Space, add score (just to prove key-hold works)
         // Remove this in Phase 2.
-        if (input.isDown("Space")) state.score += 1;
+        // if (input.isDown("Space")) state.score += 1;
     },
     onRender: () => {
         // Here would go rendering logic (drawing to canvas, etc)
@@ -91,3 +121,21 @@ const loop = createLoop({
 
 // Start
 loop.start();
+
+function tryMove(state, dx, dy) {
+    const a = state.active;
+    const nx = a.x + dx;
+    const ny = a.y + dy;
+    if (canPlace({
+        locked: state.lockedBoard,
+        cols: state.cols,
+        rows: state.rows,
+        pieceId: a.id,
+        rot: a.rot,
+        px: nx,
+        py: ny,
+    })) {
+        a.x = nx;
+        a.y = ny;
+    }
+}
