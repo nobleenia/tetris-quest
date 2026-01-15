@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>make-your-game — DOM Tetris</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/hud.css" />
+    <link rel="stylesheet" href="./styles/board.css" />
+    <link rel="stylesheet" href="./styles/overlay.css" />
+</head>
+<body>
+    <header id="hud" aria-label="HUD">
+        <div class="hud__item">Time: <span id="hudTime">0.0</span></div>
+        <div class="hud__item">Score: <span id="hudScore">0</span></div>
+        <div class="hud__item">Lives: <span id="hudLives">3</span></div>
+        <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms</div>
+    </header>
+
+    <main id="gameRoot" aria-label="Game">
+        <section id="board" aria-label="Board (Phase 1 placeholder)">
+            <div class="board_placeholder">
+                Phase 1 Engine Running... ✅<br/>
+                Press <b>Esc</b> to pause
+            </div>
+        </section>
+    </main>
+
+    <div id="auseOverlay" class="overlay hidden" role="dialog" aria-model="true">
+        <div class="overlay__panel">
+            <h2 class="overlay__title">Paused</h2>
+            <button id="btnContinue" class="btn">Continue</button>
+            <button id="btnRestart" class="btn btn--secondary">Restart</button>
+            <p class="overlay__hint">Press <b>Esc</b> to toggle pause</p>
+        </div>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
