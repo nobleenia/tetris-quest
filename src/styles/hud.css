@@ -1,0 +1,12 @@
+#hud {
+  width: var(--w);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.hud__item { white-space: nowrap; }
+.hud__perf { opacity: 0.8; }
