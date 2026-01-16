@@ -7,6 +7,8 @@ import { createBoardDOM } from './ui/dom.js';
 import { renderBoardDiff } from './ui/render.js';
 import { spawnPiece } from "./game/spawn.js";
 import { canPlace, buildNextBoard } from "./game/board.js";
+import { lockActivePiece } from "./game/lock.js";
+
 
 // Phase 1 boot
 const state = createInitialState();
@@ -56,6 +58,8 @@ let prevRight = false;
 //     state.nextBoard[idx] = 1;
 // }
 
+let prevRotate = false; // for rotation key edge detection
+
 // Main loop
 const loop = createLoop({
     onUpdate: (dt) => {
@@ -76,6 +80,36 @@ const loop = createLoop({
 
         prevLeft = left;
         prevRight = right;
+
+        // ----------- Gravity: time-based falling -----------
+        // Soft drop: holding down makes it fall faster (smaller interval)
+        const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
+        const interval = softDrop ? state.dropInterval * 0.08 : state.dropInterval;
+
+        state.dropAcc += dt;
+
+        // If enough time passed, attempt to move down by 1 row
+        while (state.dropAcc >= interval) {
+        state.dropAcc -= interval;
+
+        if (!state.active) break;
+
+        const moved = tryMove(state, 0, 1);
+        if (!moved) {
+            // Can't move down -> lock it into board
+            lockActivePiece(state);
+
+            // Reset hold usage later (Phase 3.5)
+            state.holdUsed = false;
+
+            // Spawn next piece
+            spawnPiece(state);
+
+            // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
+            state.dropAcc = 0;
+            break;
+        }
+    }
 
         // Build nextBoard = lockedBoard + active overlay
         buildNextBoard({
@@ -126,7 +160,8 @@ function tryMove(state, dx, dy) {
     const a = state.active;
     const nx = a.x + dx;
     const ny = a.y + dy;
-    if (canPlace({
+
+    const ok =canPlace({
         locked: state.lockedBoard,
         cols: state.cols,
         rows: state.rows,
@@ -134,8 +169,11 @@ function tryMove(state, dx, dy) {
         rot: a.rot,
         px: nx,
         py: ny,
-    })) {
-        a.x = nx;
-        a.y = ny;
-    }
+    });
+
+    if (!ok) return false;
+
+    a.x = nx;
+    a.y = ny;
+    return true;
 }
