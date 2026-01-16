@@ -9,7 +9,8 @@ import { spawnPiece } from "./game/spawn.js";
 import { canPlace, buildNextBoard } from "./game/board.js";
 import { lockActivePiece } from "./game/lock.js";
 import { tryRotateCW } from "./game/rotate.js";
-
+import { clearFullLines } from "./game/lines.js";
+import { addLineClearScore } from "./game/score.js";
 
 // Phase 1 boot
 const state = createInitialState();
@@ -108,6 +109,10 @@ const loop = createLoop({
         if (!moved) {
             // Can't move down -> lock it into board
             lockActivePiece(state);
+
+            // Clear lines and score
+            const cleared = clearFullLines(state);
+            addLineClearScore(state, cleared);
 
             // Reset hold usage later (Phase 3.5)
             state.holdUsed = false;
