@@ -8,6 +8,7 @@ import { renderBoardDiff } from './ui/render.js';
 import { spawnPiece } from "./game/spawn.js";
 import { canPlace, buildNextBoard } from "./game/board.js";
 import { lockActivePiece } from "./game/lock.js";
+import { tryRotateCW } from "./game/rotate.js";
 
 
 // Phase 1 boot
@@ -73,13 +74,22 @@ const loop = createLoop({
         const left = input.isDown("ArrowLeft") || input.isDown("KeyA");
         const right = input.isDown("ArrowRight") || input.isDown("KeyD");
 
+        // Rotate once per key press (no spamming)
+        const rotate = input.isDown("ArrowUp") || input.isDown("KeyW");
+
         if (state.active) {
             if (left && !prevLeft) tryMove(state, -1, 0);
             if (right && !prevRight) tryMove(state, 1, 0);
         }
 
+        if (rotate && !prevRotate) {
+            tryRotateCW(state);
+        }
+
         prevLeft = left;
         prevRight = right;
+
+        prevRotate = rotate;
 
         // ----------- Gravity: time-based falling -----------
         // Soft drop: holding down makes it fall faster (smaller interval)
