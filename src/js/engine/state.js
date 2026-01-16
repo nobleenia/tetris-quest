@@ -24,6 +24,9 @@ export function createInitialState() {
         nextId: null,
         holdId: null,
         holdUsed: false,
+
+        dropAcc: 0,         // seconds accumulated since last auto-drop
+        dropInterval: 0.7,  // seconds per row drop
     };
 }
 
@@ -41,4 +44,6 @@ export function resetGame(state) {
     state.nextId = null;
     state.holdId = null;
     state.holdUsed = false;
+
+    state.dropAcc = 0;
 }
