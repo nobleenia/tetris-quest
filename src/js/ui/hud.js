@@ -4,6 +4,7 @@ export function createHUD() {
     const elLives = document.querySelector("#hudLives");
     const elFps = document.querySelector("#hudFps");
     const elMs = document.querySelector("#hudMs");
+    const elPressure = document.querySelector("#hudPressure");
 
     const pauseOverlay = document.querySelector("#pauseOverlay");
 
@@ -14,6 +15,9 @@ export function createHUD() {
         setPerf(fps, ms) {
             elFps.textContent = String(fps);
             elMs.textContent = ms.toFixed(2);
+        },
+        setPressure(pct) {
+            elPressure.textContent = `${Math.round(pct)}%`;
         },
         setPaused(paused) {
             pauseOverlay.classList.toggle("hidden", !paused);

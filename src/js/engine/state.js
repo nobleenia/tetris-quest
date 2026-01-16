@@ -25,8 +25,17 @@ export function createInitialState() {
         holdId: null,
         holdUsed: false,
 
+        pressure: 0,          // 0..100
+        pressureRate: 1.0,    // per second (tune)
+        gameOver: false,
+
+        elapsedSec: 0,  // total time played
+
         dropAcc: 0,         // seconds accumulated since last auto-drop
         dropInterval: 0.7,  // seconds per row drop
+
+        baseInterval: 0.85,   // seconds at pressure 0
+        minInterval: 0.10,    // seconds at pressure 100 (cap)
     };
 }
 
@@ -44,6 +53,10 @@ export function resetGame(state) {
     state.nextId = null;
     state.holdId = null;
     state.holdUsed = false;
+
+    state.pressure = 0;
+    state.gameOver = false;
+    state.elapsedSec = 0;
 
     state.dropAcc = 0;
 }

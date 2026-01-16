@@ -12,6 +12,8 @@ import { tryRotateCW } from "./game/rotate.js";
 import { clearFullLines } from "./game/lines.js";
 import { addLineClearScore } from "./game/score.js";
 import { tryHold } from "./game/hold.js";
+import { tickPressure, gravityIntervalFromPressure, reducePressureOnClear } from "./game/pressure.js";
+import { handleTopOut } from "./game/lives.js";
 
 // Phase 1 boot
 const state = createInitialState();
@@ -26,7 +28,8 @@ const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 // boardDOM.cells[0].className = "cell cell--1";
 
 initQueue(state);
-spawnFromQueue(state);
+const ok = spawnFromQueue(state);
+if (!ok) handleTopOut(state);
 
 // Board rendering (diff-based)
 // Pause overlay
@@ -36,7 +39,9 @@ bindPauseUI({
     },
     onRestart: () => {
         resetGame(state);
-        spawnFromQueue(state);
+        initQueue(state); // important because reset cleared nextId
+        const ok = spawnFromQueue(state);
+        if (!ok) handleTopOut(state);
         state.paused = false;
     },
 });
@@ -50,7 +55,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 // Spawn initial piece
-spawnFromQueue(state);
+// spawnFromQueue(state);
 
 // Simple key edge detection (rookie-friendly)
 let prevLeft = false;
@@ -71,11 +76,25 @@ let prevHold = false;
 // Main loop
 const loop = createLoop({
     onUpdate: (dt) => {
+        if (state.gameOver) return;
         // Update game time
 
         // Phase 1 placeholder update: just track time while running
         // (In Phase 2/3 we’ll run simulation here)
-        state.timeSec += dt;
+        state.elapsedSec += dt;
+        tickPressure(state, dt);
+
+        // If game over, freeze gameplay (but HUD still renders)
+        if (state.gameOver) {
+            buildNextBoard({
+                locked: state.lockedBoard,
+                next: state.nextBoard,
+                cols: state.cols,
+                rows: state.rows,
+                active: null,
+            });
+            return;
+        }
 
         // Move left/right once per press (we’ll upgrade to key-hold DAS/ARR in 3.2)
         const left = input.isDown("ArrowLeft") || input.isDown("KeyA");
@@ -101,7 +120,8 @@ const loop = createLoop({
         // ----------- Gravity: time-based falling -----------
         // Soft drop: holding down makes it fall faster (smaller interval)
         const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
-        const interval = softDrop ? state.dropInterval * 0.08 : state.dropInterval;
+        const base = gravityIntervalFromPressure(state);
+        const interval = softDrop ? base * 0.08 : base;
 
         const hold = input.isDown("KeyC");
         if (hold && !prevHold) {
@@ -109,7 +129,11 @@ const loop = createLoop({
 
             // If hold consumed the active piece (hold was empty), spawn a new one
             if (didHold && !state.active) {
-                spawnFromQueue(state);
+                const ok = spawnFromQueue(state);
+                if (!ok) {
+                    handleTopOut(state);
+                    return; // stop update this frame
+                }
             }
         }
         prevHold = hold;
@@ -130,16 +154,20 @@ const loop = createLoop({
             // Clear lines and score
             const cleared = clearFullLines(state);
             addLineClearScore(state, cleared);
+            reducePressureOnClear(state, cleared);
 
             // Reset hold usage later (Phase 3.5)
             state.holdUsed = false;
 
             // Spawn next piece
-            spawnFromQueue(state);
+            const ok = spawnFromQueue(state);
+            if (!ok) {
+                handleTopOut(state);
 
-            // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
-            state.dropAcc = 0;
-            break;
+                // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
+                state.dropAcc = 0;
+                break;
+            }
         }
     }
 
@@ -172,9 +200,10 @@ const loop = createLoop({
         
         // Phase 1 render does not touch the board yet.
         // We still update HUD even when paused (required).
-        hud.setTime(state.timeSec);
+        hud.setTime(state.elapsedSec);
         hud.setScore(state.score);
         hud.setLives(state.lives);
+        hud.setPressure(state.pressure);
 
         // Show/hide pause overlay (UI responds every frame based on state)
         hud.setPaused(state.paused);
@@ -193,7 +222,7 @@ function tryMove(state, dx, dy) {
     const nx = a.x + dx;
     const ny = a.y + dy;
 
-    const ok =canPlace({
+    const ok = canPlace({
         locked: state.lockedBoard,
         cols: state.cols,
         rows: state.rows,
