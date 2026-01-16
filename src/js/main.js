@@ -5,12 +5,13 @@ import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM } from './ui/dom.js';
 import { renderBoardDiff } from './ui/render.js';
-import { spawnPiece } from "./game/spawn.js";
+import { initQueue, spawnFromQueue } from "./game/spawn.js";
 import { canPlace, buildNextBoard } from "./game/board.js";
 import { lockActivePiece } from "./game/lock.js";
 import { tryRotateCW } from "./game/rotate.js";
 import { clearFullLines } from "./game/lines.js";
 import { addLineClearScore } from "./game/score.js";
+import { tryHold } from "./game/hold.js";
 
 // Phase 1 boot
 const state = createInitialState();
@@ -24,6 +25,9 @@ const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 
 // boardDOM.cells[0].className = "cell cell--1";
 
+initQueue(state);
+spawnFromQueue(state);
+
 // Board rendering (diff-based)
 // Pause overlay
 bindPauseUI({
@@ -32,7 +36,7 @@ bindPauseUI({
     },
     onRestart: () => {
         resetGame(state);
-        spawnPiece(state);
+        spawnFromQueue(state);
         state.paused = false;
     },
 });
@@ -46,7 +50,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 // Spawn initial piece
-spawnPiece(state);
+spawnFromQueue(state);
 
 // Simple key edge detection (rookie-friendly)
 let prevLeft = false;
@@ -61,6 +65,8 @@ let prevRight = false;
 // }
 
 let prevRotate = false; // for rotation key edge detection
+
+let prevHold = false;
 
 // Main loop
 const loop = createLoop({
@@ -97,6 +103,17 @@ const loop = createLoop({
         const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
         const interval = softDrop ? state.dropInterval * 0.08 : state.dropInterval;
 
+        const hold = input.isDown("KeyC");
+        if (hold && !prevHold) {
+            const didHold = tryHold(state);
+
+            // If hold consumed the active piece (hold was empty), spawn a new one
+            if (didHold && !state.active) {
+                spawnFromQueue(state);
+            }
+        }
+        prevHold = hold;
+
         state.dropAcc += dt;
 
         // If enough time passed, attempt to move down by 1 row
@@ -118,7 +135,7 @@ const loop = createLoop({
             state.holdUsed = false;
 
             // Spawn next piece
-            spawnPiece(state);
+            spawnFromQueue(state);
 
             // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
             state.dropAcc = 0;
