@@ -5,8 +5,12 @@ export function createHUD() {
     const elFps = document.querySelector("#hudFps");
     const elMs = document.querySelector("#hudMs");
     const elPressure = document.querySelector("#hudPressure");
+    const elDailyBest = document.querySelector("#hudDailyBest");
 
     const pauseOverlay = document.querySelector("#pauseOverlay");
+
+    const gameOverOverlay = document.querySelector("#gameOverOverlay");
+    const elGameOverScore = document.querySelector("#gameOverScore");
 
     return {
         setTime(sec) { elTime.textContent = sec.toFixed(1); },
@@ -19,8 +23,23 @@ export function createHUD() {
         setPressure(pct) {
             elPressure.textContent = `${Math.round(pct)}%`;
         },
+        setDailyBest(sec) {
+            const s = Math.max(0, Math.floor(sec));
+            const m = Math.floor(s / 60);
+            const r = s % 60;
+            elDailyBest.textContent = `${m}:${r.toString().padStart(2, "0")}`;
+        },
         setPaused(paused) {
             pauseOverlay.classList.toggle("hidden", !paused);
+        },
+        showGameOver(score) {
+            if (!gameOverOverlay) return;
+            elGameOverScore.textContent = String(score);
+            gameOverOverlay.classList.remove("hidden");
+        },
+        hideGameOver() {
+            if (!gameOverOverlay) return;
+            gameOverOverlay.classList.add("hidden");
         },
     };
 }

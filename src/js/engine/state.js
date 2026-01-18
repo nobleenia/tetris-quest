@@ -19,7 +19,7 @@ export function createInitialState() {
         nextBoard: new Array(cellCount).fill(0),
 
         // Active falling piece
-        activePiece: null,
+        active: null,
 
         nextId: null,
         holdId: null,
@@ -46,10 +46,12 @@ export function resetGame(state) {
     //    state.paused = false;
 
     state.lockedBoard.fill(0);
-    state.prevBoard.fill(0);
+    // Force a difference so the diff renderer will clear DOM cells next frame.
+    // Set prevBoard to a non-zero value (1..n), while nextBoard is zeroed below.
+    state.prevBoard.fill(1);
     state.nextBoard.fill(0);
 
-    state.activePiece = null;
+    state.active = null;
     state.nextId = null;
     state.holdId = null;
     state.holdUsed = false;

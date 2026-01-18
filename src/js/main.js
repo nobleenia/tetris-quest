@@ -14,6 +14,7 @@ import { addLineClearScore } from "./game/score.js";
 import { tryHold } from "./game/hold.js";
 import { tickPressure, gravityIntervalFromPressure, reducePressureOnClear } from "./game/pressure.js";
 import { handleTopOut } from "./game/lives.js";
+import { loadDailyBestSec, updateDailyBest } from "./game/dailyBest.js";
 
 // Phase 1 boot
 const state = createInitialState();
@@ -22,6 +23,8 @@ const input = createInput();
 // HUD (timer/score/lives + perf)
 const hud = createHUD();
 
+hud.setDailyBest(loadDailyBestSec());
+
 const boardEl = document.querySelector("#board");
 const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 
@@ -29,7 +32,11 @@ const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 
 initQueue(state);
 const ok = spawnFromQueue(state);
-if (!ok) handleTopOut(state);
+if (!ok) {
+    const best = updateDailyBest(state);
+    hud.setDailyBest(best);
+    handleTopOut(state);
+}
 
 // Board rendering (diff-based)
 // Pause overlay
@@ -38,6 +45,13 @@ bindPauseUI({
         state.paused = false;
     },
     onRestart: () => {
+        const best = updateDailyBest(state);
+        hud.setDailyBest(best);
+
+        // If a game-over overlay was shown, hide it
+        hud.hideGameOver();
+        state._gameOverShown = false;
+
         resetGame(state);
         initQueue(state); // important because reset cleared nextId
         const ok = spawnFromQueue(state);
@@ -142,34 +156,34 @@ const loop = createLoop({
 
         // If enough time passed, attempt to move down by 1 row
         while (state.dropAcc >= interval) {
-        state.dropAcc -= interval;
+            state.dropAcc -= interval;
 
-        if (!state.active) break;
+            if (!state.active) break;
 
-        const moved = tryMove(state, 0, 1);
-        if (!moved) {
-            // Can't move down -> lock it into board
-            lockActivePiece(state);
+            const moved = tryMove(state, 0, 1);
+            if (!moved) {
+                // Can't move down -> lock it into board
+                lockActivePiece(state);
 
-            // Clear lines and score
-            const cleared = clearFullLines(state);
-            addLineClearScore(state, cleared);
-            reducePressureOnClear(state, cleared);
+                // Clear lines and score
+                const cleared = clearFullLines(state);
+                addLineClearScore(state, cleared);
+                reducePressureOnClear(state, cleared);
 
-            // Reset hold usage later (Phase 3.5)
-            state.holdUsed = false;
+                // Reset hold usage later (Phase 3.5)
+                state.holdUsed = false;
 
-            // Spawn next piece
-            const ok = spawnFromQueue(state);
-            if (!ok) {
-                handleTopOut(state);
+                // Spawn next piece
+                const ok = spawnFromQueue(state);
+                if (!ok) {
+                    handleTopOut(state);
 
-                // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
-                state.dropAcc = 0;
-                break;
+                    // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
+                    state.dropAcc = 0;
+                    break;
+                }
             }
         }
-    }
 
         // Build nextBoard = lockedBoard + active overlay
         buildNextBoard({
@@ -206,7 +220,13 @@ const loop = createLoop({
         hud.setPressure(state.pressure);
 
         // Show/hide pause overlay (UI responds every frame based on state)
-        hud.setPaused(state.paused);
+        hud.setPaused(state.paused && !state.gameOver);
+
+        // Show game-over overlay once when gameOver becomes true
+        if (state.gameOver && !state._gameOverShown) {
+            hud.showGameOver(state.score);
+            state._gameOverShown = true;
+        }
     },
     onPerf: (perf) => {
         hud.setPerf(perf.fps, perf.frameMs);

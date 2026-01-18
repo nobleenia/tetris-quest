@@ -16,6 +16,7 @@
         <div class="hud__item">Score: <span id="hudScore">0</span></div>
         <div class="hud__item">Lives: <span id="hudLives">3</span></div>
         <div class="hud__item">Pressure: <span id="hudPressure">0%</span></div>
+        <div class="hud__item">Daily best: <span id="hudDailyBest">0:00</span></div>
         <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms</div>
     </header>
 
@@ -24,12 +25,19 @@
         </section>
     </main>
 
-    <div id="auseOverlay" class="overlay hidden" role="dialog" aria-model="true">
+    <div id="pauseOverlay" class="overlay hidden" role="dialog" aria-modal="true">
         <div class="overlay__panel">
             <h2 class="overlay__title">Paused</h2>
             <button id="btnContinue" class="btn">Continue</button>
             <button id="btnRestart" class="btn btn--secondary">Restart</button>
             <p class="overlay__hint">Press <b>Esc</b> to toggle pause</p>
+        </div>
+    </div>
+    <div id="gameOverOverlay" class="overlay hidden" role="dialog" aria-modal="true">
+        <div class="overlay__panel">
+            <h2 class="overlay__title">Game Over</h2>
+            <p>Your score: <span id="gameOverScore">0</span></p>
+            <button id="btnRestartGame" class="btn btn--secondary">Restart</button>
         </div>
     </div>
     <script type="module" src="./js/main.js"></script>

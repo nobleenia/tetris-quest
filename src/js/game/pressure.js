@@ -26,9 +26,3 @@ export function reducePressureOnClear(state, linesCleared) {
     const dec = table[linesCleared] ?? (linesCleared * 12);
     state.pressure = clamp(state.pressure - dec, 0, 100);
 }
-
-// Adaptive gravity: pressure controls interval
-export function gravityIntervalFromPressure(state) {
-    const p = clamp(state.pressure, 0, 100) / 100; // 0..1
-    return state.baseInterval + (state.minInterval - state.baseInterval) * p;
-}
