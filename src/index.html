@@ -21,12 +21,16 @@
     </header>
 
     <main id="gameRoot" aria-label="Game">
-        <div class="game__container">
-            <section id="board" aria-label="Tetris Board"></section>
+        <section id="board" aria-label="Tetris Board">
             <aside id="sidebar" aria-label="Sidebar">
                 <div id="nextPreview" class="next-preview" aria-label="Next piece preview"></div>
+                <div id="sidebarStats" class="sidebar__stats">
+                    <div class="sidebar__stat">Lives: <span id="sidebarLives">3</span></div>
+                    <div class="sidebar__stat">Pressure: <span id="sidebarPressureSide">0%</span></div>
+                    <div class="sidebar__stat">Time: <span id="sidebarTime">0.0</span></div>
+                </div>
             </aside>
-        </div>
+        </section>
     </main>
 
     <div id="homeOverlay" class="overlay" role="dialog" aria-modal="true">

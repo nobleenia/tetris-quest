@@ -35,6 +35,11 @@ const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 const previewEl = document.querySelector('#nextPreview');
 const previewDOM = createPreviewDOM({ previewEl, size: 4 });
 
+// wire sidebar stats to keep in sync with HUD
+const sidebarLivesEl = document.querySelector('#sidebarLives');
+const sidebarPressureSideEl = document.querySelector('#sidebarPressureSide');
+const sidebarTimeEl = document.querySelector('#sidebarTime');
+
 // Home overlay / start flow
 const homeOverlay = document.querySelector('#homeOverlay');
 const btnStart = document.querySelector('#btnStart');
@@ -251,6 +256,9 @@ const loop = createLoop({
         hud.setScore(state.score);
         hud.setLives(state.lives);
         hud.setPressure(state.pressure);
+        if (sidebarLivesEl) sidebarLivesEl.textContent = String(state.lives);
+        if (sidebarPressureSideEl) sidebarPressureSideEl.textContent = `${Math.round(state.pressure)}%`;
+        if (sidebarTimeEl) sidebarTimeEl.textContent = state.elapsedSec.toFixed(1);
 
         // Show/hide pause overlay (do not show while home overlay is visible)
         const homeHidden = !homeOverlay || homeOverlay.classList.contains('hidden');
