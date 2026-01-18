@@ -61,3 +61,19 @@ export function buildNextBoard(locked, next, cols, rows, active) {
 function copyInto(dst, src) {
   for (let i = 0; i < src.length; i++) dst[i] = src[i];
 }
+
+export function countHoles(locked, cols, rows) {
+  let holes = 0;
+  for (let x = 0; x < cols; x++) {
+    let seenBlock = false;
+    for (let y = 0; y < rows; y++) {
+      const v = locked[y * cols + x];
+      if (v !== 0) {
+        seenBlock = true;
+      } else if (seenBlock && v === 0) {
+        holes++;
+      }
+    }
+  }
+  return holes;
+}

@@ -4,6 +4,7 @@ export function createHUD() {
     const elLives = document.querySelector("#hudLives");
     const elFps = document.querySelector("#hudFps");
     const elMs = document.querySelector("#hudMs");
+    const elSim = document.querySelector("#hudSimHz");
     const elPressure = document.querySelector("#hudPressure");
     const elDailyBest = document.querySelector("#hudDailyBest");
     const pauseOverlay = document.querySelector("#pauseOverlay");
@@ -18,6 +19,7 @@ export function createHUD() {
             elFps.textContent = String(fps);
             elMs.textContent = ms.toFixed(2);
         },
+        setSimHz(n) { if (elSim) elSim.textContent = String(n); },
         setPressure(pct) {
             elPressure.textContent = `${Math.round(pct)}%`;
         },

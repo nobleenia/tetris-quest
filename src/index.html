@@ -17,13 +17,30 @@
         <div class="hud__item">Lives: <span id="hudLives">3</span></div>
         <div class="hud__item">Pressure: <span id="hudPressure">0%</span></div>
         <div class="hud__item">Daily best: <span id="hudDailyBest">0:00</span></div>
-        <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms</div>
+        <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms | Sim: <span id="hudSimHz">0</span>Hz</div>
     </header>
 
     <main id="gameRoot" aria-label="Game">
-        <section id="board" aria-label="Tetris Board">
-        </section>
+        <div class="game__container">
+            <section id="board" aria-label="Tetris Board"></section>
+            <aside id="sidebar" aria-label="Sidebar">
+                <div id="nextPreview" class="next-preview" aria-label="Next piece preview"></div>
+            </aside>
+        </div>
     </main>
+
+    <div id="homeOverlay" class="overlay" role="dialog" aria-modal="true">
+        <div class="overlay__panel">
+            <h1 class="overlay__title">make-your-game</h1>
+            <p class="overlay__lead">A DOM-based Tetris. Press Start to play.</p>
+            <h3>Rules</h3>
+            <p>Standard falling piece mechanics. New rule: misplaced-placement penalty — when a placement creates a hole (an empty cell below a filled cell), you lose a life.</p>
+            <label><input id="cfgMisplacedRule" type="checkbox" checked> Enable misplaced-placement life penalty</label>
+            <div class="overlay__actions">
+                <button id="btnStart" class="btn">Start</button>
+            </div>
+        </div>
+    </div>
 
     <div id="pauseOverlay" class="overlay hidden" role="dialog" aria-modal="true">
         <div class="overlay__panel">

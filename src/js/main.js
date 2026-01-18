@@ -5,8 +5,11 @@ import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM } from './ui/dom.js';
 import { renderBoardDiff } from './ui/render.js';
+import { createPreviewDOM } from './ui/dom.js';
+import { renderPreview } from './ui/render.js';
 import { initQueue, spawnFromQueue } from "./game/spawn.js";
 import { canPlace, buildNextBoard } from "./game/board.js";
+import { countHoles } from "./game/board.js";
 import { lockActivePiece } from "./game/lock.js";
 import { tryRotateCW } from "./game/rotate.js";
 import { clearFullLines } from "./game/lines.js";
@@ -28,15 +31,35 @@ hud.setDailyBest(loadDailyBestSec());
 const boardEl = document.querySelector("#board");
 const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
 
-// boardDOM.cells[0].className = "cell cell--1";
+// Preview DOM
+const previewEl = document.querySelector('#nextPreview');
+const previewDOM = createPreviewDOM({ previewEl, size: 4 });
 
-initQueue(state);
-const ok = spawnFromQueue(state);
-if (!ok) {
-    const best = updateDailyBest(state);
-    hud.setDailyBest(best);
-    handleTopOut(state);
-}
+// Home overlay / start flow
+const homeOverlay = document.querySelector('#homeOverlay');
+const btnStart = document.querySelector('#btnStart');
+const cfgMisplaced = document.querySelector('#cfgMisplacedRule');
+
+// Start paused until user clicks Start
+state.paused = true;
+
+btnStart.addEventListener('click', () => {
+    // Read config
+    state.misplacedPlacementRule = !!cfgMisplaced.checked;
+
+    // initialize queue and spawn first piece
+    initQueue(state);
+    const ok = spawnFromQueue(state);
+    if (!ok) {
+        const best = updateDailyBest(state);
+        hud.setDailyBest(best);
+        handleTopOut(state);
+    }
+
+    // Hide home overlay and unpause simulation
+    if (homeOverlay) homeOverlay.classList.add('hidden');
+    state.paused = false;
+});
 
 // Board rendering (diff-based)
 // Pause overlay
@@ -97,7 +120,7 @@ let lastSimReport = performance.now();
 // Main loop
 const loop = createLoop({
     onUpdate: (dt) => {
-        if (state.gameOver) return;
+        if (state.paused || state.gameOver) return;
 
         // Accumulate real time and run fixed-size simulation steps at 60Hz.
         simAcc += dt;
@@ -162,12 +185,31 @@ const loop = createLoop({
 
                 const moved = tryMove(state, 0, 1);
                 if (!moved) {
+                    // Misplaced-placement detection: count holes before lock
+                    const holesBefore = countHoles(state.lockedBoard, state.cols, state.rows);
+
                     lockActivePiece(state);
                     const cleared = clearFullLines(state);
                     addLineClearScore(state, cleared);
                     reducePressureOnClear(state, cleared);
                     state.holdUsed = false;
+
+                    // Spawn next piece
                     const ok = spawnFromQueue(state);
+
+                    // Recount holes after lock+clear. If rule enabled and holes increased, apply penalty.
+                    if (state.misplacedPlacementRule) {
+                        const holesAfter = countHoles(state.lockedBoard, state.cols, state.rows);
+                        if (holesAfter > holesBefore) {
+                            // default: one life per misplaced placement
+                            state.lives = Math.max(0, state.lives - 1);
+                            hud.setLives(state.lives);
+                            if (state.lives <= 0) {
+                                state.gameOver = true;
+                            }
+                        }
+                    }
+
                     if (!ok) {
                         handleTopOut(state);
                         state.dropAcc = 0;
@@ -188,6 +230,8 @@ const loop = createLoop({
             state.prevBoard,
             state.nextBoard
         );
+        // Render next-piece preview (show upcoming piece id)
+        renderPreview(previewDOM, state.nextId, 0);
         // Report simHz once per second (console fallback if HUD lacks setter)
         const _now = performance.now();
         if (_now - lastSimReport >= 1000) {
