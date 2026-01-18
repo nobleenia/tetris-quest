@@ -12,11 +12,11 @@ export function createInitialState() {
         cols,
         rows,
 
-        lockedBoard: new Array(cellCount).fill(0),
+        lockedBoard: new Uint8Array(cellCount).fill(0),
 
         // Rendering buffers
-        prevBoard: new Array(cellCount).fill(0),
-        nextBoard: new Array(cellCount).fill(0),
+        prevBoard: new Uint8Array(cellCount).fill(0),
+        nextBoard: new Uint8Array(cellCount).fill(0),
 
         // Active falling piece
         active: null,
