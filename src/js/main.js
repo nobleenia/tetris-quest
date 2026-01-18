@@ -252,8 +252,9 @@ const loop = createLoop({
         hud.setLives(state.lives);
         hud.setPressure(state.pressure);
 
-        // Show/hide pause overlay (UI responds every frame based on state)
-        hud.setPaused(state.paused && !state.gameOver);
+        // Show/hide pause overlay (do not show while home overlay is visible)
+        const homeHidden = !homeOverlay || homeOverlay.classList.contains('hidden');
+        hud.setPaused(state.paused && !state.gameOver && homeHidden);
 
         // Show game-over overlay once when gameOver becomes true
         if (state.gameOver && !state._gameOverShown) {

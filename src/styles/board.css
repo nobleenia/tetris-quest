@@ -32,6 +32,42 @@
   border: 1px solid rgba(255,255,255,0.06);
 }
 
+/* Layout for board + sidebar */
+.game__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+#sidebar {
+  width: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.next-preview {
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 14px);
+  grid-template-rows: repeat(4, 14px);
+  gap: 2px;
+}
+
+.preview__grid .cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
 /* cell states (later we map piece IDs to these) */
 .cell--1 { background: rgba(255, 215, 106, 0.85); } /* example colour */
 .cell--2 { background: rgba(140, 180, 255, 0.85); }
