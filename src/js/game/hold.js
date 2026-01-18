@@ -23,15 +23,15 @@ export function tryHold(state) {
   const y = 0;
   const candidate = { id: swappedId, rot: 0, x, y };
 
-  const ok = canPlace({
-    locked: state.lockedBoard,
-    cols: state.cols,
-    rows: state.rows,
-    pieceId: candidate.id,
-    rot: candidate.rot,
-    px: candidate.x,
-    py: candidate.y,
-  });
+  const ok = canPlace(
+    state.lockedBoard,
+    state.cols,
+    state.rows,
+    candidate.id,
+    candidate.rot,
+    candidate.x,
+    candidate.y
+  );
 
   // If swap would immediately collide, reject hold
   if (!ok) {

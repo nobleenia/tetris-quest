@@ -87,130 +87,119 @@ let prevRotate = false; // for rotation key edge detection
 
 let prevHold = false;
 
+// Fixed simulation step for 60Hz gameplay logic
+const SIM_STEP = 1 / 60;
+let simAcc = 0;
+// Instrumentation: count simulation steps per second for verification
+let simStepsThisSec = 0;
+let lastSimReport = performance.now();
+
 // Main loop
 const loop = createLoop({
     onUpdate: (dt) => {
         if (state.gameOver) return;
-        // Update game time
 
-        // Phase 1 placeholder update: just track time while running
-        // (In Phase 2/3 we’ll run simulation here)
-        state.elapsedSec += dt;
-        tickPressure(state, dt);
+        // Accumulate real time and run fixed-size simulation steps at 60Hz.
+        simAcc += dt;
+        while (simAcc >= SIM_STEP) {
+            // Run one simulation step consuming SIM_STEP seconds.
+            state.elapsedSec += SIM_STEP;
+            // Count simulation steps for reporting (approx. should be ~60)
+            simStepsThisSec++;
+            tickPressure(state, SIM_STEP);
 
-        // If game over, freeze gameplay (but HUD still renders)
-        if (state.gameOver) {
-            buildNextBoard({
-                locked: state.lockedBoard,
-                next: state.nextBoard,
-                cols: state.cols,
-                rows: state.rows,
-                active: null,
-            });
-            return;
-        }
+            // If game over after stepping, build empty nextBoard and stop stepping.
+            if (state.gameOver) {
+                buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, null);
+                simAcc = 0;
+                return;
+            }
 
-        // Move left/right once per press (we’ll upgrade to key-hold DAS/ARR in 3.2)
-        const left = input.isDown("ArrowLeft") || input.isDown("KeyA");
-        const right = input.isDown("ArrowRight") || input.isDown("KeyD");
+            // Move left/right once per press
+            const left = input.isDown("ArrowLeft") || input.isDown("KeyA");
+            const right = input.isDown("ArrowRight") || input.isDown("KeyD");
 
-        // Rotate once per key press (no spamming)
-        const rotate = input.isDown("ArrowUp") || input.isDown("KeyW");
+            // Rotate once per key press
+            const rotate = input.isDown("ArrowUp") || input.isDown("KeyW");
 
-        if (state.active) {
-            if (left && !prevLeft) tryMove(state, -1, 0);
-            if (right && !prevRight) tryMove(state, 1, 0);
-        }
+            if (state.active) {
+                if (left && !prevLeft) tryMove(state, -1, 0);
+                if (right && !prevRight) tryMove(state, 1, 0);
+            }
 
-        if (rotate && !prevRotate) {
-            tryRotateCW(state);
-        }
+            if (rotate && !prevRotate) {
+                tryRotateCW(state);
+            }
 
-        prevLeft = left;
-        prevRight = right;
+            prevLeft = left;
+            prevRight = right;
+            prevRotate = rotate;
 
-        prevRotate = rotate;
+            // Gravity
+            const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
+            const base = gravityIntervalFromPressure(state);
+            const interval = softDrop ? base * 0.08 : base;
 
-        // ----------- Gravity: time-based falling -----------
-        // Soft drop: holding down makes it fall faster (smaller interval)
-        const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
-        const base = gravityIntervalFromPressure(state);
-        const interval = softDrop ? base * 0.08 : base;
-
-        const hold = input.isDown("KeyC");
-        if (hold && !prevHold) {
-            const didHold = tryHold(state);
-
-            // If hold consumed the active piece (hold was empty), spawn a new one
-            if (didHold && !state.active) {
-                const ok = spawnFromQueue(state);
-                if (!ok) {
-                    handleTopOut(state);
-                    return; // stop update this frame
+            const hold = input.isDown("KeyC");
+            if (hold && !prevHold) {
+                const didHold = tryHold(state);
+                if (didHold && !state.active) {
+                    const ok = spawnFromQueue(state);
+                    if (!ok) {
+                        handleTopOut(state);
+                        if (state.gameOver) break;
+                    }
                 }
             }
-        }
-        prevHold = hold;
+            prevHold = hold;
 
-        state.dropAcc += dt;
+            state.dropAcc += SIM_STEP;
 
-        // If enough time passed, attempt to move down by 1 row
-        while (state.dropAcc >= interval) {
-            state.dropAcc -= interval;
+            while (state.dropAcc >= interval) {
+                state.dropAcc -= interval;
 
-            if (!state.active) break;
+                if (!state.active) break;
 
-            const moved = tryMove(state, 0, 1);
-            if (!moved) {
-                // Can't move down -> lock it into board
-                lockActivePiece(state);
-
-                // Clear lines and score
-                const cleared = clearFullLines(state);
-                addLineClearScore(state, cleared);
-                reducePressureOnClear(state, cleared);
-
-                // Reset hold usage later (Phase 3.5)
-                state.holdUsed = false;
-
-                // Spawn next piece
-                const ok = spawnFromQueue(state);
-                if (!ok) {
-                    handleTopOut(state);
-
-                    // If spawn is blocked (top-out), handle later (lives/game over Phase 4)
-                    state.dropAcc = 0;
-                    break;
+                const moved = tryMove(state, 0, 1);
+                if (!moved) {
+                    lockActivePiece(state);
+                    const cleared = clearFullLines(state);
+                    addLineClearScore(state, cleared);
+                    reducePressureOnClear(state, cleared);
+                    state.holdUsed = false;
+                    const ok = spawnFromQueue(state);
+                    if (!ok) {
+                        handleTopOut(state);
+                        state.dropAcc = 0;
+                        break;
+                    }
                 }
             }
+
+            buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, state.active);
+
+            simAcc -= SIM_STEP;
         }
-
-        // Build nextBoard = lockedBoard + active overlay
-        buildNextBoard({
-            locked: state.lockedBoard,
-            next: state.nextBoard,
-            cols: state.cols,
-            rows: state.rows,
-            active: state.active,
-        });
-        // demo movement: show one changing cell
-        // demoFillNextBoard(state.timeSec);
-
-        // Here would go game update logic (movement, collisions, etc)
-
-        // Example: if you hold Space, add score (just to prove key-hold works)
-        // Remove this in Phase 2.
-        // if (input.isDown("Space")) state.score += 1;
     },
     onRender: () => {
-        // Here would go rendering logic (drawing to canvas, etc)
-
         // Render board using diff
-        renderBoardDiff({
-            cells: boardDOM.cells,
-            prevBoard: state.prevBoard,
-            nextBoard: state.nextBoard,
-        });
+        renderBoardDiff(
+            boardDOM.cells,
+            state.prevBoard,
+            state.nextBoard
+        );
+        // Report simHz once per second (console fallback if HUD lacks setter)
+        const _now = performance.now();
+        if (_now - lastSimReport >= 1000) {
+            const simHz = simStepsThisSec;
+            if (hud && typeof hud.setSimHz === 'function') {
+                hud.setSimHz(simHz);
+            } else {
+                console.log('simHz', simHz);
+            }
+            simStepsThisSec = 0;
+            lastSimReport += 1000;
+        }
         
         // Phase 1 render does not touch the board yet.
         // We still update HUD even when paused (required).
@@ -242,15 +231,15 @@ function tryMove(state, dx, dy) {
     const nx = a.x + dx;
     const ny = a.y + dy;
 
-    const ok = canPlace({
-        locked: state.lockedBoard,
-        cols: state.cols,
-        rows: state.rows,
-        pieceId: a.id,
-        rot: a.rot,
-        px: nx,
-        py: ny,
-    });
+    const ok = canPlace(
+        state.lockedBoard,
+        state.cols,
+        state.rows,
+        a.id,
+        a.rot,
+        nx,
+        ny
+    );
 
     if (!ok) return false;
 

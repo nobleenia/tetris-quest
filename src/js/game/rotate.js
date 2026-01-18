@@ -13,15 +13,15 @@ export function tryRotateCW(state) {
     const nx = a.x + dx;
     const ny = a.y;
 
-    const ok = canPlace({
-      locked: state.lockedBoard,
-      cols: state.cols,
-      rows: state.rows,
-      pieceId: a.id,
-      rot: nextRot,
-      px: nx,
-      py: ny,
-    });
+    const ok = canPlace(
+      state.lockedBoard,
+      state.cols,
+      state.rows,
+      a.id,
+      nextRot,
+      nx,
+      ny
+    );
 
     if (ok) {
       a.rot = nextRot;

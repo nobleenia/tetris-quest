@@ -1,5 +1,5 @@
+// Build precomputed offsets as Int8Array arrays of length (blocks * 2)
 export const PIECE_IDS = ["I", "O", "T", "S", "Z", "J", "L"];
-
 // Map piece ID -> numeric cell value for colouring (1..7)
 export const PIECE_VALUE = {
   I: 1, O: 2, T: 3, S: 4, Z: 5, J: 6, L: 7,
@@ -50,6 +50,19 @@ export const PIECES = {
     [[0,0],[1,0],[1,1],[1,2]],
   ],
 };
+
+// Build precomputed offsets as Int8Array arrays of length (blocks * 2)
+export const PIECE_OFFSETS = {};
+for (const id of PIECE_IDS) {
+  PIECE_OFFSETS[id] = PIECES[id].map(rotBlocks => {
+    const arr = new Int8Array(rotBlocks.length * 2);
+    for (let i = 0; i < rotBlocks.length; i++) {
+      arr[i * 2 + 0] = rotBlocks[i][0]; // dx
+      arr[i * 2 + 1] = rotBlocks[i][1]; // dy
+    }
+    return arr;
+  });
+}
 
 export function getBlocks(pieceId, rot) {
   return PIECES[pieceId][rot];

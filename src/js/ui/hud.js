@@ -6,9 +6,7 @@ export function createHUD() {
     const elMs = document.querySelector("#hudMs");
     const elPressure = document.querySelector("#hudPressure");
     const elDailyBest = document.querySelector("#hudDailyBest");
-
     const pauseOverlay = document.querySelector("#pauseOverlay");
-
     const gameOverOverlay = document.querySelector("#gameOverOverlay");
     const elGameOverScore = document.querySelector("#gameOverScore");
 
