@@ -55,6 +55,7 @@ let prevPressureHigh = false;
 const homeOverlay = document.querySelector('#homeOverlay');
 const btnStart = document.querySelector('#btnStart');
 const cfgMisplaced = document.querySelector('#cfgMisplacedRule');
+const cfgDifficulty = document.querySelector('#cfgDifficulty');
 
 // Start paused until user clicks Start
 state.paused = true;
@@ -62,6 +63,19 @@ state.paused = true;
 btnStart.addEventListener('click', () => {
     // Read config
     state.misplacedPlacementRule = !!cfgMisplaced.checked;
+    // Difficulty presets: map selection to pressureRate
+    if (cfgDifficulty) {
+        const v = cfgDifficulty.value;
+        state.pressureRate = (function mapRate(val) {
+            switch (val) {
+                case 'casual': return 0.5;
+                case 'normal': return 1.0;
+                case 'fast': return 2.0;
+                case 'hardcore': return 5.0;
+                default: return 1.0;
+            }
+        })(v);
+    }
 
     // initialize queue and spawn first piece
     initQueue(state);
@@ -70,6 +84,12 @@ btnStart.addEventListener('click', () => {
         const best = updateDailyBest(state);
         hud.setDailyBest(best);
         handleTopOut(state);
+    } else {
+        // block soft-drop carryover into newly spawned piece
+        const holdingDown = input.isDown("ArrowDown") || input.isDown("KeyS");
+        state.softDropBlock = holdingDown;
+        // reset drop accumulator to avoid immediate-drop on new piece
+        state.dropAcc = 0;
     }
 
     // Hide home overlay and unpause simulation
@@ -92,12 +112,56 @@ bindPauseUI({
         state._gameOverShown = false;
 
         resetGame(state);
+        // Apply selected difficulty preset on restart as well
+        if (cfgDifficulty) {
+            const v = cfgDifficulty.value;
+            state.pressureRate = (function mapRate(val) {
+                switch (val) {
+                    case 'casual': return 0.5;
+                    case 'normal': return 1.0;
+                    case 'fast': return 2.0;
+                    case 'hardcore': return 5.0;
+                    default: return 1.0;
+                }
+            })(v);
+        }
         initQueue(state); // important because reset cleared nextId
         const ok = spawnFromQueue(state);
         if (!ok) handleTopOut(state);
         state.paused = false;
     },
 });
+
+// Game-over overlay restart button also needs to apply difficulty preset
+const btnRestartGame = document.querySelector('#btnRestartGame');
+if (btnRestartGame) {
+    btnRestartGame.addEventListener('click', () => {
+        const best = updateDailyBest(state);
+        hud.setDailyBest(best);
+        hud.hideGameOver();
+        state._gameOverShown = false;
+
+        // Apply preset
+        if (cfgDifficulty) {
+            const v = cfgDifficulty.value;
+            state.pressureRate = (function mapRate(val) {
+                switch (val) {
+                    case 'casual': return 0.5;
+                    case 'normal': return 1.0;
+                    case 'fast': return 2.0;
+                    case 'hardcore': return 5.0;
+                    default: return 1.0;
+                }
+            })(v);
+        }
+
+        resetGame(state);
+        initQueue(state);
+        const ok = spawnFromQueue(state);
+        if (!ok) handleTopOut(state);
+        state.paused = false;
+    });
+}
 
 // Toggle Pause with Escape (input module tracks keys; we just need to react here)
 window.addEventListener("keydown", (e) => {
@@ -161,9 +225,39 @@ const loop = createLoop({
             // Rotate once per key press
             const rotate = input.isDown("ArrowUp") || input.isDown("KeyW");
 
+            // Horizontal movement with DAS/ARR: immediate on press, then auto-repeat
             if (state.active) {
-                if (left && !prevLeft) tryMove(state, -1, 0);
-                if (right && !prevRight) tryMove(state, 1, 0);
+                const dirRequested = left && !right ? -1 : right && !left ? 1 : 0;
+
+                if (dirRequested !== state.horizDir) {
+                    // direction changed (press or release)
+                    state.horizDir = dirRequested;
+                    state.horizDelayAcc = 0;
+                    state.horizRepeatAcc = 0;
+                    if (dirRequested !== 0) {
+                        tryMove(state, dirRequested, 0);
+                    }
+                } else if (dirRequested !== 0) {
+                    // held in same direction
+                    state.horizDelayAcc += SIM_STEP;
+                    if (state.horizDelayAcc >= state.dasDelay) {
+                        state.horizRepeatAcc += SIM_STEP;
+                        const repeats = Math.floor(state.horizRepeatAcc / state.arrInterval);
+                        if (repeats > 0) {
+                            for (let i = 0; i < repeats; i++) {
+                                // stop if move fails
+                                const moved = tryMove(state, state.horizDir, 0);
+                                if (!moved) break;
+                            }
+                            state.horizRepeatAcc = state.horizRepeatAcc % state.arrInterval;
+                        }
+                    }
+                } else {
+                    // no horizontal input
+                    state.horizDir = 0;
+                    state.horizDelayAcc = 0;
+                    state.horizRepeatAcc = 0;
+                }
             }
 
             if (rotate && !prevRotate) {
@@ -174,8 +268,13 @@ const loop = createLoop({
             prevRight = right;
             prevRotate = rotate;
 
-            // Gravity
-            const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
+            // Gravity (soft-drop is per-active-piece: block carryover from previous piece)
+            const physicalDown = input.isDown("ArrowDown") || input.isDown("KeyS");
+            // If we previously blocked soft-drop for this spawned piece, clear the
+            // block once the player releases the Down key.
+            if (state.softDropBlock && !physicalDown) state.softDropBlock = false;
+
+            const softDrop = physicalDown && !state.softDropBlock;
             const base = gravityIntervalFromPressure(state);
             const interval = softDrop ? base * 0.08 : base;
 
@@ -183,11 +282,16 @@ const loop = createLoop({
             if (hold && !prevHold) {
                 const didHold = tryHold(state);
                 if (didHold && !state.active) {
-                    const ok = spawnFromQueue(state);
-                    if (!ok) {
-                        handleTopOut(state);
-                        if (state.gameOver) break;
-                    }
+                        const ok = spawnFromQueue(state);
+                        if (!ok) {
+                            handleTopOut(state);
+                            if (state.gameOver) break;
+                        } else {
+                            // block soft-drop carryover into newly spawned piece
+                            const holdingDown = input.isDown("ArrowDown") || input.isDown("KeyS");
+                            state.softDropBlock = holdingDown;
+                            state.dropAcc = 0;
+                        }
                 }
             }
             prevHold = hold;
@@ -230,6 +334,11 @@ const loop = createLoop({
                         handleTopOut(state);
                         state.dropAcc = 0;
                         break;
+                    } else {
+                        // newly spawned piece should not inherit a held Down
+                        const holdingDown = input.isDown("ArrowDown") || input.isDown("KeyS");
+                        state.softDropBlock = holdingDown;
+                        state.dropAcc = 0;
                     }
                 }
             }

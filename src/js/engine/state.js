@@ -33,7 +33,7 @@ export function createInitialState() {
         holdUsed: false,
 
         pressure: 0,          // 0..100
-        pressureRate: 1.0,    // per second (tune)
+        pressureRate: 1.25,    // per second (tune)
         gameOver: false,
 
         elapsedSec: 0,  // total time played
@@ -43,6 +43,15 @@ export function createInitialState() {
 
         baseInterval: 0.85,   // seconds at pressure 0
         minInterval: 0.10,    // seconds at pressure 100 (cap)
+        // Horizontal auto-shift (DAS/ARR)
+        dasDelay: 0.15,      // seconds before auto-repeat starts
+        arrInterval: 0.06,   // repeat interval once DAS elapsed
+        horizDir: 0,         // -1 left, 0 none, 1 right
+        horizDelayAcc: 0,    // accumulator for DAS
+        horizRepeatAcc: 0,   // accumulator for ARR repeats
+        // Soft-drop carryover blocking: when a piece spawns, optionally block
+        // soft-drop if the player was holding Down for the previous piece.
+        softDropBlock: false,
     };
 }
 
@@ -73,6 +82,10 @@ export function resetGame(state) {
     state.elapsedSec = 0;
 
     state.dropAcc = 0;
+    state.horizDir = 0;
+    state.horizDelayAcc = 0;
+    state.horizRepeatAcc = 0;
+    state.softDropBlock = false;
 }
 
 // If called after createInitialState, setup visible views

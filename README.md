@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # make--your-game — DOM Tetris at 60 FPS
 
 Single-player **Tetris** implemented using **plain JavaScript + DOM** (no canvas, no frameworks).
@@ -25,7 +24,3 @@ Open `src/index.html` in Chrome/Firefox.
 - Audit checklist: `docs/AUDIT-CHECKLIST.md`
 - Performance notes: `docs/PERFORMANCE-NOTES.md`
 - Design/architecture: `docs/DESIGN.md`
-=======
-# make-your-game
-
->>>>>>> origin/main
