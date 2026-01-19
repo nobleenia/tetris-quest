@@ -1,6 +1,8 @@
 export function createInitialState() {
     const cols = 10;
-    const rows = 20;
+    const visibleRows = 20; // rows visible to the player
+    const hiddenRows = 4;   // hidden spawn rows above the visible area
+    const rows = visibleRows + hiddenRows; // total rows used internally
     const cellCount = cols * rows;
 
     return {
@@ -10,13 +12,18 @@ export function createInitialState() {
         lives: 3,
 
         cols,
+        visibleRows,
+        hiddenRows,
         rows,
 
         lockedBoard: new Uint8Array(cellCount).fill(0),
 
-        // Rendering buffers
+        // Rendering buffers (full size: hidden + visible)
         prevBoard: new Uint8Array(cellCount).fill(0),
         nextBoard: new Uint8Array(cellCount).fill(0),
+        // Views into visible area for rendering
+        prevVisible: null,
+        nextVisible: null,
 
         // Active falling piece
         active: null,
@@ -51,6 +58,11 @@ export function resetGame(state) {
     state.prevBoard.fill(1);
     state.nextBoard.fill(0);
 
+    // Recreate visible views (they are views into the typed arrays)
+    const offset = state.hiddenRows * state.cols;
+    state.prevVisible = state.prevBoard.subarray(offset, offset + state.visibleRows * state.cols);
+    state.nextVisible = state.nextBoard.subarray(offset, offset + state.visibleRows * state.cols);
+
     state.active = null;
     state.nextId = null;
     state.holdId = null;
@@ -61,4 +73,11 @@ export function resetGame(state) {
     state.elapsedSec = 0;
 
     state.dropAcc = 0;
+}
+
+// If called after createInitialState, setup visible views
+export function initializeVisibleViews(state) {
+    const offset = state.hiddenRows * state.cols;
+    state.prevVisible = state.prevBoard.subarray(offset, offset + state.visibleRows * state.cols);
+    state.nextVisible = state.nextBoard.subarray(offset, offset + state.visibleRows * state.cols);
 }

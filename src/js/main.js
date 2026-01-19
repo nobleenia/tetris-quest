@@ -29,7 +29,12 @@ const hud = createHUD();
 hud.setDailyBest(loadDailyBestSec());
 
 const boardEl = document.querySelector("#board");
-const boardDOM = createBoardDOM({ boardEl, cols: 10, rows: 20 });
+// createBoardDOM should use visibleRows only
+const boardDOM = createBoardDOM({ boardEl, cols: state.cols, rows: state.visibleRows });
+
+// initialize visible views for rendering
+import { initializeVisibleViews } from './engine/state.js';
+initializeVisibleViews(state);
 
 // Preview DOM
 const previewEl = document.querySelector('#nextPreview');
@@ -232,8 +237,8 @@ const loop = createLoop({
         // Render board using diff
         renderBoardDiff(
             boardDOM.cells,
-            state.prevBoard,
-            state.nextBoard
+            state.prevVisible,
+            state.nextVisible
         );
         // Render next-piece preview (show upcoming piece id)
         renderPreview(previewDOM, state.nextId, 0);

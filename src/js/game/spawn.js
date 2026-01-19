@@ -19,7 +19,8 @@ export function spawnFromQueue(state) {
     state.nextId = randomPieceId();
 
     const x = 3;
-    const y = 0;
+    // spawn at top of hidden area so pieces can rotate into visible space
+    const y = state.hiddenRows || 0;
 
     const candidate = { id: pieceId, rot: 0, x, y };
 
