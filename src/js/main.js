@@ -103,45 +103,6 @@ bindPauseUI({
 });
 
 
-//--------------------------------------------------
-//---New CONTROLS-----------------------------------
-controls.update();
-
-// Pause
-if (controls.pauseToggle()) {
-	state.paused = !state.paused;
-}
-
-// Déplacements horizontaux
-if (state.active) {
-	if (controls.moveLeftOnce()) tryMove(state, -1, 0);
-	if (controls.moveRightOnce()) tryMove(state, 1, 0);
-}
-
-// Rotations
-if (controls.rotateCW()) tryRotateCW(state);
-if (controls.rotateCCW()) tryRotateCCW(state); // Counter Clock-Wise
-
-// Hard drop
-if (controls.hardDrop()) {
-	// ton code de hard drop ici
-}
-
-// Soft drop
-const softDrop = controls.softDrop();
-const base = gravityIntervalFromPressure(state);
-const interval = softDrop ? base * 0.08 : base;
-
-// Hold
-if (controls.hold()) {
-	const didHold = tryHold(state);
-	if (didHold && !state.active) {
-		const ok = spawnFromQueue(state);
-		if (!ok) handleTopOut(state);
-	}
-}
-//--------------------------------------------------
-
 
 // Fixed simulation step for 60Hz gameplay logic
 const SIM_STEP = 1 / 60;
@@ -171,43 +132,46 @@ const loop = createLoop({
                 return;
             }
 
-            // Move left/right once per press
-            const left = input.isDown("ArrowLeft") || input.isDown("KeyA");
-            const right = input.isDown("ArrowRight") || input.isDown("KeyD");
+            // New CONTROLS -----------------------------
+			controls.update();
 
-            // Rotate once per key press
-            const rotate = input.isDown("ArrowUp") || input.isDown("KeyW");
+			// Pause
+			if (controls.pauseToggle()) {
+				state.paused = !state.paused;
+			}
 
-            if (state.active) {
-                if (left && !prevLeft) tryMove(state, -1, 0);
-                if (right && !prevRight) tryMove(state, 1, 0);
-            }
+			// Déplacements horizontaux
+			if (state.active) {
+				if (controls.moveLeftOnce()) tryMove(state, -1, 0);
+				if (controls.moveRightOnce()) tryMove(state, 1, 0);
+			}
 
-            if (rotate && !prevRotate) {
-                tryRotateCW(state);
-            }
+			// Rotations
+			if (controls.rotateCW()) tryRotateCW(state);
+			if (controls.rotateCCW()) tryRotateCCW(state);
 
-            prevLeft = left;
-            prevRight = right;
-            prevRotate = rotate;
+			// Hard drop
+			if (controls.hardDrop()) {
+				// TODO: implémenter hard drop
+			}
 
-            // Gravity
-            const softDrop = input.isDown("ArrowDown") || input.isDown("KeyS");
-            const base = gravityIntervalFromPressure(state);
-            const interval = softDrop ? base * 0.08 : base;
+			// Soft drop
+			const softDrop = controls.softDrop();
+			const base = gravityIntervalFromPressure(state);
+			const interval = softDrop ? base * 0.08 : base;
 
-            const hold = input.isDown("KeyC");
-            if (hold && !prevHold) {
-                const didHold = tryHold(state);
-                if (didHold && !state.active) {
-                    const ok = spawnFromQueue(state);
-                    if (!ok) {
-                        handleTopOut(state);
-                        if (state.gameOver) break;
-                    }
-                }
-            }
-            prevHold = hold;
+			// Hold
+			if (controls.hold()) {
+				const didHold = tryHold(state);
+				if (didHold && !state.active) {
+					const ok = spawnFromQueue(state);
+					if (!ok) {
+						handleTopOut(state);
+						if (state.gameOver) break;
+					}
+				}
+			}
+			//-------------------------------------------
 
             state.dropAcc += SIM_STEP;
 
@@ -254,6 +218,8 @@ const loop = createLoop({
             buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, state.active);
 
             simAcc -= SIM_STEP;
+
+			input.endFrame(); //
         }
     },
     onRender: () => {
