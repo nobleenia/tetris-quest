@@ -13,6 +13,7 @@ import { canPlace, buildNextBoard } from "./game/board.js";
 import { countHoles } from "./game/board.js";
 import { lockActivePiece } from "./game/lock.js";
 import { tryRotateCW, tryRotateCCW } from "./game/rotate.js";
+import { hardDrop } from "./game/harddrop.js";
 import { clearFullLines } from "./game/lines.js";
 import { addLineClearScore } from "./game/score.js";
 import { tryHold } from "./game/hold.js";
@@ -140,7 +141,7 @@ const loop = createLoop({
 				state.paused = !state.paused;
 			}
 
-			// Déplacements horizontaux
+			// Horizontal Movements
 			if (state.active) {
 				if (controls.moveLeftOnce()) tryMove(state, -1, 0);
 				if (controls.moveRightOnce()) tryMove(state, 1, 0);
@@ -152,7 +153,7 @@ const loop = createLoop({
 
 			// Hard drop
 			if (controls.hardDrop()) {
-				// TODO: implémenter hard drop
+				hardDrop(state, tryMove, hud);
 			}
 
 			// Soft drop
