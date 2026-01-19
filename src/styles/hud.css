@@ -2,8 +2,8 @@
   width: var(--w);
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
+  /* gap: 12px;
+  margin-bottom: 10px; */
   font-size: 14px;
   opacity: 0.95;
 }

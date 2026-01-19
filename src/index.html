@@ -56,8 +56,21 @@
             <h1 class="overlay__title">make-your-game</h1>
             <p class="overlay__lead">A DOM-based Tetris. Press Start to play.</p>
             <h3>Rules</h3>
-            <p>Standard falling piece mechanics. New rule: misplaced-placement penalty — when a placement creates a hole (an empty cell below a filled cell), you lose a life.</p>
+            <p>Standard falling piece mechanics.</p>
+            <p>New rule: misplaced-placement penalty. When a placement creates a hole (an empty cell below a filled cell), you lose a life.</p>
+            <p>Lose all your lives and it's game over!</p>
+            <h3>Difficulty Settings</h3>
             <label><input id="cfgMisplacedRule" type="checkbox" checked> Enable misplaced-placement life penalty</label>
+            <p></p>
+            <label class="overlay__field">Difficulty:
+                <select id="cfgDifficulty">
+                    <option value="casual">Casual — Relaxed</option>
+                    <option value="normal" selected>Normal — Balanced</option>
+                    <option value="fast">Fast — Challenging</option>
+                    <option value="hardcore">Hardcore — Intense</option>
+                </select>
+            </label>
+            <p></p>
             <div class="overlay__actions">
                 <button id="btnStart" class="btn">Start</button>
             </div>
@@ -81,4 +94,5 @@
     </div>
     <script type="module" src="./js/main.js"></script>
 </body>
+<footer>Copyright © 2026 Zone01</footer>
 </html>

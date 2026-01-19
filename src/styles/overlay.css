@@ -20,6 +20,55 @@
 
 .overlay__title { margin: 0 0 10px 0; }
 .overlay__hint { opacity: 0.85; margin-top: 12px; }
+/* Difficulty field — paste into src/styles/overlay.css */
+.overlay__field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  color: rgba(235,245,255,0.9);
+  font-size: 0.95rem;
+  font-weight: 600;
+  position: relative;
+}
+
+/* Select styling */
+.overlay__field select {
+  background: rgb(245, 243, 243);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #0d0d0e;
+  padding: 8px 40px 8px 12px; /* room for custom arrow */
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #9aa7ff 50%),
+    linear-gradient(135deg, #9aa7ff 50%, transparent 50%);
+  background-size: 8px 8px;
+  background-position: right 14px center, right 14px center;
+  background-repeat: no-repeat;
+}
+
+/* Hide IE arrow */
+.overlay__field select::-ms-expand { display: none; }
+
+/* Hover + focus */
+.overlay__field select:hover { transform: translateY(-1px); }
+.overlay__field select:focus {
+  outline: none;
+  border-color: rgba(124,58,237,0.45);
+  box-shadow: 0 6px 24px rgba(124,58,237,0.08), 0 0 0 4px rgba(124,58,237,0.06);
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 480px) {
+  .overlay__field { flex-direction: column; align-items: stretch; gap: 6px; }
+  .overlay__field select { width: 100%; padding-right: 12px; }
+}
 
 .btn {
   width: 100%;
