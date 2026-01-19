@@ -1,0 +1,95 @@
+:root{
+  --bg-dark: #071023;
+  --panel-top: rgba(20,36,64,0.95);
+  --panel-bottom: rgba(8,16,36,0.95);
+  --muted: rgba(255,255,255,0.09);
+  --accent: #6ee7b7;
+  --accent-2: #ffd166;
+}
+
+#board{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  width:fit-content;
+  height:auto;
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  background: linear-gradient(180deg,var(--panel-top),var(--panel-bottom));
+  box-shadow:0 20px 80px rgba(0,0,0,0.6), inset 0 40px 120px rgba(10,20,40,0.45);
+  contain: layout paint;
+  padding:22px 28px;
+}
+
+.board__grid{
+  display:grid;
+  grid-template-columns: repeat(10,26px);
+  grid-template-rows: repeat(20,26px);
+  gap:3px;
+  padding:16px;
+  border-radius:12px;
+  background: rgba(255,255,255,0.02);
+}
+
+.cell{
+  width:26px;
+  height:26px;
+  border-radius:6px;
+  background: rgba(255,255,255,0.02);
+  border:1px solid var(--muted);
+  box-shadow: inset 0 -6px 8px rgba(0,0,0,0.35);
+  transition: background-color 120ms linear, transform 120ms linear;
+}
+
+/* Layout for board + sidebar */
+#gameRoot{ display:flex; justify-content:center; }
+
+#sidebar{
+  width:110px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:14px;
+  padding-top:8px;
+}
+
+.next-preview{ width:92px; height:92px; display:flex; align-items:center; justify-content:center; }
+
+.sidebar__stats{ display:flex; flex-direction:column; gap:12px; margin-top:6px; color:#cbd5e1 }
+.sidebar__stat{ font-size:15px; line-height:1.25; display:flex; align-items:center; gap:8px; color:#dbeafe }
+.sidebar__label{ opacity:0.85; font-size:12px; color:#9fb3d6 }
+.sidebar__value{ font-weight:700; color:var(--accent); margin-left:auto }
+
+.icon{ color:#9fb3d6; flex:0 0 18px }
+.icon--heart{ color:#ff6b81 }
+.icon--fire{ color:#ff8a00 }
+.icon--clock{ color:#7dd3fc }
+.icon--score{ color:#ffd166 }
+
+.preview__grid{ display:grid; grid-template-columns: repeat(4,12px); grid-template-rows: repeat(4,12px); gap:2px }
+.preview__grid .cell{ width:12px; height:12px; border-radius:3px }
+
+@media (max-width:740px){
+  .game__container{ flex-direction:column; gap:12px }
+  #sidebar{ width:auto }
+  .next-preview{ order:2 }
+  #board{ padding:18px }
+}
+
+/* cell states */
+.cell--1{ background: rgba(255,99,132,0.94) }
+.cell--2{ background: rgba(99,102,241,0.94) }
+.cell--3{ background: rgba(6,182,212,0.94) }
+.cell--4{ background: rgba(16,185,129,0.94) }
+.cell--5{ background: rgba(255,159,67,0.94) }
+.cell--6{ background: rgba(249,115,22,0.94) }
+.cell--7{ background: rgba(129,140,248,0.94) }
+
+/* small animations */
+.pressure-pulse{ animation: pulse 1s infinite; }
+.heart-pop{ animation: pop 300ms ease-out; }
+
+@keyframes pulse{ 0%{ transform:scale(1) }50%{ transform:scale(1.04) }100%{ transform:scale(1) } }
+@keyframes pop{ 0%{ transform:scale(1) }50%{ transform:scale(1.18) }100%{ transform:scale(1) } }

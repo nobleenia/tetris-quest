@@ -1,0 +1,39 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(1,6,12,0.65), rgba(0,0,0,0.6));
+}
+
+.hidden { display: none; }
+
+.overlay__panel {
+  width: min(480px, 92vw);
+  background: linear-gradient(180deg, rgba(18,28,54,0.98), rgba(6,12,28,0.98));
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 28px 90px rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+}
+
+.overlay__title { margin: 0 0 10px 0; }
+.overlay__hint { opacity: 0.85; margin-top: 12px; }
+
+.btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 0;
+  cursor: pointer;
+  background: linear-gradient(90deg,#3b82f6,#7c3aed);
+  color: white;
+  font-weight: 700;
+}
+
+.btn--secondary {
+  background: #26304d;
+}
+.btn:hover { filter: brightness(1.05); }
