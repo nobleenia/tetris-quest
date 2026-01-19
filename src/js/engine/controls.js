@@ -85,9 +85,20 @@ export function createControls(input) {
         },
 
         hold() {
-            const now = input.isPressed("KeyC") || input.isPressed("ControlRight");
-            return now;
+            /*const now = input.isPressed("KeyC") || input.isPressed("ControlRight");
+            return now;*/
+			const pressed = input.isPressed("KeyC") || input.isPressed("ControlRight");
+			if (pressed) {
+				input.consume("KeyC"); 
+				input.consume("ControlRight");
+			}
+			return pressed;
         },
+
+		/*resetHold() {
+			this._holdPressed = false;
+			this._holdConsumed = true;
+		},*/
 
         pauseToggle() {
             const now = input.isPressed("Space") || input.isPressed("Escape");

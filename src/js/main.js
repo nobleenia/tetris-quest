@@ -168,12 +168,17 @@ const loop = createLoop({
 			// Hold
 			if (controls.hold()) {
 				const didHold = tryHold(state);
+			
+				if (didHold) {
+					//controls.consumeHold();
+					state.dropAcc = 0; // reset gravity timer
+					// Rebuild board immediately so the new active piece is visible:
+					buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, state.active);
+				}
+				// If 'hold' emptied the active piece, spawn a new one
 				if (didHold && !state.active) {
 					const ok = spawnFromQueue(state);
-					if (!ok) {
-						handleTopOut(state);
-						if (state.gameOver) break;
-					}
+					if (!ok) handleTopOut(state);
 				}
 			}
 			//-------------------------------------------
