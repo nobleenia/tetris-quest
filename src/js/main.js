@@ -45,6 +45,11 @@ const sidebarLivesEl = document.querySelector('#sidebarLives');
 const sidebarPressureSideEl = document.querySelector('#sidebarPressureSide');
 const sidebarTimeEl = document.querySelector('#sidebarTime');
 const sidebarScoreEl = document.querySelector('#sidebarScore');
+const sidebarPressureStat = document.querySelector('.sidebar__stat--pressure');
+const sidebarLivesStat = document.querySelector('.sidebar__stat--lives');
+
+let prevLives = state.lives;
+let prevPressureHigh = false;
 
 // Home overlay / start flow
 const homeOverlay = document.querySelector('#homeOverlay');
@@ -266,6 +271,23 @@ const loop = createLoop({
         if (sidebarLivesEl) sidebarLivesEl.textContent = String(state.lives);
         if (sidebarPressureSideEl) sidebarPressureSideEl.textContent = `${Math.round(state.pressure)}%`;
         if (sidebarTimeEl) sidebarTimeEl.textContent = state.elapsedSec.toFixed(1);
+
+        // Heart pop when lives change
+        if (state.lives !== prevLives && sidebarLivesStat) {
+            sidebarLivesStat.classList.remove('heart-pop');
+            // trigger reflow to restart animation
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            void sidebarLivesStat.offsetWidth;
+            sidebarLivesStat.classList.add('heart-pop');
+            prevLives = state.lives;
+        }
+
+        // Pressure pulse when pressure >= 50%
+        const pressureHigh = state.pressure >= 50;
+        if (pressureHigh !== prevPressureHigh && sidebarPressureStat) {
+            sidebarPressureStat.classList.toggle('pressure-pulse', pressureHigh);
+            prevPressureHigh = pressureHigh;
+        }
 
         // Show/hide pause overlay (do not show while home overlay is visible)
         const homeHidden = !homeOverlay || homeOverlay.classList.contains('hidden');
