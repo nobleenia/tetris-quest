@@ -1,6 +1,6 @@
 
 export function createControls(input) {
-    let prev = {
+    /*let prev = {
         left: false,
         right: false,
         rotateCW: false,
@@ -8,26 +8,62 @@ export function createControls(input) {
         hardDrop: false,
         hold: false,
         pause: false,
-    };
+    };*/
+	const DAS = 0.15; // delay before repetition (en secondes)
+	const ARR = 0.05; // interval between repetitions (en secondes) 
+	let leftState = { held: false, timer: 0 };
+	let rightState = { held: false, timer: 0 };
 
     return {
-        update() {
-            // rien à faire ici pour l’instant, mais utile si tu ajoutes DAS/ARR
-        },
-
-        moveLeftOnce() {
-            const now = input.isDown("ArrowLeft");
-            const fire = now && !prev.left;
-            prev.left = now;
-            return fire;
-        },
-
-        moveRightOnce() {
-            const now = input.isDown("ArrowRight");
-            const fire = now && !prev.right;
-            prev.right = now;
-            return fire;
-        },
+		update(dt) { 
+			// LEFT
+			if (input.isDown("ArrowLeft")) {
+				if (!leftState.held) {
+					leftState.held = true;
+					leftState.timer = DAS;
+				} else {
+					leftState.timer -= dt;
+				}
+			} else {
+				leftState.held = false;
+			}
+			
+			// RIGHT
+			if (input.isDown("ArrowRight")) {
+				if (!rightState.held) {
+					rightState.held = true;
+					rightState.timer = DAS;
+				} else {
+					rightState.timer -= dt;
+				}
+			} else {
+				rightState.held = false;
+			}
+		}, 
+		
+		moveLeft(dt) {
+			if (!input.isDown("ArrowLeft")) return false;
+			// first keydown
+			if (leftState.timer === DAS) return true;
+			// Repetition
+			if (leftState.timer <= 0) {
+				leftState.timer += ARR;
+				return true;
+			}
+			return false;
+		}, 
+		
+		moveRight(dt) {
+			if (!input.isDown("ArrowRight")) return false;
+			
+			if (rightState.timer === DAS) return true;
+			
+			if (rightState.timer <= 0) {
+				rightState.timer += ARR;
+				return true;
+			}
+			return false;
+		},
 
         softDrop() {
             return input.isDown("ArrowDown");

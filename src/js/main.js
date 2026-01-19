@@ -134,7 +134,7 @@ const loop = createLoop({
             }
 
             // New CONTROLS -----------------------------
-			controls.update();
+			controls.update(SIM_STEP);
 
 			// Pause
 			if (controls.pauseToggle()) {
@@ -143,8 +143,8 @@ const loop = createLoop({
 
 			// Horizontal Movements
 			if (state.active) {
-				if (controls.moveLeftOnce()) tryMove(state, -1, 0);
-				if (controls.moveRightOnce()) tryMove(state, 1, 0);
+				if (controls.moveLeft(SIM_STEP)) tryMove(state, -1, 0);
+				if (controls.moveRight(SIM_STEP)) tryMove(state, 1, 0);
 			}
 
 			// Rotations
