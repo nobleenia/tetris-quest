@@ -40,9 +40,13 @@ const boardDOM = createBoardDOM({ boardEl, cols: state.cols, rows: state.visible
 import { initializeVisibleViews } from './engine/state.js';
 initializeVisibleViews(state);
 
-// Preview DOM
+// Previews DOM
 const previewEl = document.querySelector('#nextPreview');
 const previewDOM = createPreviewDOM({ previewEl, size: 4 });
+
+const holdEl = document.querySelector('#holdPreview');
+const holdDOM = createPreviewDOM({ previewEl: holdEl, size: 4 });
+
 
 // wire sidebar stats to keep in sync with HUD
 const sidebarLivesEl = document.querySelector('#sidebarLives');
@@ -112,7 +116,7 @@ let simAcc = 0;
 let simStepsThisSec = 0;
 let lastSimReport = performance.now();
 
-// Main loop
+//*MARK: Main loop
 const loop = createLoop({
     onUpdate: (dt) => {
         if (state.paused || state.gameOver) return;
@@ -223,6 +227,7 @@ const loop = createLoop({
 			input.endFrame(); //
         }
     },
+	//*MARK: onRender
     onRender: () => {
         // Render board using diff
         renderBoardDiff(
@@ -230,8 +235,10 @@ const loop = createLoop({
             state.prevVisible,
             state.nextVisible
         );
-        // Render next-piece preview (show upcoming piece id)
+        // Render 'next-piece' and 'hold' previews (show upcoming piece id)
         renderPreview(previewDOM, state.nextId, 0);
+		renderPreview(holdDOM, state.holdId, 0);
+
         // Report simHz once per second (console fallback if HUD lacks setter)
         const _now = performance.now();
         if (_now - lastSimReport >= 1000) {
@@ -283,9 +290,11 @@ const loop = createLoop({
             state._gameOverShown = true;
         }
     },
+
     onPerf: (perf) => {
         hud.setPerf(perf.fps, perf.frameMs);
     },
+
     isPaused: () => state.paused,
 });
 

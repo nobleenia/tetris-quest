@@ -18,12 +18,13 @@
         <!-- <div class="hud__item">Pressure: <span id="hudPressure">0%</span></div> -->
         <!-- <div class="hud__item">Daily best: <span id="hudDailyBest">0:00</span></div> -->
         <!-- <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms | Sim: <span id="hudSimHz">0</span>Hz</div> -->
-            <div class="hud__title">make-your-game</div>
-        </header>
+        <div class="hud__title">make-your-game</div>
+    </header>
 
     <main id="gameRoot" aria-label="Game">
         <section id="board" aria-label="Tetris Board">
             <aside id="sidebar" aria-label="Sidebar">
+				<div id="holdPreview" class="next-preview" aria-label="piece on Hold preview"></div>
                 <div id="nextPreview" class="next-preview" aria-label="Next piece preview"></div>
                 <div id="sidebarStats" class="sidebar__stats">
                     <div class="sidebar__stat sidebar__stat--score">

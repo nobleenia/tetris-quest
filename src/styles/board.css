@@ -55,7 +55,13 @@
   padding-top:8px;
 }
 
-.next-preview{ width:92px; height:92px; display:flex; align-items:center; justify-content:center; }
+.next-preview { 
+	width:92px;
+	height:92px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+}
 
 .sidebar__stats{ display:flex; flex-direction:column; gap:12px; margin-top:6px; color:#cbd5e1 }
 .sidebar__stat{ font-size:15px; line-height:1.25; display:flex; align-items:center; gap:8px; color:#dbeafe }
