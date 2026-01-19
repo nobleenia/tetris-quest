@@ -1,6 +1,7 @@
 import { createInitialState, resetGame } from './engine/state.js';
 import { createLoop } from './engine/loop.js';
 import { createInput } from './engine/input.js';
+import { createControls } from './engine/controls.js';
 import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM } from './ui/dom.js';
@@ -11,7 +12,7 @@ import { initQueue, spawnFromQueue } from "./game/spawn.js";
 import { canPlace, buildNextBoard } from "./game/board.js";
 import { countHoles } from "./game/board.js";
 import { lockActivePiece } from "./game/lock.js";
-import { tryRotateCW } from "./game/rotate.js";
+import { tryRotateCW, tryRotateCCW } from "./game/rotate.js";
 import { clearFullLines } from "./game/lines.js";
 import { addLineClearScore } from "./game/score.js";
 import { tryHold } from "./game/hold.js";
@@ -22,6 +23,8 @@ import { loadDailyBestSec, updateDailyBest } from "./game/dailyBest.js";
 // Phase 1 boot
 const state = createInitialState();
 const input = createInput();
+const controls = createControls(input);
+
 
 // HUD (timer/score/lives + perf)
 const hud = createHUD();
@@ -99,32 +102,46 @@ bindPauseUI({
     },
 });
 
-// Toggle Pause with Escape (input module tracks keys; we just need to react here)
-window.addEventListener("keydown", (e) => {
-    if (e.code === "Escape") {
-        e.preventDefault();
-        state.paused = !state.paused;
-    }
-});
 
-// Spawn initial piece
-// spawnFromQueue(state);
+//--------------------------------------------------
+//---New CONTROLS-----------------------------------
+controls.update();
 
-// Simple key edge detection (rookie-friendly)
-let prevLeft = false;
-let prevRight = false;
+// Pause
+if (controls.pauseToggle()) {
+	state.paused = !state.paused;
+}
 
-// function demoFillNextBoard(t) {
-//     // This proves diff rendering works and paints are minimal.
-//     state.nextBoard.fill(0);
+// Déplacements horizontaux
+if (state.active) {
+	if (controls.moveLeftOnce()) tryMove(state, -1, 0);
+	if (controls.moveRightOnce()) tryMove(state, 1, 0);
+}
 
-//     const idx = Math.floor((t * 10) % state.nextBoard.length);
-//     state.nextBoard[idx] = 1;
-// }
+// Rotations
+if (controls.rotateCW()) tryRotateCW(state);
+if (controls.rotateCCW()) tryRotateCCW(state); // Counter Clock-Wise
 
-let prevRotate = false; // for rotation key edge detection
+// Hard drop
+if (controls.hardDrop()) {
+	// ton code de hard drop ici
+}
 
-let prevHold = false;
+// Soft drop
+const softDrop = controls.softDrop();
+const base = gravityIntervalFromPressure(state);
+const interval = softDrop ? base * 0.08 : base;
+
+// Hold
+if (controls.hold()) {
+	const didHold = tryHold(state);
+	if (didHold && !state.active) {
+		const ok = spawnFromQueue(state);
+		if (!ok) handleTopOut(state);
+	}
+}
+//--------------------------------------------------
+
 
 // Fixed simulation step for 60Hz gameplay logic
 const SIM_STEP = 1 / 60;

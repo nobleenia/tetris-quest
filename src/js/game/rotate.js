@@ -32,3 +32,34 @@ export function tryRotateCW(state) {
 
   return false;
 }
+
+
+export function tryRotateCCW(state) {
+	const a = state.active;
+	if (!a) return false;
+
+	const nextRot = (a.rot + 3) & 3; // équivalent à -1 mod 4
+
+	for (const dx of KICKS) {
+		const nx = a.x + dx;
+		const ny = a.y;
+
+		const ok = canPlace(
+		state.lockedBoard,
+		state.cols,
+		state.rows,
+		a.id,
+		nextRot,
+		nx,
+		ny
+		);
+
+		if (ok) {
+		a.rot = nextRot;
+		a.x = nx;
+		return true;
+		}
+	}
+
+	return false;
+}
