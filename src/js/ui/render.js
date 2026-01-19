@@ -42,24 +42,33 @@ export function renderPreview(cellsObj, pieceId, rot) {
   const v = PIECE_VALUE[pieceId];
   const blocks = PIECE_OFFSETS && PIECE_OFFSETS[pieceId] ? PIECE_OFFSETS[pieceId][rot] : getBlocks(pieceId, rot);
 
-  // Map piece blocks into preview grid
+  // Collect block coords into an array for bounding-box centering
+  const pts = [];
   if (blocks instanceof Int8Array) {
-    for (let i = 0; i < blocks.length; i += 2) {
-      const dx = blocks[i], dy = blocks[i + 1];
-      const x = dx;
-      const y = dy;
-      if (x < 0 || x >= size || y < 0 || y >= size) continue;
-      const idx = y * size + x;
-      cells[idx].className = CLASS_FOR_VALUE[v];
-    }
+    for (let i = 0; i < blocks.length; i += 2) pts.push([blocks[i], blocks[i + 1]]);
   } else {
-    for (let i = 0; i < blocks.length; i++) {
-      const dx = blocks[i][0], dy = blocks[i][1];
-      const x = dx;
-      const y = dy;
-      if (x < 0 || x >= size || y < 0 || y >= size) continue;
-      const idx = y * size + x;
-      cells[idx].className = CLASS_FOR_VALUE[v];
-    }
+    for (let i = 0; i < blocks.length; i++) pts.push([blocks[i][0], blocks[i][1]]);
+  }
+
+  // Compute bounding box
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const [dx, dy] of pts) {
+    if (dx < minX) minX = dx;
+    if (dy < minY) minY = dy;
+    if (dx > maxX) maxX = dx;
+    if (dy > maxY) maxY = dy;
+  }
+  const bw = maxX - minX + 1;
+  const bh = maxY - minY + 1;
+
+  const offsetX = Math.floor((size - bw) / 2) - minX;
+  const offsetY = Math.floor((size - bh) / 2) - minY;
+
+  for (const [dx, dy] of pts) {
+    const x = dx + offsetX;
+    const y = dy + offsetY;
+    if (x < 0 || x >= size || y < 0 || y >= size) continue;
+    const idx = y * size + x;
+    cells[idx].className = CLASS_FOR_VALUE[v];
   }
 }

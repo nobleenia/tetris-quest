@@ -12,19 +12,21 @@
 </head>
 <body>
     <header id="hud" aria-label="HUD">
-        <div class="hud__item">Time: <span id="hudTime">0.0</span></div>
-        <div class="hud__item">Score: <span id="hudScore">0</span></div>
-        <div class="hud__item">Lives: <span id="hudLives">3</span></div>
-        <div class="hud__item">Pressure: <span id="hudPressure">0%</span></div>
-        <div class="hud__item">Daily best: <span id="hudDailyBest">0:00</span></div>
-        <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms | Sim: <span id="hudSimHz">0</span>Hz</div>
-    </header>
+        <!-- <div class="hud__item">Time: <span id="hudTime">0.0</span></div> -->
+        <!-- <div class="hud__item">Score: <span id="hudScore">0</span></div> -->
+        <!-- <div class="hud__item">Lives: <span id="hudLives">3</span></div> -->
+        <!-- <div class="hud__item">Pressure: <span id="hudPressure">0%</span></div> -->
+        <!-- <div class="hud__item">Daily best: <span id="hudDailyBest">0:00</span></div> -->
+        <!-- <div class="hud__item hud__perf">FPS: <span id="hudFps">0</span> | Frame: <span id="hudMs">0</span>ms | Sim: <span id="hudSimHz">0</span>Hz</div> -->
+            <div class="hud__title">make-your-game</div>
+        </header>
 
     <main id="gameRoot" aria-label="Game">
         <section id="board" aria-label="Tetris Board">
             <aside id="sidebar" aria-label="Sidebar">
                 <div id="nextPreview" class="next-preview" aria-label="Next piece preview"></div>
                 <div id="sidebarStats" class="sidebar__stats">
+                    <div class="sidebar__stat">Score: <span id="sidebarScore">0</span></div>
                     <div class="sidebar__stat">Lives: <span id="sidebarLives">3</span></div>
                     <div class="sidebar__stat">Pressure: <span id="sidebarPressureSide">0%</span></div>
                     <div class="sidebar__stat">Time: <span id="sidebarTime">0.0</span></div>

@@ -55,8 +55,9 @@
   justify-content: center;
 }
 
-.sidebar__stats { display:flex; flex-direction:column; gap:8px; margin-top:4px; color: #cbd5e1 }
-.sidebar__stat { font-size: 13px; }
+.sidebar__stats { display:flex; flex-direction:column; gap:10px; margin-top:6px; color: #cbd5e1 }
+.sidebar__stat { font-size: 15px; line-height:1.2; }
+.sidebar__stat strong { font-weight:700; }
 
 .preview__grid {
   display: grid;

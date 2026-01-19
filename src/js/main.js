@@ -44,6 +44,7 @@ const previewDOM = createPreviewDOM({ previewEl, size: 4 });
 const sidebarLivesEl = document.querySelector('#sidebarLives');
 const sidebarPressureSideEl = document.querySelector('#sidebarPressureSide');
 const sidebarTimeEl = document.querySelector('#sidebarTime');
+const sidebarScoreEl = document.querySelector('#sidebarScore');
 
 // Home overlay / start flow
 const homeOverlay = document.querySelector('#homeOverlay');
@@ -261,6 +262,7 @@ const loop = createLoop({
         hud.setScore(state.score);
         hud.setLives(state.lives);
         hud.setPressure(state.pressure);
+        if (sidebarScoreEl) sidebarScoreEl.textContent = String(state.score);
         if (sidebarLivesEl) sidebarLivesEl.textContent = String(state.lives);
         if (sidebarPressureSideEl) sidebarPressureSideEl.textContent = `${Math.round(state.pressure)}%`;
         if (sidebarTimeEl) sidebarTimeEl.textContent = state.elapsedSec.toFixed(1);
