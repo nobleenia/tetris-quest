@@ -1,29 +1,22 @@
 export function createHUD() {
-    const elTime = document.querySelector("#hudTime");
-    const elScore = document.querySelector("#hudScore");
-    const elLives = document.querySelector("#hudLives");
+    // Header is simplified; stats are shown in the sidebar. We keep overlays here.
     const elFps = document.querySelector("#hudFps");
     const elMs = document.querySelector("#hudMs");
-    const elSim = document.querySelector("#hudSimHz");
-    const elPressure = document.querySelector("#hudPressure");
     const elDailyBest = document.querySelector("#hudDailyBest");
     const pauseOverlay = document.querySelector("#pauseOverlay");
     const gameOverOverlay = document.querySelector("#gameOverOverlay");
     const elGameOverScore = document.querySelector("#gameOverScore");
 
     return {
-        setTime(sec) { elTime.textContent = sec.toFixed(1); },
-        setScore(n) { elScore.textContent = String(n); },
-        setLives(n) { elLives.textContent = String(n); },
-        setPerf(fps, ms) {
-            elFps.textContent = String(fps);
-            elMs.textContent = ms.toFixed(2);
-        },
-        setSimHz(n) { if (elSim) elSim.textContent = String(n); },
-        setPressure(pct) {
-            elPressure.textContent = `${Math.round(pct)}%`;
-        },
+        // Sidebar shows the stats; these are kept as no-ops to avoid errors from callers.
+        setTime() {},
+        setScore() {},
+        setLives() {},
+        setPerf() {},
+        setSimHz() {},
+        setPressure() {},
         setDailyBest(sec) {
+            if (!elDailyBest) return;
             const s = Math.max(0, Math.floor(sec));
             const m = Math.floor(s / 60);
             const r = s % 60;
