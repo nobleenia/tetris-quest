@@ -1,5 +1,6 @@
 import { indexOf } from "./board.js";
 import { flashTetris } from "../ui/tetrisflash.js";
+import { burstParticles } from "../ui/particles.js";
 
 
 // Returns number of cleared lines
@@ -37,6 +38,7 @@ export function clearFullLines(state) {
 
 	if (cleared === 4) {
 		flashTetris();
+		burstParticles();
 	}
 
 	// Fill remaining rows at the top with 0
