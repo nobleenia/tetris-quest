@@ -6,33 +6,33 @@ import { reducePressureOnClear } from "./pressure.js";
 import { spawnFromQueue } from "./spawn.js";
 import { handleTopOut } from "./lives.js";
 
-// tryMove est dans main.js, donc on le reçoit en paramètre
+
 export function hardDrop(state, tryMove, hud) {
     if (!state.active) return;
 
-    // 1. Descendre jusqu'à collision
+    // 1. Descend until collision
     while (tryMove(state, 0, 1)) {
-        // avance tant que possible
+        // while possible
     }
 
-    // 2. Compter les trous avant lock (pour la règle "misplaced")
+    // 2. Count holes before lock (for "misplaced" rule)
     const holesBefore = countHoles(state.lockedBoard, state.cols, state.rows);
 
-    // 3. Verrouiller la pièce
+    // 3. Lock the piece
     lockActivePiece(state);
 
-    // 4. Clear des lignes
+    // 4. Clear lines
     const cleared = clearFullLines(state);
     addLineClearScore(state, cleared);
     reducePressureOnClear(state, cleared);
 
-    // 5. Reset du hold
+    // 5. Reset 'hold'
     state.holdUsed = false;
 
-    // 6. Spawn de la prochaine pièce
+    // 6. Spawn next piece
     const ok = spawnFromQueue(state);
 
-    // 7. Règle "misplaced"
+    // 7. "misplaced" rule
     if (state.misplacedPlacementRule) {
         const holesAfter = countHoles(state.lockedBoard, state.cols, state.rows);
         if (holesAfter > holesBefore) {

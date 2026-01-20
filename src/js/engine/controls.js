@@ -1,108 +1,99 @@
 
 export function createControls(input) {
-    /*let prev = {
-        left: false,
-        right: false,
-        rotateCW: false,
-        rotateCCW: false,
-        hardDrop: false,
-        hold: false,
-        pause: false,
-    };*/
 	const DAS = 0.15; // delay before repetition (en secondes)
 	const ARR = 0.05; // interval between repetitions (en secondes) 
-	let leftState = { held: false, timer: 0 };
-	let rightState = { held: false, timer: 0 };
-
-    return {
-		update(dt) { 
-			// LEFT
-			if (input.isDown("ArrowLeft")) {
-				if (!leftState.held) {
-					leftState.held = true;
-					leftState.timer = DAS;
-				} else {
-					leftState.timer -= dt;
-				}
-			} else {
-				leftState.held = false;
+	const left = { held: false, timer: 0 };
+	const right = { held: false, timer: 0 };
+	
+	function startHold(state) {
+		state.held = true;
+		state.timer = DAS;
+	}
+	
+	function release(state) {
+		state.held = false;
+		state.timer = 0;
+	}
+	
+	function updateDirection(dt, isDown, state) {
+		if (isDown) {
+			if (!state.held) startHold(state);
+			else state.timer -= dt;
+		} else {
+			release(state);
+		}
+	}
+	
+	function shouldMove(state) {
+		if (!state.held) return false;
+		
+		// Firts press instantly
+		if (state.timer === DAS) return true;
+		
+		// Repetition
+		if (state.timer <= 0) {
+			state.timer += ARR;
+			return true;
+		}
+		return false;
+	}
+	
+	return {
+		update(dt) {
+			const leftDown = 
+			input.isDown("ArrowLeft") || input.isDown("KeyA") || 
+			input.isPressed("ArrowLeft") || input.isPressed("KeyA");
+			
+			const rightDown = 
+			input.isDown("ArrowRight") || input.isDown("KeyD") || 
+			input.isPressed("ArrowRight") || input.isPressed("KeyD");
+			
+			// if both directions are triggered, block the movement:
+			if (leftDown && rightDown) {
+					release(left);
+					release(right);
+					return;
 			}
 			
-			// RIGHT
-			if (input.isDown("ArrowRight")) {
-				if (!rightState.held) {
-					rightState.held = true;
-					rightState.timer = DAS;
-				} else {
-					rightState.timer -= dt;
-				}
-			} else {
-				rightState.held = false;
-			}
+			updateDirection(dt, leftDown, left);
+			updateDirection(dt, rightDown, right);
 		}, 
 		
-		moveLeft(dt) {
-			if (!input.isDown("ArrowLeft")) return false;
-			// first keydown
-			if (leftState.timer === DAS) return true;
-			// Repetition
-			if (leftState.timer <= 0) {
-				leftState.timer += ARR;
-				return true;
-			}
-			return false;
+		moveLeft() {
+			return shouldMove(left);
 		}, 
 		
-		moveRight(dt) {
-			if (!input.isDown("ArrowRight")) return false;
-			
-			if (rightState.timer === DAS) return true;
-			
-			if (rightState.timer <= 0) {
-				rightState.timer += ARR;
-				return true;
-			}
-			return false;
-		},
-
-        softDrop() {
-            return input.isDown("ArrowDown");
-        },
-
-        hardDrop() {
-            const now = input.isPressed("ArrowUp");
-            return now;
-        },
-
-        rotateCW() {
-            const now = input.isPressed("Numpad3") || input.isPressed("KeyH");
-            return now;
-        },
-
-        rotateCCW() {
-            const now = input.isPressed("Numpad0") || input.isPressed("KeyB");
-            return now;
-        },
-
-        hold() {
-            /*const now = input.isPressed("KeyC") || input.isPressed("ControlRight");
-            return now;*/
-			const pressed = input.isPressed("KeyC") || input.isPressed("ControlRight");
+		moveRight() {
+			return shouldMove(right);
+		}, 
+		
+		softDrop() {
+			return input.isDown("ArrowDown") || input.isDown("KeyS");
+		}, 
+		
+		hardDrop() {
+			return input.isPressed("ArrowUp") || input.isPressed("KeyW");
+		}, 
+		
+		rotateCW() {
+			return input.isPressed("Numpad3") || input.isPressed("KeyT");
+		}, 
+		
+		rotateCCW() {
+			return input.isPressed("Numpad0") || input.isPressed("KeyF");
+		}, 
+		
+		hold() {
+			const pressed = input.isPressed("KeyQ") || input.isPressed("ControlRight");
 			if (pressed) {
-				input.consume("KeyC"); 
+				input.consume("KeyQ");
 				input.consume("ControlRight");
 			}
 			return pressed;
-        },
-
-		/*resetHold() {
-			this._holdPressed = false;
-			this._holdConsumed = true;
-		},*/
-
-        pauseToggle() {
-            const now = input.isPressed("Space") || input.isPressed("Escape");
-            return now;
-        }
-    };
+		}, 
+		
+		pauseToggle() {
+			return input.isPressed("Space") || input.isPressed("Escape");
+		}
+	};
 }
