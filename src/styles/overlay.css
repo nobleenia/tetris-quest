@@ -37,3 +37,38 @@
   background: #26304d;
 }
 .btn:hover { filter: brightness(1.05); }
+
+/*#region*MARK: Tetris Flash Effect
+*/
+#tetris-flash {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(255, 255, 255, 0.5);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease-out;
+	z-index: 9999;
+}
+
+#tetris-flash img {
+	width: 40%;
+	opacity: 0.9;
+	transform: scale(0.9);
+	transition: transform 0.15s ease-out;
+}
+
+#tetris-flash.active {
+    opacity: 1;
+}
+
+#tetris-flash.active img {
+	transform: scale(1);
+}
+
+#tetris-flash.hidden {
+	display: none;
+}
+/*#endregion*/
