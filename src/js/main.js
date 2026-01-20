@@ -2,6 +2,7 @@ import { createInitialState, resetGame } from './engine/state.js';
 import { createLoop } from './engine/loop.js';
 import { createInput } from './engine/input.js';
 import { createControls } from './engine/controls.js';
+import { applyStyle } from "./ui/stylemanager.js";
 import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM } from './ui/dom.js';
@@ -61,29 +62,32 @@ let prevPressureHigh = false;
 
 // Home overlay / start flow
 const homeOverlay = document.querySelector('#homeOverlay');
-const btnStart = document.querySelector('#btnStart');
+
+document.querySelectorAll('.style-btn').forEach(btn => {
+	btn.addEventListener('click', () => {
+		const style = btn.dataset.style;
+		applyStyle(style);
+
+		// Read config
+		state.misplacedPlacementRule = !!cfgMisplaced.checked;
+
+		// Init queue + spawn
+		initQueue(state);
+		const ok = spawnFromQueue(state);
+		if (!ok) {
+			const best = updateDailyBest(state);
+			hud.setDailyBest(best);
+			handleTopOut(state);
+		}
+
+		// Hide overlay + unpause
+		homeOverlay.classList.add('hidden');
+		state.paused = false;
+	});
+});
+
 const cfgMisplaced = document.querySelector('#cfgMisplacedRule');
 
-// Start paused until user clicks Start
-state.paused = true;
-
-btnStart.addEventListener('click', () => {
-    // Read config
-    state.misplacedPlacementRule = !!cfgMisplaced.checked;
-
-    // initialize queue and spawn first piece
-    initQueue(state);
-    const ok = spawnFromQueue(state);
-    if (!ok) {
-        const best = updateDailyBest(state);
-        hud.setDailyBest(best);
-        handleTopOut(state);
-    }
-
-    // Hide home overlay and unpause simulation
-    if (homeOverlay) homeOverlay.classList.add('hidden');
-    state.paused = false;
-});
 
 // Board rendering (diff-based)
 // Pause overlay

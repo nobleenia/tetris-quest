@@ -6,17 +6,31 @@
 * { box-sizing: border-box; }
 
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #0b0f19;
-  color: #e9eefc;
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  user-select: none;
+	margin: 0;
+	font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+	background: #0b0f19;
+	place-items: center;
+	min-height: 100vh;
+	user-select: none;
+}
+body.style-modern {
+	background: #0b0f19;
+	color: #e9eefc;
+}
+body.style-gameboy {
+	--gb-dark: #0f380f;
+	--gb-mid: /*#306230*/rgba(48, 98, 48, .7);
+	--gb-light: #8bac0f;
+	--gb-pale: #9bbc0f;
+	background: var(--gb-pale);
+	color: var(--gb-dark);
+	image-rendering: pixelated;
+	filter: contrast(1.2) brightness(0.9);
 }
 
+body.style-gameboy #game-container { transform: scale(1.02); }
+
 #gameRoot {
-  width: var(--w);
-  height: var(--h);
+	width: var(--w);
+	height: var(--h);
 }

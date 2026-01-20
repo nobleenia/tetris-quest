@@ -1,58 +1,70 @@
 :root{
-  --bg-dark: #071023;
-  --panel-top: rgba(20,36,64,0.95);
-  --panel-bottom: rgba(8,16,36,0.95);
-  --muted: rgba(255,255,255,0.09);
-  --accent: #6ee7b7;
-  --accent-2: #ffd166;
+	--bg-dark: #071023;
+	--panel-top: rgba(20,36,64,0.95);
+	--panel-bottom: rgba(8,16,36,0.95);
+	--muted: rgba(255,255,255,0.09);
+	--accent: #6ee7b7;
+	--accent-2: #ffd166;
 }
 
-#board{
-  display:flex;
-  align-items:center;
-  gap:20px;
-  width:fit-content;
-  height:auto;
-  border-radius:14px;
-  overflow:hidden;
-  position:relative;
-  background: linear-gradient(180deg,var(--panel-top),var(--panel-bottom));
-  box-shadow:0 20px 80px rgba(0,0,0,0.6), inset 0 40px 120px rgba(10,20,40,0.45);
-  contain: layout paint;
-  padding:22px 28px;
+#board {
+	display:flex;
+	align-items:center;
+	gap:20px;
+	width:fit-content;
+	height:auto;
+	border-radius:14px;
+	overflow:hidden;
+	position:relative;
+	contain: layout paint;
+	padding:22px 28px;
+}
+body.style-modern #board {
+	background: linear-gradient(180deg,var(--panel-top),var(--panel-bottom));
+	box-shadow:0 20px 80px rgba(0,0,0,0.6), inset 0 40px 120px rgba(10,20,40,0.45);
+}
+body.style-gameboy #board {
+	background: var(--gb-light);
+	border: 4px solid var(--gb-dark);
 }
 
-.board__grid{
-  display:grid;
-  grid-template-columns: repeat(10,26px);
-  grid-template-rows: repeat(20,26px);
-  gap:3px;
-  padding:16px;
-  border-radius:12px;
-  background: rgba(255,255,255,0.02);
+.board__grid {
+	display:grid;
+	grid-template-columns: repeat(10,26px);
+	grid-template-rows: repeat(20,26px);
+	gap:3px;
+	padding:16px;
+	border-radius:12px;
+	background: rgba(255,255,255,0.02);
 }
 
 .cell{
-  width:26px;
-  height:26px;
-  border-radius:6px;
-  background: rgba(255,255,255,0.02);
-  border:1px solid var(--muted);
-  box-shadow: inset 0 -6px 8px rgba(0,0,0,0.35);
-  transition: background-color 120ms linear, transform 120ms linear;
+	width:26px;
+	height:26px;
+}
+body.style-modern .cell{
+	border-radius:6px;
+	border:1px solid var(--muted);
+	background: rgba(255,255,255,0.02);
+	box-shadow: inset 0 -6px 8px rgba(0,0,0,0.35);
+	transition: background-color 120ms linear, transform 120ms linear;
+}
+body.style-gameboy .cell {
+	background: var(--gb-mid);
+	border-color: var(--gb-dark);
 }
 
 /* Layout for board + sidebar */
 #gameRoot{ display:flex; justify-content:center; }
 
 #sidebar{
-  width:110px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  gap:14px;
-  padding-top:8px;
+	width:110px;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:flex-start;
+	gap:14px;
+	padding-top:8px;
 }
 
 .next-preview { 
@@ -77,11 +89,11 @@
 .preview__grid{ display:grid; grid-template-columns: repeat(4,12px); grid-template-rows: repeat(4,12px); gap:2px }
 .preview__grid .cell{ width:12px; height:12px; border-radius:3px }
 
-@media (max-width:740px){
-  .game__container{ flex-direction:column; gap:12px }
-  #sidebar{ width:auto }
-  .next-preview{ order:2 }
-  #board{ padding:18px }
+@media (max-width:740px) {
+	.game__container{ flex-direction:column; gap:12px }
+	#sidebar{ width:auto }
+	.next-preview{ order:2 }
+	#board{ padding:18px }
 }
 
 /* cell states */
@@ -92,14 +104,27 @@
 .cell--5{ background: rgba(255,159,67,0.94) }
 .cell--6{ background: rgba(249,115,22,0.94) }
 .cell--7{ background: rgba(129,140,248,0.94) }*/
-/* Tetris Guideline colors */
-.cell--1 { background: rgb(0, 255, 255, 0.94) } /* I - cyan */
-.cell--2 { background: rgb(255, 255, 0, 0.94) } /* O - yellow */
-.cell--3 { background: rgb(128, 0, 128, 0.94) } /* T - purple */
-.cell--4 { background: rgb(0, 255, 0, 0.94) } /* S - green */
-.cell--5 { background: rgb(255, 0, 0, 0.94) } /* Z - red */
-.cell--6 { background: rgb(0, 0, 255, 0.94) } /* J - blue */
-.cell--7 { background: rgb(255, 165, 0, 0.94) } /* L - orange */
+/* MODERN Tetris Guideline colors */
+body.style-modern .cell--1 { background: rgb(0, 255, 255, 0.94) } /* I - cyan */
+body.style-modern .cell--2 { background: rgb(255, 255, 0, 0.94) } /* O - yellow */
+body.style-modern .cell--3 { background: rgb(128, 0, 128, 0.94) } /* T - purple */
+body.style-modern .cell--4 { background: rgb(0, 255, 0, 0.94) } /* S - green */
+body.style-modern .cell--5 { background: rgb(255, 0, 0, 0.94) } /* Z - red */
+body.style-modern .cell--6 { background: rgb(0, 0, 255, 0.94) } /* J - blue */
+body.style-modern .cell--7 { background: rgb(255, 165, 0, 0.94) } /* L - orange */
+
+/* GAMEBOY OVERRIDES */
+body.style-gameboy .cell--1,
+body.style-gameboy .cell--2,
+body.style-gameboy .cell--3,
+body.style-gameboy .cell--4,
+body.style-gameboy .cell--5,
+body.style-gameboy .cell--6,
+body.style-gameboy .cell--7 {
+	background: var(--gb-dark) !important;
+	border-color: var(--gb-mid) !important;
+	box-shadow: none !important;
+}
 
 
 /* small animations */
