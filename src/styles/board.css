@@ -107,11 +107,11 @@ body.style-gameboy .cell {
 /* MODERN Tetris Guideline colors */
 body.style-modern .cell--1 { background: rgb(0, 255, 255, 0.94) } /* I - cyan */
 body.style-modern .cell--2 { background: rgb(255, 255, 0, 0.94) } /* O - yellow */
-body.style-modern .cell--3 { background: rgb(128, 0, 128, 0.94) } /* T - purple */
+body.style-modern .cell--3 { background: rgb(160, 0, 192, 0.94) } /* T - purple */
 body.style-modern .cell--4 { background: rgb(0, 255, 0, 0.94) } /* S - green */
 body.style-modern .cell--5 { background: rgb(255, 0, 0, 0.94) } /* Z - red */
 body.style-modern .cell--6 { background: rgb(0, 0, 255, 0.94) } /* J - blue */
-body.style-modern .cell--7 { background: rgb(255, 165, 0, 0.94) } /* L - orange */
+body.style-modern .cell--7 { background: rgb(255, 160, 0, 0.94) } /* L - orange */
 
 /* GAMEBOY OVERRIDES */
 body.style-gameboy .cell--1,
