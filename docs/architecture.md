@@ -1,8 +1,13 @@
 ## 🏗️ Project Architecture
 
 ```
-src
+index.html
+│
+src/
+	│
 	├── js/
+	│	├── main.js
+	│	│
 	│	├── engine/
 	│	│	├── constants.js
 	│	│	├── controls.js
@@ -26,20 +31,20 @@ src
 	│	│	├── score.js
 	│	│	└── spawn.js
 	│	│
-	│	├── ui/
-	│	│	├── dom.js
-	│	│	├── hud.js
-	│	│	├── pause.js
-	│	│	└── render.js
-	│	│
-	│	└── main.js
+	│	└── ui/
+	│		├── dom.js
+	│		├── hud.js
+	│		├── lifeflash.js
+	│		├── particles.js 
+	│		├── pause.js
+	│		├── render.js
+	│		├── stylemanager.js
+	│		└── tetrisflash.js
 	│
-	├── styles/
-	│	├── base.css
-	│	├── board.css
-	│	├── hud.css
-	│	└── overlay.css
-	│
-	└── index.html
+	└── styles/
+		├── base.css
+		├── board.css
+		├── hud.css
+		└── overlay.css
 
 ```

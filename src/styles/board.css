@@ -144,13 +144,13 @@ body.style-gameboy .cell--7 {
 }
 
 /* NEON */
-body.style-neon .cell--1 { background: #00eaff; box-shadow: 0 0 12px #00eaff; }
-body.style-neon .cell--2 { background: #ffe066; box-shadow: 0 0 12px #ffe066; }
-body.style-neon .cell--3 { background: #b400ff; box-shadow: 0 0 12px #b400ff; }
-body.style-neon .cell--4 { background: #00ff85; box-shadow: 0 0 12px #00ff85; }
-body.style-neon .cell--5 { background: #ff007c; box-shadow: 0 0 12px #ff007c; }
-body.style-neon .cell--6 { background: #0066ff; box-shadow: 0 0 12px #0066ff; }
-body.style-neon .cell--7 { background: #ff8c00; box-shadow: 0 0 12px #ff8c00; }
+body.style-neon .cell--1 { background: #00eaff; box-shadow: 0 0 36px #00eaff; }
+body.style-neon .cell--2 { background: #ffe066; box-shadow: 0 0 36px #ffe066; }
+body.style-neon .cell--3 { background: #b400ff; box-shadow: 0 0 36px #b400ff; }
+body.style-neon .cell--4 { background: #00ff85; box-shadow: 0 0 36px #00ff85; }
+body.style-neon .cell--5 { background: #ff007c; box-shadow: 0 0 36px #ff007c; }
+body.style-neon .cell--6 { background: #0066ff; box-shadow: 0 0 36px #0066ff; }
+body.style-neon .cell--7 { background: #ff8c00; box-shadow: 0 0 36px #ff8c00; }
 
 /* VAPORWAVE */
 body.style-vaporwave .cell--1 { background: #8ecbff; }
