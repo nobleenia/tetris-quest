@@ -27,6 +27,15 @@ body.style-gameboy {
 	image-rendering: pixelated;
 	filter: contrast(1.2) brightness(0.9);
 }
+body.style-neon {
+	background: radial-gradient(circle at center, #0a0a1a 0%, #050510 80%);
+	color: #e0e8ff;
+}
+body.style-vaporwave {
+	background: linear-gradient(160deg, #ff9ecb 0%, #c59cff 40%, #8ecbff 100%);
+	color: #2a1f3d;
+	filter: contrast(1.1) brightness(1.05);
+}
 
 body.style-gameboy #game-container { transform: scale(1.02); }
 

@@ -53,6 +53,17 @@ body.style-gameboy .cell {
 	background: var(--gb-mid);
 	border-color: var(--gb-dark);
 }
+body.style-neon .cell {
+	background: rgba(255,255,255,0.05);
+	border: 1px solid rgba(255,255,255,0.1);
+	box-shadow: 0 0 6px rgba(0,255,255,0.2);
+}
+body.style-vaporwave .cell {
+	background: rgba(0,0,0,.2);
+	border: 1px solid rgba(128,128,128,.2);
+	border-radius: 4px;
+}
+
 
 /* Layout for board + sidebar */
 #gameRoot{ display:flex; justify-content:center; }
@@ -65,6 +76,12 @@ body.style-gameboy .cell {
 	justify-content:flex-start;
 	gap:14px;
 	padding-top:8px;
+}
+body.style-gameboy #sidebar, 
+body.style-vaporwave #sidebar {
+	background-color: rgba(0,0,0,.2);
+	border-radius: 10px;
+	padding: 20px;
 }
 
 .next-preview { 
@@ -113,7 +130,7 @@ body.style-modern .cell--5 { background: rgb(255, 0, 0, 0.94) } /* Z - red */
 body.style-modern .cell--6 { background: rgb(0, 0, 255, 0.94) } /* J - blue */
 body.style-modern .cell--7 { background: rgb(255, 160, 0, 0.94) } /* L - orange */
 
-/* GAMEBOY OVERRIDES */
+/* GAMEBOY */
 body.style-gameboy .cell--1,
 body.style-gameboy .cell--2,
 body.style-gameboy .cell--3,
@@ -126,6 +143,23 @@ body.style-gameboy .cell--7 {
 	box-shadow: none !important;
 }
 
+/* NEON */
+body.style-neon .cell--1 { background: #00eaff; box-shadow: 0 0 12px #00eaff; }
+body.style-neon .cell--2 { background: #ffe066; box-shadow: 0 0 12px #ffe066; }
+body.style-neon .cell--3 { background: #b400ff; box-shadow: 0 0 12px #b400ff; }
+body.style-neon .cell--4 { background: #00ff85; box-shadow: 0 0 12px #00ff85; }
+body.style-neon .cell--5 { background: #ff007c; box-shadow: 0 0 12px #ff007c; }
+body.style-neon .cell--6 { background: #0066ff; box-shadow: 0 0 12px #0066ff; }
+body.style-neon .cell--7 { background: #ff8c00; box-shadow: 0 0 12px #ff8c00; }
+
+/* VAPORWAVE */
+body.style-vaporwave .cell--1 { background: #8ecbff; }
+body.style-vaporwave .cell--2 { background: #ffe8a3; }
+body.style-vaporwave .cell--3 { background: #c59cff; }
+body.style-vaporwave .cell--4 { background: #a8ffda; }
+body.style-vaporwave .cell--5 { background: #ff9ecb; }
+body.style-vaporwave .cell--6 { background: #6a7cff; }
+body.style-vaporwave .cell--7 { background: #ffb38a; }
 
 /* small animations */
 .pressure-pulse{ animation: pulse 1s infinite; }
