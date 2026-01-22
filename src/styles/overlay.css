@@ -48,6 +48,8 @@
 	align-items: center;
 	background-color: rgba(0, 0, 0, 0.2);
 	background-image: url("tetris-logo-flash.png");
+	background-position: center;
+	background-repeat: no-repeat;
 	background-size: contain;
 	opacity: 0;
 	pointer-events: none;
