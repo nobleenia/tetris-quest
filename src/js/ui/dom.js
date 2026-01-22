@@ -1,37 +1,60 @@
 export function createBoardDOM({ boardEl, cols = 10, rows = 20 }) {
-  // Create a container grid inside #board
-  const grid = document.createElement("div");
-  grid.className = "board__grid";
-  boardEl.appendChild(grid);
+	// Clear existing content 
+	boardEl.innerHTML = "";
 
-  const cellCount = cols * rows;
-  const cells = new Array(cellCount);
+	// Create a container grid inside #board
+	const grid = document.createElement("div");
+	grid.className = "board__grid";
+	grid.style.setProperty("--cols", cols);
+	grid.style.setProperty("--rows", rows);
+	boardEl.appendChild(grid);
 
-  // Create 200 divs once and store references
-  for (let i = 0; i < cellCount; i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    grid.appendChild(cell);
-    cells[i] = cell;
-  }
+	const cellCount = cols * rows;
+	const cells = new Array(cellCount);
 
-  return { cells, cols, rows, cellCount };
+	// Build all cells in a DocumentFragment (fast) 
+	const frag = document.createDocumentFragment();
+
+	// Create 200 divs once and store references
+	for (let i = 0; i < cellCount; i++) {
+		const cell = document.createElement("div");
+		cell.className = "cell";
+		cell.dataset.v = "0"; // initial empty
+		cells[i] = cell;
+		frag.appendChild(cell);
+	}
+	grid.appendChild(frag);
+
+	return { cells, cols, rows, cellCount };
 }
 
 export function createPreviewDOM({ previewEl, size = 4 }) {
-  // create a small square grid for preview (size x size)
-  const grid = document.createElement('div');
-  grid.className = 'preview__grid';
-  previewEl.appendChild(grid);
+	if (!previewEl) {
+		console.warn("createPreviewDOM: previewEl is null");
+		return { cells: [], size, cellCount: 0 };
+	}
+	// Clear existing content
+	previewEl.innerHTML = "";
 
-  const cellCount = size * size;
-  const cells = new Array(cellCount);
-  for (let i = 0; i < cellCount; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    grid.appendChild(cell);
-    cells[i] = cell;
-  }
+	// create a small square grid for preview (size x size)
+	const grid = document.createElement('div');
+	grid.className = 'preview__grid';
+	grid.style.setProperty("--size", size);
+	previewEl.appendChild(grid);
 
-  return { cells, size, cellCount };
+	const cellCount = size * size;
+	const cells = new Array(cellCount);
+
+	const frag = document.createDocumentFragment();
+
+	for (let i = 0; i < cellCount; i++) {
+		const cell = document.createElement('div');
+		cell.className = 'cell';
+		cell.dataset.v = "0";	
+		cells[i] = cell;
+		frag.appendChild(cell);
+	}
+	grid.appendChild(frag);
+
+	return { cells, size, cellCount };
 }

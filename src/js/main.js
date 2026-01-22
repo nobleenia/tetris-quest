@@ -33,7 +33,7 @@ const hud = createHUD();
 
 hud.setDailyBest(loadDailyBestSec());
 
-const boardEl = document.querySelector("#board");
+const boardEl = document.querySelector("#boardGrid");
 // createBoardDOM should use visibleRows only
 const boardDOM = createBoardDOM({ boardEl, cols: state.cols, rows: state.visibleRows });
 
