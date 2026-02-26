@@ -3,7 +3,9 @@
   "world": 1,
   "name": "Foundation",
   "theme": "modern",
+  "cssClass": "style-modern",
   "starsToUnlock": 0,
+  "description": "Learn the basics. Master stacking, clearing lines, and scoring.",
   "levels": [
     {
       "id": "1-1",

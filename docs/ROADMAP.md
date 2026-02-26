@@ -43,14 +43,15 @@
 ## Phase 3 — Progression, Map & Economy
 
 - [ ] Progress manager (src/systems/progress.js)
-- [ ] World map screen UI
+- [ ] World map screen UI (10 worlds)
 - [ ] Level briefing popup
 - [ ] Level complete / fail screens
 - [ ] Lives system (regeneration + purchase)
 - [ ] Currency system (coins)
 - [ ] Power-ups implementation
 - [ ] Shop screen
-- [ ] World 1: 20 levels with full configs
+- [ ] World 1 "Foundation": 20 levels with full configs
+- [ ] World 2 "Retro Land": 20 levels (piece-limited challenges)
 - [ ] Tutorial / onboarding overlays (levels 1-1 to 1-3)
 - [ ] Achievement system
 
@@ -58,22 +59,26 @@
 
 - [ ] Audio engine integration (Howler.js)
 - [ ] Sound effects (20+ SFX)
-- [ ] Background music (per world)
-- [ ] Particle system overhaul
+- [ ] Background music (per world — 12 tracks)
+- [ ] 6 new CSS world themes (deepsea, volcano, storm, arctic, cosmos, nexus)
+- [ ] Theme-per-world auto-switching system
+- [ ] Particle system overhaul (bubbles, embers, snow, lightning, stars)
 - [ ] Screen shake effects
 - [ ] Score popups
 - [ ] Haptic feedback (mobile)
 - [ ] Animations (spawn, clear, complete)
-- [ ] Theme system expansion (world-based unlocks)
 - [ ] Reduced motion mode
 
 ## Phase 5 — Content Expansion & Social
 
-- [ ] Worlds 2-5 level design (80 levels)
-- [ ] World 2: "Deep Sea" — ice blocks
-- [ ] World 3: "Volcano" — bomb blocks
-- [ ] World 4: "Storm" — dark blocks
-- [ ] World 5: "Cosmos" — gravity flip
+- [ ] World 3 "Coral Depths": 20 levels — ice blocks
+- [ ] World 4 "Neon District": 20 levels — speed/combo emphasis
+- [ ] World 5 "Molten Core": 20 levels — bomb blocks
+- [ ] World 6 "Dreamscape": 20 levels — dark blocks
+- [ ] World 7 "Thunderspire": 20 levels — stone blocks
+- [ ] World 8 "Frozen Peaks": 20 levels — gravity shifts
+- [ ] World 9 "Starfield": 20 levels — gravity flip
+- [ ] World 10 "The Nexus": 20 levels — all mechanics combined
 - [ ] Daily challenge system
 - [ ] Backend integration (Supabase)
 - [ ] Global leaderboards

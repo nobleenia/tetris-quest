@@ -116,15 +116,15 @@ Levels are JSON files, not code. The engine reads a config and adapts:
 
 ## File Index
 
-| Directory | Purpose |
-|---|---|
-| `src/engine/` | Core engine: game loop, input system, state, controls, constants |
-| `src/game/` | Game logic: board, pieces, scoring, spawning, rotation, etc. |
-| `src/ui/` | DOM creation, diff rendering, HUD, overlays, visual effects |
-| `src/scenes/` | Screen/scene management (planned) |
-| `src/systems/` | Cross-cutting: progress, audio, achievements (planned) |
-| `src/data/levels/` | Level JSON configs and schema |
-| `src/styles/` | CSS files |
-| `src/assets/` | Audio files, images |
-| `public/` | Static assets served as-is (icons, robots.txt) |
-| `docs/` | Documentation |
+| Directory          | Purpose                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| `src/engine/`      | Core engine: game loop, input system, state, controls, constants |
+| `src/game/`        | Game logic: board, pieces, scoring, spawning, rotation, etc.     |
+| `src/ui/`          | DOM creation, diff rendering, HUD, overlays, visual effects      |
+| `src/scenes/`      | Screen/scene management (planned)                                |
+| `src/systems/`     | Cross-cutting: progress, audio, achievements (planned)           |
+| `src/data/levels/` | Level JSON configs and schema                                    |
+| `src/styles/`      | CSS files                                                        |
+| `src/assets/`      | Audio files, images                                              |
+| `public/`          | Static assets served as-is (icons, robots.txt)                   |
+| `docs/`            | Documentation                                                    |

@@ -8,14 +8,14 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[1-5]-[0-9]{1,2}$",
-      "description": "Unique level identifier in 'world-level' format, e.g. '1-5'"
+      "pattern": "^([1-9]|10)-[0-9]{1,2}$",
+      "description": "Unique level identifier in 'world-level' format, e.g. '1-5', '10-20'"
     },
     "world": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 5,
-      "description": "World number (1-5)"
+      "maximum": 10,
+      "description": "World number (1-10)"
     },
     "level": {
       "type": "integer",
@@ -92,7 +92,7 @@
         "minInterval": {
           "type": "number",
           "minimum": 0.02,
-          "default": 0.10,
+          "default": 0.1,
           "description": "Fastest drop interval in seconds"
         },
         "pressureRate": {
@@ -157,7 +157,10 @@
           "stoneBlocks",
           "bombBlocks",
           "darkBlocks",
-          "gravityFlip"
+          "gravityFlip",
+          "gravityShift",
+          "comboMultiplier",
+          "pieceLimited"
         ]
       }
     },
@@ -167,7 +170,18 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["garbagePush", "risingTide", "lavaFlow", "blackout", "finalBoss"],
+          "enum": [
+            "garbagePush",
+            "pieceFamine",
+            "risingTide",
+            "speedDemon",
+            "lavaFlow",
+            "mirage",
+            "blackout",
+            "avalanche",
+            "zeroG",
+            "finalBoss"
+          ],
           "description": "Boss attack pattern"
         },
         "hp": {
