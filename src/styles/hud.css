@@ -1,20 +1,23 @@
 body.style-modern #hud {
-	width: var(--w);
-	display: flex;
-	justify-content: space-between;
-	gap: 12px;
-	margin-bottom: 10px;
-	font-size: 14px;
-	opacity: 0.95;
+  width: var(--w);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  opacity: 0.95;
 }
 body.style-gameboy #hud {
-	background: var(--gb-light);
-	border: 3px solid var(--gb-dark);
-	color: var(--gb-dark);
-	font-family: "Press Start 2P", monospace;	
-	font-size: 12px;
+  background: var(--gb-light);
+  border: 3px solid var(--gb-dark);
+  color: var(--gb-dark);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
 }
 
-
-.hud__item { white-space: nowrap; }
-.hud__perf { opacity: 0.8; }
+.hud__item {
+  white-space: nowrap;
+}
+.hud__perf {
+  opacity: 0.8;
+}

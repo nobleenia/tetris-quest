@@ -1,0 +1,45 @@
+import { PIECE_IDS } from './pieces.js';
+import { canPlace } from './board.js';
+
+// Simple random for now (Phase 3.5 we’ll replace with 7-bag RNG)
+export function randomPieceId() {
+  return PIECE_IDS[Math.floor(Math.random() * PIECE_IDS.length)];
+}
+
+// Ensure state.nextId is always set
+export function initQueue(state) {
+  if (!state.nextId) state.nextId = randomPieceId();
+}
+
+// Spawns using state.nextId, then rolls a new nextId
+export function spawnFromQueue(state) {
+  initQueue(state);
+
+  const pieceId = state.nextId;
+  state.nextId = randomPieceId();
+
+  const x = 3;
+  // spawn at top of hidden area so pieces can rotate into visible space
+  const y = state.hiddenRows || 0;
+
+  const candidate = { id: pieceId, rot: 0, x, y };
+
+  // If blocked, still set active (we’ll use this for top-out/lives later)
+  if (
+    !canPlace(
+      state.lockedBoard,
+      state.cols,
+      state.rows,
+      candidate.id,
+      candidate.rot,
+      candidate.x,
+      candidate.y,
+    )
+  ) {
+    state.active = candidate; // shows the failure visually
+    return false;
+  }
+
+  state.active = candidate;
+  return true;
+}
