@@ -9,15 +9,16 @@
 
 #board {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  width: fit-content;
-  height: auto;
+  gap: var(--gap-sm);
+  width: 100%;
+  max-width: calc(var(--board-w) + var(--gap-lg) * 2);
   border-radius: 14px;
   overflow: hidden;
   position: relative;
   contain: layout paint;
-  padding: 22px 28px;
+  padding: var(--gap-sm);
 }
 body.style-modern #board {
   background: linear-gradient(180deg, var(--panel-top), var(--panel-bottom));
@@ -31,8 +32,8 @@ body.style-gameboy #board {
 }
 
 #boardGrid {
-  width: min(70vw, 300px);
-  aspect-ratio: 10 / 20;
+  width: var(--board-w);
+  height: var(--board-h);
   position: relative;
 }
 
@@ -102,20 +103,40 @@ body.style-vaporwave .cell {
   border-radius: 4px;
 }
 
-/* Layout for board + sidebar */
+/* Layout for board + sidebar — mobile: column, desktop: row */
 #gameRoot {
-  display: flex;
-  justify-content: center;
-}
-
-#sidebar {
-  width: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
-  padding-top: 8px;
+}
+
+@media (orientation: landscape) and (min-width: 600px) {
+  #board {
+    flex-direction: row;
+    padding: var(--gap-md);
+  }
+}
+
+#sidebar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--gap-sm);
+  padding: var(--gap-sm) 0;
+}
+
+/* Landscape: sidebar becomes column beside board */
+@media (orientation: landscape) and (min-width: 600px) {
+  #sidebar {
+    width: 110px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    padding-top: 8px;
+  }
 }
 body.style-gameboy #sidebar,
 body.style-vaporwave #sidebar {
@@ -125,8 +146,8 @@ body.style-vaporwave #sidebar {
 }
 
 .next-preview {
-  width: 92px;
-  height: 92px;
+  width: clamp(48px, 12vw, 92px);
+  height: clamp(48px, 12vw, 92px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,19 +208,18 @@ body.style-vaporwave #sidebar {
 	border-radius:3px
 }*/
 
-@media (max-width: 740px) {
-  .game__container {
-    flex-direction: column;
-    gap: 12px;
+@media (max-width: 600px) {
+  .sidebar__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap-xs);
+    width: 100%;
   }
-  #sidebar {
-    width: auto;
-  }
-  .next-preview {
-    order: 2;
+  .sidebar__stat {
+    font-size: 13px;
   }
   #board {
-    padding: 18px;
+    padding: var(--gap-xs);
   }
 }
 

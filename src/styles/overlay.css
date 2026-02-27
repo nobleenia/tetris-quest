@@ -4,6 +4,8 @@
   display: grid;
   place-items: center;
   background: linear-gradient(180deg, rgba(1, 6, 12, 0.65), rgba(0, 0, 0, 0.6));
+  padding: var(--safe-top, 0) var(--safe-right, 0) var(--safe-bottom, 0) var(--safe-left, 0);
+  z-index: 100;
 }
 
 .hidden {
@@ -30,14 +32,16 @@
 
 .btn {
   width: 100%;
-  margin-top: 10px;
-  padding: 12px 14px;
+  margin-top: var(--gap-sm);
+  padding: 14px 16px;
   border-radius: 12px;
   border: 0;
   cursor: pointer;
   background: linear-gradient(90deg, #3b82f6, #7c3aed);
   color: white;
   font-weight: 700;
+  font-size: clamp(14px, 3vw, 16px);
+  min-height: 48px; /* touch target minimum */
 }
 
 .btn--secondary {

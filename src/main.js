@@ -17,6 +17,16 @@ import { createInitialState, resetGame, initializeVisibleViews } from './engine/
 import { createLoop } from './engine/loop.js';
 import { createInput } from './engine/input.js';
 import { createControls } from './engine/controls.js';
+import { createTouchInput } from './engine/touch.js';
+import { createViewport } from './engine/viewport.js';
+
+// --- Scenes ---
+import { createSceneManager } from './scenes/manager.js';
+import { createRouter } from './scenes/router.js';
+import { homeScene } from './scenes/home.js';
+import { mapScene } from './scenes/map.js';
+import { gameScene } from './scenes/game.js';
+import { resultsScene } from './scenes/results.js';
 
 // --- UI ---
 import { applyStyle } from './ui/stylemanager.js';
@@ -45,7 +55,27 @@ import { loadDailyBestSec, updateDailyBest } from './game/dailyBest.js';
 // ─── Boot ────────────────────────────────────────────────────────────
 const state = createInitialState();
 const input = createInput();
-const controls = createControls(input);
+
+// Touch input — attach to the game root for full-board gesture capture
+const gameRoot = document.querySelector('#gameRoot');
+const touch = gameRoot ? createTouchInput(gameRoot) : null;
+
+const controls = createControls(input, touch);
+
+// Viewport manager (orientation, wake lock, CSS vars)
+const viewport = createViewport();
+viewport.start();
+
+// Scene manager + router (wired but scenes run alongside legacy boot for now)
+const sceneCtx = { state, input, controls, touch, viewport };
+const sceneManager = createSceneManager({
+  scenes: [homeScene, mapScene, gameScene, resultsScene],
+  container: document.body,
+  ctx: sceneCtx,
+});
+const _router = createRouter(sceneManager);
+// Don't start router yet — legacy overlays still manage home/game transitions.
+// router.start() will be enabled in Phase 2 when overlays are migrated to scenes.
 
 // HUD (timer/score/lives + perf)
 const hud = createHUD();
@@ -232,6 +262,7 @@ const loop = createLoop({
       buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, state.active);
       simAcc -= SIM_STEP;
       input.endFrame();
+      if (touch) touch.endFrame();
     }
   },
 

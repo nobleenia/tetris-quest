@@ -1,18 +1,25 @@
-body.style-modern #hud {
-  width: var(--w);
+/* ─── HUD ──────────────────────────────────────────────────────────── */
+#hud {
+  width: 100%;
+  max-width: 600px;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-  font-size: 14px;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--gap-xs) var(--gap-sm);
+  font-size: clamp(12px, 2.5vw, 14px);
   opacity: 0.95;
+}
+
+body.style-modern #hud {
+  color: #e9eefc;
 }
 body.style-gameboy #hud {
   background: var(--gb-light);
   border: 3px solid var(--gb-dark);
   color: var(--gb-dark);
   font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
+  font-size: clamp(9px, 2vw, 12px);
 }
 
 .hud__item {
