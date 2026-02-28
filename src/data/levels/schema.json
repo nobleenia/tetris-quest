@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stackr-quest.vercel.app/schemas/level.json",
+  "title": "Stackr Quest Level Configuration",
+  "description": "Defines a single level's objective, constraints, modifiers, and star thresholds.",
+  "type": "object",
+  "required": ["id", "world", "level", "objective"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^([1-9]|10)-[0-9]{1,2}$",
+      "description": "Unique level identifier in 'world-level' format, e.g. '1-5', '10-20'"
+    },
+    "world": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "World number (1-10)"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20,
+      "description": "Level number within the world (1-20)"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 40,
+      "description": "Optional display name for the level"
+    },
+    "objective": {
+      "type": "object",
+      "required": ["type", "target"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "clearLines",
+            "reachScore",
+            "survive",
+            "digDown",
+            "comboChain",
+            "pieceLimit",
+            "clearBoard",
+            "timed"
+          ],
+          "description": "The primary objective type"
+        },
+        "target": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Target value (lines, score, seconds, combo count, etc.)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable objective description shown to the player"
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "Optional constraints on the level",
+      "properties": {
+        "timeLimit": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Time limit in seconds (0 = no limit)"
+        },
+        "pieceLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of pieces allowed (0 = no limit)"
+        },
+        "lives": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Number of lives for this level (default: 1, i.e. one top-out = fail)"
+        }
+      }
+    },
+    "gravity": {
+      "type": "object",
+      "description": "Gravity/speed configuration for this level",
+      "properties": {
+        "baseInterval": {
+          "type": "number",
+          "minimum": 0.05,
+          "default": 0.85,
+          "description": "Starting drop interval in seconds"
+        },
+        "minInterval": {
+          "type": "number",
+          "minimum": 0.02,
+          "default": 0.1,
+          "description": "Fastest drop interval in seconds"
+        },
+        "pressureRate": {
+          "type": "number",
+          "minimum": 0,
+          "default": 1.0,
+          "description": "Pressure increase per second (0 = no pressure increase)"
+        },
+        "speedEvents": {
+          "type": "array",
+          "description": "Scheduled speed changes during the level",
+          "items": {
+            "type": "object",
+            "required": ["atSeconds", "newBaseInterval"],
+            "properties": {
+              "atSeconds": {
+                "type": "number",
+                "description": "Trigger time in seconds"
+              },
+              "newBaseInterval": {
+                "type": "number",
+                "description": "New base interval after trigger"
+              }
+            }
+          }
+        }
+      }
+    },
+    "startingBoard": {
+      "type": "object",
+      "description": "Pre-placed blocks on the board at level start",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "description": "Array of row definitions, bottom-up. Each row is an array of 10 cell values (0 = empty, 1-7 = piece color, 8+ = special blocks).",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 15
+            },
+            "minItems": 10,
+            "maxItems": 10
+          }
+        },
+        "garbageRows": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18,
+          "description": "Number of random garbage rows to generate at start"
+        }
+      }
+    },
+    "modifiers": {
+      "type": "array",
+      "description": "Active modifiers/special block types for this level",
+      "items": {
+        "type": "string",
+        "enum": [
+          "iceBlocks",
+          "stoneBlocks",
+          "bombBlocks",
+          "darkBlocks",
+          "gravityFlip",
+          "gravityShift",
+          "comboMultiplier",
+          "pieceLimited"
+        ]
+      }
+    },
+    "boss": {
+      "type": "object",
+      "description": "Boss level configuration (only present on boss levels)",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "garbagePush",
+            "pieceFamine",
+            "risingTide",
+            "speedDemon",
+            "lavaFlow",
+            "mirage",
+            "blackout",
+            "avalanche",
+            "zeroG",
+            "finalBoss"
+          ],
+          "description": "Boss attack pattern"
+        },
+        "hp": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Boss health (lines to clear to defeat)"
+        },
+        "attackIntervalSec": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Seconds between boss attacks"
+        },
+        "phases": {
+          "type": "array",
+          "description": "Boss phases (escalating difficulty)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "hpThreshold": {
+                "type": "number",
+                "description": "Phase triggers when boss HP drops below this percentage (0-1)"
+              },
+              "attackIntervalSec": {
+                "type": "number",
+                "description": "Attack interval during this phase"
+              },
+              "modifiers": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stars": {
+      "type": "object",
+      "description": "Star thresholds for this level",
+      "properties": {
+        "one": {
+          "description": "1-star threshold (always = objective complete)",
+          "type": "string",
+          "const": "objective"
+        },
+        "two": {
+          "type": "object",
+          "description": "2-star threshold",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["score", "time", "linesExtra", "piecesUnder"]
+            },
+            "value": {
+              "type": "number"
+            }
+          }
+        },
+        "three": {
+          "type": "object",
+          "description": "3-star threshold",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["score", "time", "linesExtra", "piecesUnder"]
+            },
+            "value": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}

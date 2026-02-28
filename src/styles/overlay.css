@@ -3,86 +3,124 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, rgba(1,6,12,0.65), rgba(0,0,0,0.6));
+  background: linear-gradient(180deg, rgba(1, 6, 12, 0.65), rgba(0, 0, 0, 0.6));
+  padding: var(--safe-top, 0) var(--safe-right, 0) var(--safe-bottom, 0) var(--safe-left, 0);
+  z-index: 100;
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 .overlay__panel {
   width: min(480px, 92vw);
-  background: linear-gradient(180deg, rgba(18,28,54,0.98), rgba(6,12,28,0.98));
-  border: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(18, 28, 54, 0.98), rgba(6, 12, 28, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 28px 90px rgba(0,0,0,0.7);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
 }
 
-.overlay__title { margin: 0 0 10px 0; }
-.overlay__hint { opacity: 0.85; margin-top: 12px; }
-/* Difficulty field — paste into src/styles/overlay.css */
-.overlay__field {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.overlay__title {
+  margin: 0 0 10px 0;
+}
+.overlay__hint {
+  opacity: 0.85;
   margin-top: 12px;
-  color: rgba(235,245,255,0.9);
-  font-size: 0.95rem;
-  font-weight: 600;
-  position: relative;
-}
-
-/* Select styling */
-.overlay__field select {
-  background: rgb(245, 243, 243);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: #0d0d0e;
-  padding: 8px 40px 8px 12px; /* room for custom arrow */
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, #9aa7ff 50%),
-    linear-gradient(135deg, #9aa7ff 50%, transparent 50%);
-  background-size: 8px 8px;
-  background-position: right 14px center, right 14px center;
-  background-repeat: no-repeat;
-}
-
-/* Hide IE arrow */
-.overlay__field select::-ms-expand { display: none; }
-
-/* Hover + focus */
-.overlay__field select:hover { transform: translateY(-1px); }
-.overlay__field select:focus {
-  outline: none;
-  border-color: rgba(124,58,237,0.45);
-  box-shadow: 0 6px 24px rgba(124,58,237,0.08), 0 0 0 4px rgba(124,58,237,0.06);
-}
-
-/* Responsive: stack on small screens */
-@media (max-width: 480px) {
-  .overlay__field { flex-direction: column; align-items: stretch; gap: 6px; }
-  .overlay__field select { width: 100%; padding-right: 12px; }
 }
 
 .btn {
   width: 100%;
-  margin-top: 10px;
-  padding: 12px 14px;
+  margin-top: var(--gap-sm);
+  padding: 14px 16px;
   border-radius: 12px;
   border: 0;
   cursor: pointer;
-  background: linear-gradient(90deg,#3b82f6,#7c3aed);
+  background: linear-gradient(90deg, #3b82f6, #7c3aed);
   color: white;
   font-weight: 700;
+  font-size: clamp(14px, 3vw, 16px);
+  min-height: 48px; /* touch target minimum */
 }
 
 .btn--secondary {
   background: #26304d;
 }
-.btn:hover { filter: brightness(1.05); }
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+/*#region*MARK: Flashes Effects
+*/
+#tetris-flash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  background-image: url('tetris-logo-flash.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out;
+  z-index: 9999;
+}
+
+#tetris-flash img {
+  width: 40%;
+  opacity: 0.9;
+  transform: scale(0.9);
+  transition: transform 0.15s ease-out;
+}
+
+#tetris-flash.active {
+  opacity: 1;
+}
+
+#tetris-flash.active img {
+  transform: scale(1);
+}
+
+#tetris-flash.hidden {
+  display: none;
+}
+
+#tetris-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 9998;
+}
+
+.tetris-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--particle-color, #ffcc00);
+  border-radius: 2px;
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.6s ease-out,
+    opacity 0.6s ease-out;
+}
+
+.life-flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 0, 0, 0.3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+  z-index: 9997;
+}
+
+.life-flash-overlay.active {
+  opacity: 1;
+}
+/*#endregion*/
