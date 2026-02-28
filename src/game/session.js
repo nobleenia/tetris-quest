@@ -55,6 +55,7 @@ export function createSession(state) {
       initBoss(state);
 
       bag = create7Bag();
+      state._bag = bag;
       result = null;
       active = true;
       state.paused = false;
@@ -70,6 +71,7 @@ export function createSession(state) {
       applyClassicConfig(state);
 
       bag = create7Bag();
+      state._bag = bag;
       result = null;
       active = true;
       state.paused = false;

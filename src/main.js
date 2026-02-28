@@ -81,6 +81,7 @@ session.on({
   onFail: (result) => {
     // eslint-disable-next-line no-console
     console.log('[session] Level failed.', result);
+    state.paused = true;
     // TODO Phase 3: transition to results scene
   },
 });
@@ -218,7 +219,7 @@ const loop = createLoop({
       // Session tick (objectives, boss, speed events, modifiers)
       if (session.isActive()) {
         const sessionResult = session.tick(SIM_STEP);
-        if (sessionResult && (sessionResult.complete || sessionResult.failed)) {
+        if (sessionResult && sessionResult.outcome) {
           // Session ended — pause and let callback handle transition
           simAcc = 0;
           return;
@@ -247,7 +248,10 @@ const loop = createLoop({
       if (controls.rotateCCW()) tryRotateCCW(state);
 
       if (controls.hardDrop()) {
-        hardDrop(state, tryMove, hud);
+        const hdCleared = hardDrop(state, tryMove, hud);
+        session.onPieceLocked(hdCleared);
+        if (hdCleared > 0) session.onLinesCleared(hdCleared);
+        if (state.active) session.onPieceSpawned();
       }
 
       const softDrop = controls.softDrop();

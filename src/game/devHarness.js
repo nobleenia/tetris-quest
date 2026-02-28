@@ -16,6 +16,7 @@
 
 import { loadLevel, loadWorldData } from './levelConfig.js';
 import { applyWorldTheme } from '../ui/stylemanager.js';
+import { initQueue, spawnFromQueue } from './spawn.js';
 
 /**
  * Install the dev harness on the window object.
@@ -42,6 +43,11 @@ export function installDevHarness({ state, session, hud }) {
         // Start session
         session.startLevel(level, world);
 
+        // Initial piece spawn
+        initQueue(state);
+        spawnFromQueue(state);
+        session.onPieceSpawned();
+
         // Hide overlays
         const homeOverlay = document.querySelector('#homeOverlay');
         if (homeOverlay) homeOverlay.classList.add('hidden');
@@ -66,6 +72,12 @@ export function installDevHarness({ state, session, hud }) {
     /** Start classic mode via session. */
     playClassic() {
       session.startClassic();
+
+      // Initial piece spawn
+      initQueue(state);
+      spawnFromQueue(state);
+      session.onPieceSpawned();
+
       const homeOverlay = document.querySelector('#homeOverlay');
       if (homeOverlay) homeOverlay.classList.add('hidden');
       if (hud) hud.hideGameOver();

@@ -79,6 +79,9 @@ export function createInitialState() {
     linesCleared: 0,
     combo: 0,
     maxCombo: 0,
+
+    // Bag reference (set by session, used as fallback by spawn)
+    _bag: null,
   };
 }
 
@@ -109,6 +112,7 @@ export function resetGame(state) {
   state.elapsedSec = 0;
 
   state.dropAcc = 0;
+  state._bag = null;
 
   // ── Level / Adventure mode resets ──
   state.objectiveComplete = false;

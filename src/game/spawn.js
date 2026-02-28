@@ -24,7 +24,8 @@ function nextPieceId(bag) {
  * @param {object|null} [bag] - 7-bag instance
  */
 export function initQueue(state, bag = null) {
-  if (!state.nextId) state.nextId = nextPieceId(bag);
+  const b = bag || state._bag || null;
+  if (!state.nextId) state.nextId = nextPieceId(b);
 }
 
 /**
@@ -35,10 +36,11 @@ export function initQueue(state, bag = null) {
  * @returns {boolean} true if spawn succeeded
  */
 export function spawnFromQueue(state, bag = null) {
-  initQueue(state, bag);
+  const b = bag || state._bag || null;
+  initQueue(state, b);
 
   const pieceId = state.nextId;
-  state.nextId = nextPieceId(bag);
+  state.nextId = nextPieceId(b);
 
   const x = 3;
   // spawn at top of hidden area so pieces can rotate into visible space

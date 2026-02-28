@@ -7,7 +7,7 @@ import { spawnFromQueue } from './spawn.js';
 import { handleTopOut } from './lives.js';
 
 export function hardDrop(state, tryMove, hud) {
-  if (!state.active) return;
+  if (!state.active) return 0;
 
   // 1. Descend until collision
   while (tryMove(state, 0, 1)) {
@@ -47,4 +47,6 @@ export function hardDrop(state, tryMove, hud) {
   if (!ok) {
     handleTopOut(state);
   }
+
+  return cleared;
 }
