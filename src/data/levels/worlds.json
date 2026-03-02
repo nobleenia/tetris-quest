@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Stackr Quest — World Index",
+  "description": "Master list of all worlds, their themes, unlock requirements, and metadata.",
+  "worlds": [
+    {
+      "id": 1,
+      "name": "Foundation",
+      "theme": "modern",
+      "cssClass": "style-modern",
+      "starsToUnlock": 0,
+      "description": "Learn the basics. Master stacking, clearing lines, and scoring.",
+      "mechanic": null,
+      "bossType": "garbagePush",
+      "dataFile": "world-1.json"
+    },
+    {
+      "id": 2,
+      "name": "Retro Land",
+      "theme": "gameboy",
+      "cssClass": "style-gameboy",
+      "starsToUnlock": 20,
+      "description": "Think before you drop. Every piece counts in this retro challenge.",
+      "mechanic": "pieceLimited",
+      "bossType": "pieceFamine",
+      "dataFile": "world-2.json"
+    },
+    {
+      "id": 3,
+      "name": "Coral Depths",
+      "theme": "deepsea",
+      "cssClass": "style-deepsea",
+      "starsToUnlock": 45,
+      "description": "Dive deep. Shatter the ice that blocks your path.",
+      "mechanic": "iceBlocks",
+      "bossType": "risingTide",
+      "dataFile": "world-3.json"
+    },
+    {
+      "id": 4,
+      "name": "Neon District",
+      "theme": "neon",
+      "cssClass": "style-neon",
+      "starsToUnlock": 75,
+      "description": "Chain combos, build momentum, dominate the neon grid.",
+      "mechanic": "comboMultiplier",
+      "bossType": "speedDemon",
+      "dataFile": "world-4.json"
+    },
+    {
+      "id": 5,
+      "name": "Molten Core",
+      "theme": "volcano",
+      "cssClass": "style-volcano",
+      "starsToUnlock": 110,
+      "description": "Harness the explosions. Use bomb blocks to your advantage.",
+      "mechanic": "bombBlocks",
+      "bossType": "lavaFlow",
+      "dataFile": "world-5.json"
+    },
+    {
+      "id": 6,
+      "name": "Dreamscape",
+      "theme": "vaporwave",
+      "cssClass": "style-vaporwave",
+      "starsToUnlock": 150,
+      "description": "Not everything is as it seems. Reveal the hidden blocks.",
+      "mechanic": "darkBlocks",
+      "bossType": "mirage",
+      "dataFile": "world-6.json"
+    },
+    {
+      "id": 7,
+      "name": "Thunderspire",
+      "theme": "storm",
+      "cssClass": "style-storm",
+      "starsToUnlock": 195,
+      "description": "Build around the immovable. Navigate the stone blocks.",
+      "mechanic": "stoneBlocks",
+      "bossType": "blackout",
+      "dataFile": "world-7.json"
+    },
+    {
+      "id": 8,
+      "name": "Frozen Peaks",
+      "theme": "arctic",
+      "cssClass": "style-arctic",
+      "starsToUnlock": 245,
+      "description": "Adapt to the rhythm. Gravity shifts when you least expect it.",
+      "mechanic": "gravityShift",
+      "bossType": "avalanche",
+      "dataFile": "world-8.json"
+    },
+    {
+      "id": 9,
+      "name": "Starfield",
+      "theme": "cosmos",
+      "cssClass": "style-cosmos",
+      "starsToUnlock": 300,
+      "description": "Up is down. Master the gravity flip to survive the void.",
+      "mechanic": "gravityFlip",
+      "bossType": "zeroG",
+      "dataFile": "world-9.json"
+    },
+    {
+      "id": 10,
+      "name": "The Nexus",
+      "theme": "nexus",
+      "cssClass": "style-nexus",
+      "starsToUnlock": 360,
+      "description": "Everything you've learned. Every mechanic. The ultimate test.",
+      "mechanic": null,
+      "bossType": "finalBoss",
+      "dataFile": "world-10.json"
+    }
+  ]
+}
