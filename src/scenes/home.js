@@ -84,10 +84,9 @@ function render(ctx) {
       <div class="home__secondary">
         <button class="btn btn--secondary btn--small" data-action="shop">🛒 Shop</button>
         <button class="btn btn--secondary btn--small" data-action="leaderboard">🏆 Leaderboards</button>
-        ${isSupabaseConfigured ? `
-          <button class="btn btn--secondary btn--small" data-action="account">
-            ${hasRealAccount() ? `👤 ${getProfile().displayName}` : '🔐 Sign In'}
-          </button>` : ''}
+        <button class="btn btn--secondary btn--small" data-action="account">
+          ${isSupabaseConfigured && hasRealAccount() ? `👤 ${getProfile().displayName}` : '🔐 Sign In'}
+        </button>
       </div>
     </div>
   `;

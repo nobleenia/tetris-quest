@@ -98,6 +98,7 @@ export function createControls(input, touch = null) {
 
     rotateCW() {
       return (
+        input.isPressed('KeyX') ||
         input.isPressed('Numpad3') ||
         input.isPressed('KeyT') ||
         (touch && touch.actions.has('rotateCW'))
@@ -106,17 +107,26 @@ export function createControls(input, touch = null) {
 
     rotateCCW() {
       return (
+        input.isPressed('KeyZ') ||
         input.isPressed('Numpad0') ||
         input.isPressed('KeyF') ||
+        input.isPressed('ControlLeft') ||
         (touch && touch.actions.has('rotateCCW'))
       );
     },
 
     hold() {
-      const pressed = input.isPressed('KeyQ') || input.isPressed('ControlRight');
+      const pressed =
+        input.isPressed('KeyQ') ||
+        input.isPressed('ControlRight') ||
+        input.isPressed('ShiftLeft') ||
+        input.isPressed('ShiftRight') ||
+        (touch && touch.actions.has('hold'));
       if (pressed) {
         input.consume('KeyQ');
         input.consume('ControlRight');
+        input.consume('ShiftLeft');
+        input.consume('ShiftRight');
       }
       return pressed;
     },

@@ -158,7 +158,7 @@ const previewDOM = createPreviewDOM({ previewEl, size: 4 });
 const holdEl = document.querySelector('#holdPreview');
 const holdDOM = createPreviewDOM({ previewEl: holdEl, size: 4 });
 
-// Wire sidebar stats
+// Wire sidebar stats (legacy — hidden but kept for reference)
 const sidebarLivesEl = document.querySelector('#sidebarLives');
 const sidebarPressureSideEl = document.querySelector('#sidebarPressureSide');
 const sidebarTimeEl = document.querySelector('#sidebarTime');
@@ -166,8 +166,44 @@ const sidebarScoreEl = document.querySelector('#sidebarScore');
 const sidebarPressureStat = document.querySelector('.sidebar__stat--pressure');
 const sidebarLivesStat = document.querySelector('.sidebar__stat--lives');
 
+// New in-game HUD bar
+const hudBarScoreEl = document.querySelector('#hudBarScore');
+const hudBarLivesEl = document.querySelector('#hudBarLives');
+const hudBarTimeEl = document.querySelector('#hudBarTime');
+const hudBarPressureEl = document.querySelector('#hudBarPressure');
+const hudObjectiveEl = document.querySelector('#gameHudObjective');
+
+function formatHudTime(sec) {
+  const s = Math.floor(sec || 0);
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m}:${r.toString().padStart(2, '0')}`;
+}
+
 let prevLives = state.lives;
 let prevPressureHigh = false;
+
+// ─── Touch action buttons (hold + pause) ─────────────────────────────
+const btnTouchHold = document.querySelector('#btnTouchHold');
+const btnTouchPause = document.querySelector('#btnTouchPause');
+
+// Track touch-hold state — consumed by controls
+let _touchHoldPressed = false;
+
+if (btnTouchHold) {
+  btnTouchHold.addEventListener('click', () => {
+    _touchHoldPressed = true;
+  });
+}
+if (btnTouchPause) {
+  btnTouchPause.addEventListener('click', () => {
+    if (sceneManager.current() === 'game' && !state.gameOver) {
+      state.paused = !state.paused;
+      if (state.paused) juice.onPause();
+      else juice.onResume();
+    }
+  });
+}
 
 // ─── Helper: get bag from active session ─────────────────────────────
 function getBag() {
@@ -277,7 +313,8 @@ const loop = createLoop({
       const base = gravityIntervalFromPressure(state);
       const interval = softDrop ? base * 0.08 : base;
 
-      if (controls.hold()) {
+      if (controls.hold() || _touchHoldPressed) {
+        _touchHoldPressed = false;
         const didHold = tryHold(state);
         if (didHold) {
           juice.onHold();
@@ -367,7 +404,13 @@ const loop = createLoop({
       lastSimReport += 1000;
     }
 
-    // HUD updates
+    // HUD updates — new top bar
+    if (hudBarScoreEl) hudBarScoreEl.textContent = String(state.score);
+    if (hudBarLivesEl) hudBarLivesEl.textContent = String(state.lives);
+    if (hudBarTimeEl) hudBarTimeEl.textContent = formatHudTime(state.elapsedSec);
+    if (hudBarPressureEl) hudBarPressureEl.textContent = `${Math.round(state.pressure)}%`;
+
+    // Legacy sidebar (hidden but synced for any code that reads them)
     hud.setTime(state.elapsedSec);
     hud.setScore(state.score);
     hud.setLives(state.lives);
@@ -403,6 +446,12 @@ const loop = createLoop({
     if (state.gameOver && !state._gameOverShown) {
       state._gameOverShown = true;
 
+      // If the session already handled this (endSession → onFail callback),
+      // skip the duplicate navigation to prevent overwriting _lastResult.
+      if (sceneManager.current() === 'results' || sceneManager.current() !== 'game') {
+        return;
+      }
+
       // Sync runtime lives with the persistent progress system
       const { lives: progressLives } = getLives();
       state.lives = progressLives;
@@ -417,10 +466,13 @@ const loop = createLoop({
 
       // Navigate to results after a brief delay for the SFX to play
       setTimeout(() => {
+        // Guard again — session callback may have navigated while we waited
+        if (sceneManager.current() !== 'game') return;
+
         hud.hideGameOver();
         const failResult = {
           outcome: 'fail',
-          mode: session.getMode?.() === 'level' ? 'adventure' : 'classic',
+          mode: state.mode || 'classic',
           score: state.score,
           linesCleared: state.linesCleared || 0,
           pieceCount: state.pieceCount || 0,

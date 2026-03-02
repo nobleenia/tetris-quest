@@ -12,7 +12,7 @@
 import { loadLevel } from '../game/levelConfig.js';
 import { applyWorldTheme, applyStyle } from '../ui/stylemanager.js';
 import { initQueue, spawnFromQueue } from '../game/spawn.js';
-import { activatePowerup } from '../game/powerups.js';
+import { activatePowerup, POWERUPS } from '../game/powerups.js';
 import { showTutorial } from '../ui/tutorial.js';
 import { spendLife, getLives } from '../systems/progress.js';
 import { generateDailyChallenge } from '../game/dailyChallenge.js';
@@ -101,12 +101,25 @@ export const gameScene = {
       applyWorldTheme(world);
       session.startLevel(levelCfg, worldCfg);
 
-      // Apply pre-level power-ups
+      // Apply pre-level power-ups; store in-game ones for manual activation
       if (ctx._pendingPowerups?.length > 0) {
+        const inGamePowerups = [];
         for (const pid of ctx._pendingPowerups) {
-          activatePowerup(pid, state);
+          const def = POWERUPS[pid];
+          if (def?.activateIn === 'pre') {
+            activatePowerup(pid, state);
+          } else {
+            inGamePowerups.push(pid);
+          }
         }
         ctx._pendingPowerups = null;
+
+        // Store in-game powerups on state so the HUD can render buttons
+        state._inGamePowerups = inGamePowerups;
+        renderPowerupBar(state, ctx);
+      } else {
+        state._inGamePowerups = [];
+        renderPowerupBar(state, ctx);
       }
 
       // Spawn the initial piece
@@ -157,6 +170,19 @@ export const gameScene = {
  * @param {object|null} objective
  */
 function updateObjectiveHUD(objective) {
+  // New objective display in the HUD bar area
+  const objBar = document.querySelector('#gameHudObjective');
+  if (objBar) {
+    if (!objective) {
+      objBar.style.display = 'none';
+      objBar.innerHTML = '';
+    } else {
+      objBar.style.display = '';
+      objBar.innerHTML = `🎯 ${objective.description || objective.type}`;
+    }
+  }
+
+  // Legacy sidebar objective
   let el = document.querySelector('#objectiveHUD');
   if (!objective) {
     if (el) el.style.display = 'none';
@@ -164,7 +190,6 @@ function updateObjectiveHUD(objective) {
   }
 
   if (!el) {
-    // Create objective HUD element
     el = document.createElement('div');
     el.id = 'objectiveHUD';
     el.className = 'sidebar__stat sidebar__stat--objective';
@@ -177,4 +202,39 @@ function updateObjectiveHUD(objective) {
     <span class="sidebar__label">Objective</span>
     <span class="sidebar__value" id="objectiveText">${objective.description || objective.type}</span>
   `;
+}
+
+/**
+ * Render in-game powerup buttons in the touch-actions area.
+ * These are powerups selected in the briefing with activateIn: 'game'.
+ */
+function renderPowerupBar(state, ctx) {
+  const container = document.querySelector('#gameTouchActions');
+  if (!container) return;
+
+  // Remove old powerup buttons
+  container.querySelectorAll('.game-powerup-btn').forEach((el) => el.remove());
+
+  const powerups = state._inGamePowerups || [];
+  if (powerups.length === 0) return;
+
+  // Insert powerup buttons before the pause button
+  const pauseBtn = container.querySelector('#btnTouchPause');
+  for (const pid of powerups) {
+    const def = POWERUPS[pid];
+    if (!def) continue;
+    const btn = document.createElement('button');
+    btn.className = 'game-touch-btn game-powerup-btn';
+    btn.setAttribute('aria-label', def.name);
+    btn.innerHTML = `<span>${def.icon}</span><span class="game-touch-btn__label">${def.name}</span>`;
+    btn.addEventListener('click', () => {
+      if (state.paused || state.gameOver) return;
+      activatePowerup(pid, state);
+      btn.remove();
+      // Remove from available list
+      const idx = state._inGamePowerups.indexOf(pid);
+      if (idx >= 0) state._inGamePowerups.splice(idx, 1);
+    });
+    container.insertBefore(btn, pauseBtn);
+  }
 }

@@ -23,6 +23,7 @@ import { shareResult } from '../systems/share.js';
 import { getUserLevelRank, getLevelLeaderboard } from '../systems/leaderboard.js';
 
 let containerEl = null;
+let _abortController = null;
 
 export const resultsScene = {
   id: 'results',
@@ -31,6 +32,11 @@ export const resultsScene = {
     const sceneEl = document.querySelector('[data-scene="results"]');
     if (!sceneEl) return;
     containerEl = sceneEl;
+
+    // Abort any previous event listeners (prevents stale closures)
+    if (_abortController) _abortController.abort();
+    _abortController = new AbortController();
+
     hideGameUI();
 
     const result = params.result || ctx._lastResult;
@@ -47,6 +53,11 @@ export const resultsScene = {
   },
 
   exit(_ctx) {
+    // Abort all event listeners attached via the signal
+    if (_abortController) {
+      _abortController.abort();
+      _abortController = null;
+    }
     if (containerEl) containerEl.innerHTML = '';
     showGameUI();
   },
@@ -315,6 +326,8 @@ function animateStars() {
 function wireEvents(result, ctx) {
   if (!containerEl) return;
 
+  const signal = _abortController?.signal;
+
   containerEl.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
@@ -365,7 +378,7 @@ function wireEvents(result, ctx) {
         setTimeout(() => { btn.textContent = '📤 Share'; }, 2000);
       });
     }
-  });
+  }, { signal });
 }
 
 // ─── Leaderboard loader ──────────────────────────────────────────────

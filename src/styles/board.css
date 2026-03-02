@@ -103,11 +103,133 @@ body.style-vaporwave .cell {
   border-radius: 4px;
 }
 
+/* ─── In-Game HUD Bar ──────────────────────────────────────────────── */
+.game-hud-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 4px;
+  width: 100%;
+  max-width: 420px;
+  padding: 6px 8px;
+  background: rgba(10, 20, 40, 0.85);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 4px;
+}
+
+.game-hud-bar__stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  color: #dbeafe;
+}
+
+.game-hud-bar__label {
+  font-size: 12px;
+}
+
+.game-hud-bar__value {
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+}
+
+.game-hud-bar__stat--pressure .game-hud-bar__value {
+  color: #ff8a00;
+}
+
+/* ─── Objective Banner ─────────────────────────────────────────────── */
+.game-hud-objective {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  font-size: 12px;
+  padding: 3px 8px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 8px;
+  color: #c7d2fe;
+  margin-bottom: 4px;
+}
+
+/* ─── Board Area with Hold/Next flanking ──────────────────────────── */
+.game-board-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.game-board-area__side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+  min-width: 52px;
+}
+
+.game-preview-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.game-preview-box__label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.6;
+  color: #9fb3d6;
+}
+
+/* ─── Touch Action Buttons ─────────────────────────────────────────── */
+.game-touch-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 6px 0;
+  margin-top: 4px;
+}
+
+.game-touch-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #dbeafe;
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.1s;
+}
+
+.game-touch-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.game-touch-btn__label {
+  font-size: 12px;
+}
+
 /* Layout for board + sidebar — mobile: column, desktop: row */
 #gameRoot {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 4px 0;
+  gap: 0;
 }
 
 @media (orientation: landscape) and (min-width: 600px) {
