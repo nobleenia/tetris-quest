@@ -39,7 +39,7 @@ import { renderBoardDiff, renderPreview } from './ui/render.js';
 import { tickSlowMotion } from './game/powerups.js';
 
 // --- Game Logic ---
-import { initQueue, spawnFromQueue } from './game/spawn.js';
+import { spawnFromQueue } from './game/spawn.js';
 import { canPlace, buildNextBoard, countHoles } from './game/board.js';
 import { lockActivePiece } from './game/lock.js';
 import { tryRotateCW, tryRotateCCW } from './game/rotate.js';
@@ -164,23 +164,21 @@ bindPauseUI({
   onContinue: () => {
     state.paused = false;
   },
-  onRestart: () => {
+  onBackToMap: () => {
     hud.hideGameOver();
     state._gameOverShown = false;
-
-    // Navigate back to map (adventure) or restart classic
-    if (session.isActive() && session.getMode && session.getMode() === 'level') {
-      router.navigate('#/map');
-    } else {
-      // Classic mode — restart via session
-      session.startClassic();
-      const bag = getBag();
-      initQueue(state, bag);
-      const ok = spawnFromQueue(state, bag);
-      if (ok) session.onPieceSpawned();
-      if (!ok) handleTopOut(state);
-      state.paused = false;
-    }
+    state.paused = false;
+    state.gameOver = false;
+    session.stop?.();
+    router.navigate('#/map');
+  },
+  onQuit: () => {
+    hud.hideGameOver();
+    state._gameOverShown = false;
+    state.paused = false;
+    state.gameOver = false;
+    session.stop?.();
+    router.navigate('#/home');
   },
 });
 
@@ -370,6 +368,10 @@ const loop = createLoop({
       sidebarLivesStat.classList.remove('heart-pop');
       void sidebarLivesStat.offsetWidth;
       sidebarLivesStat.classList.add('heart-pop');
+      // Play life-loss SFX when lives decrease (but not on game-over — that has its own)
+      if (state.lives < prevLives && !state.gameOver) {
+        juice.onLifeLoss();
+      }
       prevLives = state.lives;
     }
 
@@ -384,8 +386,27 @@ const loop = createLoop({
     hud.setPaused(state.paused && !state.gameOver);
 
     if (state.gameOver && !state._gameOverShown) {
-      hud.showGameOver(state.score);
       state._gameOverShown = true;
+      juice.onGameOver();
+      // Navigate to results after a brief delay for the game-over SFX
+      setTimeout(() => {
+        hud.hideGameOver();
+        // Build a fail result for the results scene
+        const failResult = {
+          outcome: 'fail',
+          mode: session.getMode?.() === 'level' ? 'adventure' : 'classic',
+          score: state.score,
+          linesCleared: state.linesCleared || 0,
+          pieceCount: state.pieceCount || 0,
+          elapsedSec: state.elapsedSec || 0,
+          maxCombo: state.maxCombo || 0,
+          levelId: state.levelId || null,
+          levelNum: state.levelNum || 0,
+          worldId: state.worldId || 1,
+        };
+        sceneCtx._lastResult = failResult;
+        router.navigate('#/results');
+      }, 1200);
     }
   },
 

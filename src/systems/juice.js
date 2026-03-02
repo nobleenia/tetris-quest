@@ -193,6 +193,20 @@ export const juice = {
     screenShake.shake('heavy');
   },
 
+  /** Life lost (single heart gone). */
+  onLifeLoss() {
+    audio.playSfx('lifeLoss');
+    haptics.levelFail();
+    screenShake.shake('medium');
+  },
+
+  /** Game over — all lives gone. */
+  onGameOver() {
+    audio.playSfx('gameOver');
+    haptics.levelFail();
+    screenShake.shake('heavy');
+  },
+
   /**
    * Star earned during results tally.
    * @param {number} x

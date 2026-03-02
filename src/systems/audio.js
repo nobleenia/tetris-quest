@@ -322,6 +322,112 @@ function sfxLevelFail() {
 }
 
 /**
+ * Life loss — a dramatic "heart-breaking" sound.
+ * Short painful sting: chromatic descent + glass break noise + sub-thud.
+ */
+function sfxLifeLoss() {
+  ensureSfxChain();
+  const vol = -14 + (_sfxVol - 0.7) * 20;
+
+  // Chromatic descent — minor second intervals for pain
+  const painNotes = ['E5', 'Eb5', 'D5', 'C#5'];
+  painNotes.forEach((note, i) => {
+    const synth = new Tone.Synth({
+      oscillator: { type: 'square' },
+      envelope: { attack: 0.002, decay: 0.08, sustain: 0, release: 0.06 },
+      volume: vol - 4 - i * 2,
+    }).connect(_sfxLimiter);
+    setTimeout(() => synth.triggerAttackRelease(note, '32n'), i * 50);
+    setTimeout(() => synth.dispose(), i * 50 + 200);
+  });
+
+  // Glass shatter noise
+  setTimeout(() => {
+    const shatter = new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.08 },
+      volume: vol - 6,
+    }).connect(_sfxLimiter);
+    shatter.triggerAttackRelease('16n');
+    setTimeout(() => shatter.dispose(), 300);
+  }, 150);
+
+  // Sub thud — gut punch
+  setTimeout(() => {
+    const thud = new Tone.MembraneSynth({
+      pitchDecay: 0.03,
+      octaves: 3,
+      envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.1 },
+      volume: vol - 2,
+    }).connect(_sfxLimiter);
+    thud.triggerAttackRelease('F1', '16n');
+    setTimeout(() => thud.dispose(), 300);
+  }, 200);
+}
+
+/**
+ * Game over — all lives gone. Ominous & final.
+ * Descending tritone doom chord + rumble + reverse cymbal feel.
+ */
+function sfxGameOver() {
+  ensureSfxChain();
+  const vol = -10 + (_sfxVol - 0.7) * 20;
+
+  // Doom chord — tritone (the "devil's interval") for dread
+  const doomChord = ['E3', 'Bb3', 'E4', 'Bb4'];
+  const doom = new Tone.PolySynth(Tone.Synth, {
+    oscillator: { type: 'sawtooth' },
+    envelope: { attack: 0.05, decay: 0.8, sustain: 0.2, release: 1.0 },
+    volume: vol - 4,
+  }).connect(_sfxLimiter);
+
+  const doomFilter = new Tone.Filter({
+    frequency: 3000,
+    type: 'lowpass',
+    rolloff: -12,
+  }).connect(_sfxLimiter);
+  doom.connect(doomFilter);
+  doom.triggerAttackRelease(doomChord, 0.8);
+
+  // Sweep filter down for "closing" feel
+  doomFilter.frequency.rampTo(200, 1.0);
+
+  // Deep rumble
+  const rumble = new Tone.NoiseSynth({
+    noise: { type: 'brown' },
+    envelope: { attack: 0.1, decay: 0.7, sustain: 0, release: 0.3 },
+    volume: vol - 2,
+  }).connect(_sfxLimiter);
+  rumble.triggerAttackRelease('4n');
+
+  // Heavy sub hit
+  const subHit = new Tone.MembraneSynth({
+    pitchDecay: 0.08,
+    octaves: 5,
+    envelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.3 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+  subHit.triggerAttackRelease('C1', '4n');
+
+  // Descending metallic toll — funeral bell
+  setTimeout(() => {
+    const bell = new Tone.MetalSynth({
+      frequency: 120,
+      envelope: { attack: 0.001, decay: 0.6, release: 0.4 },
+      harmonicity: 3,
+      modulationIndex: 16,
+      resonance: 2000,
+      octaves: 1,
+      volume: vol - 8,
+    }).connect(_sfxLimiter);
+    bell.triggerAttackRelease('8n');
+    setTimeout(() => bell.dispose(), 1000);
+  }, 300);
+
+  setTimeout(() => { doom.dispose(); doomFilter.dispose(); rumble.dispose(); subHit.dispose(); }, 2000);
+}
+
+/**
  * UI tap — clean, clicky.
  */
 function sfxUiTap() {
@@ -666,6 +772,8 @@ const SFX_MAP = {
   bossDefeat: sfxBossDefeat,
   hold: sfxHold,
   brandJingle: sfxBrandJingle,
+  lifeLoss: sfxLifeLoss,
+  gameOver: sfxGameOver,
 };
 
 // ─── BGM: Procedural Per-World Music via Tone.js ─────────────────────

@@ -1,17 +1,11 @@
-export function bindPauseUI({ onContinue, onRestart }) {
+export function bindPauseUI({ onContinue, onBackToMap, onQuit }) {
   const btnContinue = document.querySelector('#btnContinue');
-  const btnRestart = document.querySelector('#btnRestart');
+  const btnBackToMap = document.querySelector('#btnBackToMap');
+  const btnQuit = document.querySelector('#btnQuit');
   const btnRestartGame = document.querySelector('#btnRestartGame');
 
-  // btnContinue.addEventListener("click", () => {
-  //     onContinue();
-  // });
-
-  // btnRestart.addEventListener("click", () => {
-  //     onRestart();
-  // });
-
   if (btnContinue) btnContinue.addEventListener('click', onContinue);
-  if (btnRestart) btnRestart.addEventListener('click', onRestart);
-  if (btnRestartGame) btnRestartGame.addEventListener('click', () => onRestart());
+  if (btnBackToMap) btnBackToMap.addEventListener('click', onBackToMap);
+  if (btnQuit) btnQuit.addEventListener('click', onQuit);
+  if (btnRestartGame) btnRestartGame.addEventListener('click', () => onQuit());
 }
