@@ -1239,3 +1239,315 @@
 #hud {
   /* Will be shown by showGameUI() in the game scene's enter() */
 }
+
+/* ─── Leaderboard Scene ───────────────────────────────────────────── */
+.leaderboard {
+  position: relative;
+}
+
+.leaderboard__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: 6px 10px;
+  border-radius: 50%;
+}
+
+.leaderboard__close:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
+}
+
+.leaderboard__tabs {
+  display: flex;
+  gap: 6px;
+  margin: var(--gap-md) 0;
+}
+
+.leaderboard__tab {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.leaderboard__tab--active {
+  background: rgba(59,130,246,0.15);
+  border-color: rgba(59,130,246,0.4);
+}
+
+.leaderboard__content {
+  min-height: 120px;
+}
+
+.leaderboard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderboard__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.leaderboard__row:nth-child(odd) {
+  background: rgba(255,255,255,0.03);
+}
+
+.leaderboard__rank {
+  width: 36px;
+  text-align: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.leaderboard__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard__value {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.leaderboard__myrank {
+  margin-top: var(--gap-sm);
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.leaderboard__loading,
+.leaderboard__empty,
+.leaderboard__offline {
+  text-align: center;
+  padding: var(--gap-md);
+  opacity: 0.6;
+}
+
+.leaderboard__hint {
+  font-size: 12px;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+/* ─── Account Scene ───────────────────────────────────────────────── */
+.account {
+  position: relative;
+}
+
+.account__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: 6px 10px;
+  border-radius: 50%;
+}
+
+.account__close:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
+}
+
+.account__profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: var(--gap-md) 0;
+  flex-wrap: wrap;
+}
+
+.account__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.account__info {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex: 1;
+}
+
+.account__name-input {
+  flex: 1;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  min-width: 0;
+}
+
+.account__status {
+  width: 100%;
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 2px 0 0 0;
+}
+
+.account__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: var(--gap-md) 0;
+}
+
+.account__stat {
+  padding: 8px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.account__cloud {
+  margin: var(--gap-md) 0;
+  padding: var(--gap-sm);
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+}
+
+.account__cloud h3 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+}
+
+.account__sync-status {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 0 0 8px 0;
+}
+
+.account__auth {
+  margin: var(--gap-md) 0;
+}
+
+.account__auth h3 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+}
+
+.account__hint {
+  font-size: 12px;
+  opacity: 0.5;
+  margin: 4px 0 var(--gap-sm) 0;
+}
+
+.account__email-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: var(--gap-sm);
+}
+
+.account__input {
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+}
+
+.account__offline {
+  text-align: center;
+  padding: var(--gap-md);
+  opacity: 0.6;
+}
+
+/* ─── Results: Share + Leaderboard additions ──────────────────────── */
+.results__share-btn {
+  background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.15)) !important;
+  border-color: rgba(99,102,241,0.4) !important;
+}
+
+.results__leaderboard {
+  margin-top: var(--gap-md);
+}
+
+.results__lb-title {
+  font-size: 14px;
+  margin: 0 0 6px 0;
+  opacity: 0.8;
+}
+
+.results__lb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.results__lb-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.results__lb-row:nth-child(odd) {
+  background: rgba(255,255,255,0.03);
+}
+
+.results__lb-rank {
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.results__lb-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.results__lb-score {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.results__lb-myrank {
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: center;
+  opacity: 0.7;
+}

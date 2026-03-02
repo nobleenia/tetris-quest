@@ -18,6 +18,9 @@ import {
 } from '../systems/progress.js';
 import { evaluateAchievements } from '../systems/achievements.js';
 import { hideGameUI, showGameUI } from './helpers.js';
+import { pushLevelResult } from '../systems/cloudSync.js';
+import { shareResult } from '../systems/share.js';
+import { getUserLevelRank, getLevelLeaderboard } from '../systems/leaderboard.js';
 
 let containerEl = null;
 
@@ -138,6 +141,9 @@ function renderComplete(result, ctx) {
         }
 
         <div class="results__actions">
+          <button class="btn results__share-btn" data-action="share">
+            📤 Share
+          </button>
           ${
             nextLevel <= 20
               ? `<button class="btn results__next-btn" data-action="next">
@@ -155,6 +161,8 @@ function renderComplete(result, ctx) {
           </button>
         </div>
 
+        <div id="results-leaderboard" class="results__leaderboard"></div>
+
         <p class="results__balance">Balance: ${coins} 🪙</p>
       </div>
     </div>
@@ -167,9 +175,13 @@ function renderComplete(result, ctx) {
   animateStars();
 
   wireEvents(result, ctx);
-}
 
-// ─── Level Fail ──────────────────────────────────────────────────────
+  // Push to cloud (non-blocking)
+  pushLevelResult(result.levelId, result.stars, result.score, result.elapsedSec);
+
+  // Load leaderboard for this level (non-blocking)
+  _loadLevelLeaderboard(result.levelId);
+}
 
 function renderFail(result, ctx) {
   // Record failure
@@ -337,5 +349,63 @@ function wireEvents(result, ctx) {
     if (action === 'shop') {
       ctx.router.navigate('#/shop');
     }
+
+    if (action === 'share') {
+      btn.disabled = true;
+      btn.textContent = '⏳ Generating…';
+      shareResult(result).then((status) => {
+        btn.disabled = false;
+        if (status === 'copied') {
+          btn.textContent = '✅ Copied!';
+        } else if (status === 'shared') {
+          btn.textContent = '✅ Shared!';
+        } else {
+          btn.textContent = '📤 Share';
+        }
+        setTimeout(() => { btn.textContent = '📤 Share'; }, 2000);
+      });
+    }
   });
+}
+
+// ─── Leaderboard loader ──────────────────────────────────────────────
+
+async function _loadLevelLeaderboard(levelId) {
+  const el = document.getElementById('results-leaderboard');
+  if (!el) return;
+
+  const [board, myRank] = await Promise.all([
+    getLevelLeaderboard(levelId, 10),
+    getUserLevelRank(levelId),
+  ]);
+
+  if (!board.length) {
+    el.innerHTML = '';
+    return;
+  }
+
+  let html = '<h3 class="results__lb-title">🏆 Leaderboard</h3>';
+  html += '<ol class="results__lb-list">';
+  for (const entry of board) {
+    const medals = ['🥇', '🥈', '🥉'];
+    const medal = entry.rank <= 3 ? medals[entry.rank - 1] : `#${entry.rank}`;
+    html += `<li class="results__lb-row">
+      <span class="results__lb-rank">${medal}</span>
+      <span class="results__lb-name">${_escHtml(entry.displayName)}</span>
+      <span class="results__lb-score">${entry.score.toLocaleString()}</span>
+    </li>`;
+  }
+  html += '</ol>';
+
+  if (myRank) {
+    html += `<p class="results__lb-myrank">Your rank: <strong>#${myRank}</strong></p>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function _escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }

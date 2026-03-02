@@ -30,6 +30,8 @@ import { briefingScene } from './scenes/briefing.js';
 import { gameScene } from './scenes/game.js';
 import { resultsScene } from './scenes/results.js';
 import { shopScene } from './scenes/shop.js';
+import { leaderboardScene } from './scenes/leaderboard.js';
+import { accountScene } from './scenes/account.js';
 
 // --- UI ---
 import { bindPauseUI } from './ui/pause.js';
@@ -65,6 +67,10 @@ import { juice } from './systems/juice.js';
 import { screenShake } from './systems/screenShake.js';
 import { getSettings } from './systems/progress.js';
 
+// --- Backend (Phase 7) ---
+import { initAuth } from './systems/auth.js';
+import { syncProgress } from './systems/cloudSync.js';
+
 // ─── Boot ────────────────────────────────────────────────────────────
 const state = createInitialState();
 const input = createInput();
@@ -89,10 +95,13 @@ const hud = createHUD();
 juice.init({ settings: getSettings() });
 screenShake.setTarget(document.querySelector('#board'));
 
+// Auth + cloud sync (Phase 7) — non-blocking
+initAuth().then(() => syncProgress()).catch(() => {});
+
 // Scene manager + router — Phase 3: fully scene-driven
 const sceneCtx = { state, input, controls, touch, viewport, session, hud, juice, router: null };
 const sceneManager = createSceneManager({
-  scenes: [homeScene, mapScene, briefingScene, gameScene, resultsScene, shopScene],
+  scenes: [homeScene, mapScene, briefingScene, gameScene, resultsScene, shopScene, leaderboardScene, accountScene],
   container: document.body,
   ctx: sceneCtx,
 });
