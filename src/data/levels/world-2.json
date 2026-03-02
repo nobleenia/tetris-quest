@@ -185,7 +185,8 @@
       },
       "modifiers": [
         "pieceLimited"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-7",
@@ -215,7 +216,8 @@
       },
       "modifiers": [
         "pieceLimited"
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "2-8",
@@ -245,7 +247,8 @@
       },
       "modifiers": [
         "pieceLimited"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-9",
@@ -275,7 +278,8 @@
       },
       "modifiers": [
         "pieceLimited"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-10",
@@ -314,7 +318,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.72
         }
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-11",
@@ -350,7 +355,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.68
         }
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "2-12",
@@ -386,7 +392,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.64
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "2-13",
@@ -422,7 +429,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.6
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "2-14",
@@ -462,7 +470,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.39
         }
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-15",
@@ -505,7 +514,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.36
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "2-16",
@@ -545,7 +555,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.33
         }
-      ]
+      ],
+      "difficulty": "variable"
     },
     {
       "id": "2-17",
@@ -585,7 +596,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.3
         }
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-18",
@@ -625,7 +637,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.28
         }
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "2-19",
@@ -665,7 +678,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.25
         }
-      ]
+      ],
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "2-20",
@@ -713,7 +727,8 @@
           "type": "score",
           "value": 6600
         }
-      }
+      },
+      "difficulty": "impossible"
     }
   ]
 }

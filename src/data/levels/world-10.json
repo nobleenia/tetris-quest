@@ -185,7 +185,8 @@
       },
       "modifiers": [
         "bombBlocks"
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "10-7",
@@ -215,7 +216,8 @@
       },
       "modifiers": [
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "10-8",
@@ -245,7 +247,8 @@
       },
       "modifiers": [
         "stoneBlocks"
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "10-9",
@@ -275,7 +278,8 @@
       },
       "modifiers": [
         "gravityShift"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "10-10",
@@ -314,7 +318,8 @@
       ],
       "modifiers": [
         "gravityFlip"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "10-11",
@@ -351,7 +356,8 @@
       "modifiers": [
         "iceBlocks",
         "comboMultiplier"
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "10-12",
@@ -388,7 +394,8 @@
       "modifiers": [
         "bombBlocks",
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "10-13",
@@ -425,7 +432,8 @@
       "modifiers": [
         "stoneBlocks",
         "gravityShift"
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "10-14",
@@ -466,7 +474,8 @@
       "modifiers": [
         "pieceLimited",
         "bombBlocks"
-      ]
+      ],
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "10-15",
@@ -511,7 +520,8 @@
         "iceBlocks",
         "stoneBlocks",
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "10-16",
@@ -552,7 +562,8 @@
       "modifiers": [
         "comboMultiplier",
         "gravityFlip"
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "10-17",
@@ -594,7 +605,8 @@
         "bombBlocks",
         "stoneBlocks",
         "gravityShift"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "10-18",
@@ -636,7 +648,8 @@
         "iceBlocks",
         "darkBlocks",
         "gravityFlip"
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "10-19",
@@ -673,7 +686,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.17
         }
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "10-20",
@@ -744,7 +758,8 @@
           "type": "score",
           "value": 13000
         }
-      }
+      },
+      "difficulty": "impossible"
     }
   ]
 }

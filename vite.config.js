@@ -10,6 +10,15 @@ export default defineConfig({
     sourcemap: true,
     target: 'es2020',
     minify: 'esbuild',
+    cssMinify: 'esbuild',
+    assetsInlineLimit: 4096,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          tone: ['tone'],
+        },
+      },
+    },
   },
 
   server: {

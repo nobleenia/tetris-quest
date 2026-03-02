@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "A block-stacking puzzle adventure with 100+ levels, boss fights, and power-ups. Mobile-first PWA built with vanilla JS.",
+  "description": "A block-stacking puzzle adventure with 200 levels across 10 worlds, boss fights, power-ups, and daily challenges. Mobile-first PWA built with vanilla JS.",
   "author": "noble",
   "license": "Apache-2.0",
   "keywords": [
