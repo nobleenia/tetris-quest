@@ -1,268 +1,21 @@
 /**
- * Stackr Quest — Audio Engine
+ * Stackr Quest — Audio Engine v2
  *
- * Manages all audio playback: SFX (sprite-based) and BGM (per-world loops).
- * Built on Howler.js for cross-browser Web Audio support.
+ * Rich synthesized SFX + procedural per-world BGM.
+ * Zero external audio files — everything generated via Tone.js + Web Audio.
  *
- * Features:
- * - SFX sprite sheet: one Howl, many sounds
- * - BGM per world theme + menu + boss tracks
- * - Volume controls (SFX / Music separate)
- * - Mute toggle
- * - Respects user preference (persisted in progress.js settings)
- * - Graceful degradation when audio isn't available
+ * SFX: Layered FM synthesis, filtered noise, ADSR envelopes, reverb.
+ * BGM: Per-world chord progressions, arpeggios, bass lines, pads, drums.
  *
  * Usage:
  *   import { audio } from './systems/audio.js';
+ *   audio.init(settings);
  *   audio.playSfx('lock');
- *   audio.playBgm('menu');
- *   audio.setMusicVolume(0.5);
+ *   audio.playLineClear(3, 2);
+ *   audio.playBgm('deepsea');
  */
 
-import { Howl, Howler } from 'howler';
-
-// ─── SFX definitions ─────────────────────────────────────────────────
-// We use Web Audio oscillators for SFX to avoid needing audio files.
-// This keeps the project self-contained with zero external assets.
-
-/** @type {AudioContext|null} */
-let _ctx = null;
-
-function getAudioCtx() {
-  if (!_ctx) {
-    try {
-      _ctx = new (window.AudioContext || window.webkitAudioContext)();
-    } catch {
-      return null;
-    }
-  }
-  // Resume if suspended (autoplay policy)
-  if (_ctx.state === 'suspended') {
-    _ctx.resume().catch(() => {});
-  }
-  return _ctx;
-}
-
-// ─── Synthesized SFX ─────────────────────────────────────────────────
-
-const SFX_DEFS = {
-  // Piece move — subtle tick/click
-  move: { type: 'square', freq: 600, dur: 0.03, vol: 0.08 },
-  // Rotate — short whip
-  rotate: { type: 'sawtooth', freq: 800, dur: 0.06, vol: 0.1, slide: 1200 },
-  // Piece lock — thud
-  lock: { type: 'sine', freq: 150, dur: 0.1, vol: 0.15 },
-  // Soft drop — whoosh
-  softdrop: { type: 'sawtooth', freq: 400, dur: 0.05, vol: 0.06, slide: 200 },
-  // Hard drop — slam
-  harddrop: { type: 'square', freq: 100, dur: 0.15, vol: 0.2, noise: true },
-  // Line clear — ascending chime
-  clear1: { type: 'sine', freq: 523, dur: 0.15, vol: 0.15 },
-  clear2: { type: 'sine', freq: 659, dur: 0.18, vol: 0.18 },
-  clear3: { type: 'sine', freq: 784, dur: 0.22, vol: 0.2 },
-  clear4: { type: 'sine', freq: 1047, dur: 0.3, vol: 0.25, slide: 1200 },
-  // Combo — escalating pitch (play with pitch modifier)
-  combo: { type: 'triangle', freq: 700, dur: 0.1, vol: 0.12 },
-  // Level win — fanfare
-  levelWin: { type: 'sine', freq: 523, dur: 0.5, vol: 0.2, arp: [523, 659, 784, 1047] },
-  // Level fail — deflating
-  levelFail: { type: 'sawtooth', freq: 400, dur: 0.4, vol: 0.15, slide: 100 },
-  // UI tap
-  uiTap: { type: 'sine', freq: 1000, dur: 0.04, vol: 0.08 },
-  // Star earn — sparkle
-  starEarn: { type: 'sine', freq: 1200, dur: 0.2, vol: 0.12, slide: 1800 },
-  // Coin earn
-  coinEarn: { type: 'square', freq: 988, dur: 0.08, vol: 0.1 },
-  // Power-up activate
-  powerup: { type: 'sawtooth', freq: 440, dur: 0.25, vol: 0.15, slide: 880 },
-  // Boss attack
-  bossAttack: { type: 'sawtooth', freq: 80, dur: 0.3, vol: 0.2, noise: true },
-  // Boss defeat
-  bossDefeat: { type: 'sine', freq: 440, dur: 0.6, vol: 0.2, arp: [440, 554, 659, 880, 1047] },
-  // Hold
-  hold: { type: 'triangle', freq: 500, dur: 0.06, vol: 0.08, slide: 700 },
-};
-
-/**
- * Play a synthesized SFX.
- * @param {string} name — key in SFX_DEFS
- * @param {object} [opts] — { pitchMult }
- */
-function playSynthSfx(name, opts = {}) {
-  const def = SFX_DEFS[name];
-  if (!def) return;
-  const ctx = getAudioCtx();
-  if (!ctx) return;
-  if (_muted || _sfxVol <= 0) return;
-
-  const now = ctx.currentTime;
-  const vol = def.vol * _sfxVol * (opts.volumeMult || 1);
-  const pitchMult = opts.pitchMult || 1;
-
-  if (def.arp) {
-    // Arpeggio: play notes in sequence
-    const noteLen = def.dur / def.arp.length;
-    def.arp.forEach((freq, i) => {
-      _playTone(ctx, {
-        type: def.type,
-        freq: freq * pitchMult,
-        start: now + i * noteLen,
-        dur: noteLen * 0.9,
-        vol,
-      });
-    });
-    return;
-  }
-
-  _playTone(ctx, {
-    type: def.type,
-    freq: def.freq * pitchMult,
-    start: now,
-    dur: def.dur,
-    vol,
-    slide: def.slide ? def.slide * pitchMult : 0,
-    noise: def.noise,
-  });
-}
-
-function _playTone(ctx, { type, freq, start, dur, vol, slide = 0, noise = false }) {
-  const gain = ctx.createGain();
-  gain.connect(ctx.destination);
-  gain.gain.setValueAtTime(vol, start);
-  gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
-
-  const osc = ctx.createOscillator();
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, start);
-  if (slide) {
-    osc.frequency.exponentialRampToValueAtTime(slide, start + dur);
-  }
-  osc.connect(gain);
-  osc.start(start);
-  osc.stop(start + dur + 0.05);
-
-  if (noise) {
-    // Add noise burst
-    const bufSize = ctx.sampleRate * dur;
-    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.3;
-    }
-    const noiseNode = ctx.createBufferSource();
-    noiseNode.buffer = buf;
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(vol * 0.5, start);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, start + dur);
-    noiseNode.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    noiseNode.start(start);
-    noiseNode.stop(start + dur + 0.05);
-  }
-}
-
-// ─── BGM (synthesized loops) ─────────────────────────────────────────
-
-/** @type {Howl|null} */
-let _bgmHowl = null;
-let _bgmId = null;
-let _currentBgmTrack = null;
-
-// Simple BGM: generate looping tones per theme
-// In production these would be real audio files. For now we use
-// Howler with generated buffers for a placeholder drone.
-
-const BGM_THEMES = {
-  menu: { baseFreq: 220, type: 'sine', vol: 0.06 },
-  modern: { baseFreq: 165, type: 'sine', vol: 0.05 },
-  gameboy: { baseFreq: 196, type: 'square', vol: 0.04 },
-  deepsea: { baseFreq: 147, type: 'sine', vol: 0.05 },
-  neon: { baseFreq: 185, type: 'triangle', vol: 0.05 },
-  volcano: { baseFreq: 110, type: 'sawtooth', vol: 0.04 },
-  vaporwave: { baseFreq: 233, type: 'sine', vol: 0.05 },
-  storm: { baseFreq: 130, type: 'triangle', vol: 0.04 },
-  arctic: { baseFreq: 262, type: 'sine', vol: 0.05 },
-  cosmos: { baseFreq: 196, type: 'triangle', vol: 0.05 },
-  nexus: { baseFreq: 175, type: 'sawtooth', vol: 0.04 },
-  boss: { baseFreq: 98, type: 'sawtooth', vol: 0.06 },
-};
-
-/**
- * Generate a short WAV buffer for BGM loop.
- * Creates an ambient drone/pad sound.
- */
-function generateBgmBuffer(theme) {
-  const def = BGM_THEMES[theme] || BGM_THEMES.menu;
-  const sampleRate = 44100;
-  const duration = 4; // 4-second loop
-  const samples = sampleRate * duration;
-  const channels = 1;
-  const buffer = new Float32Array(samples);
-
-  const baseFreq = def.baseFreq;
-  const fifth = baseFreq * 1.5;
-  const octave = baseFreq * 2;
-
-  for (let i = 0; i < samples; i++) {
-    const t = i / sampleRate;
-    // Base tone
-    let sample = Math.sin(2 * Math.PI * baseFreq * t) * 0.3;
-    // Fifth
-    sample += Math.sin(2 * Math.PI * fifth * t) * 0.15;
-    // Octave (gentle)
-    sample += Math.sin(2 * Math.PI * octave * t) * 0.1;
-    // Slow tremolo
-    sample *= 0.7 + 0.3 * Math.sin(2 * Math.PI * 0.5 * t);
-    // Fade in/out for smooth loop
-    const fadeSamples = sampleRate * 0.1;
-    if (i < fadeSamples) sample *= i / fadeSamples;
-    if (i > samples - fadeSamples) sample *= (samples - i) / fadeSamples;
-
-    buffer[i] = sample * def.vol;
-  }
-
-  return { buffer, sampleRate, channels, samples };
-}
-
-function createBgmWavBlob(theme) {
-  const { buffer, sampleRate, samples } = generateBgmBuffer(theme);
-  // Encode as WAV
-  const bytesPerSample = 2;
-  const blockAlign = bytesPerSample;
-  const dataSize = samples * bytesPerSample;
-  const wavBuffer = new ArrayBuffer(44 + dataSize);
-  const view = new DataView(wavBuffer);
-
-  // RIFF header
-  writeStr(view, 0, 'RIFF');
-  view.setUint32(4, 36 + dataSize, true);
-  writeStr(view, 8, 'WAVE');
-  writeStr(view, 12, 'fmt ');
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); // PCM
-  view.setUint16(22, 1, true); // mono
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * blockAlign, true);
-  view.setUint16(32, blockAlign, true);
-  view.setUint16(34, 16, true);
-  writeStr(view, 36, 'data');
-  view.setUint32(40, dataSize, true);
-
-  let offset = 44;
-  for (let i = 0; i < samples; i++) {
-    const s = Math.max(-1, Math.min(1, buffer[i]));
-    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    offset += 2;
-  }
-
-  return URL.createObjectURL(new Blob([wavBuffer], { type: 'audio/wav' }));
-}
-
-function writeStr(view, offset, str) {
-  for (let i = 0; i < str.length; i++) {
-    view.setUint8(offset + i, str.charCodeAt(i));
-  }
-}
+import * as Tone from 'tone';
 
 // ─── State ───────────────────────────────────────────────────────────
 
@@ -270,13 +23,814 @@ let _sfxVol = 0.7;
 let _musicVol = 0.4;
 let _muted = false;
 let _initialized = false;
+let _toneStarted = false;
+
+// ─── Shared Effects Chain ────────────────────────────────────────────
+
+/** Reverb for SFX (short, punchy). */
+let _sfxReverb = null;
+/** Limiter before master out. */
+let _sfxLimiter = null;
+
+function ensureSfxChain() {
+  if (_sfxReverb) return;
+  _sfxReverb = new Tone.Reverb({ decay: 0.6, wet: 0.15 }).toDestination();
+  _sfxLimiter = new Tone.Limiter(-3).connect(_sfxReverb);
+}
+
+async function ensureTone() {
+  if (_toneStarted) return true;
+  try {
+    await Tone.start();
+    _toneStarted = true;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// ─── SFX: Rich Synthesized Sounds ────────────────────────────────────
+
+/**
+ * Play a piece-move click.
+ * Layered: short noise tick + filtered square blip.
+ */
+function sfxMove() {
+  ensureSfxChain();
+  const vol = -24 + (_sfxVol - 0.7) * 20;
+
+  // Tick — filtered noise burst
+  const noise = new Tone.NoiseSynth({
+    noise: { type: 'white' },
+    envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.01 },
+    volume: vol - 4,
+  }).connect(_sfxLimiter);
+
+  // Blip
+  const blip = new Tone.Synth({
+    oscillator: { type: 'square' },
+    envelope: { attack: 0.001, decay: 0.025, sustain: 0, release: 0.01 },
+    volume: vol - 8,
+  }).connect(_sfxLimiter);
+
+  noise.triggerAttackRelease('16n');
+  blip.triggerAttackRelease('C6', '32n');
+  setTimeout(() => { noise.dispose(); blip.dispose(); }, 200);
+}
+
+/**
+ * Piece rotate — FM "whip" with filter sweep.
+ */
+function sfxRotate() {
+  ensureSfxChain();
+  const vol = -20 + (_sfxVol - 0.7) * 20;
+
+  const synth = new Tone.FMSynth({
+    harmonicity: 3.5,
+    modulationIndex: 8,
+    oscillator: { type: 'sine' },
+    modulation: { type: 'triangle' },
+    envelope: { attack: 0.001, decay: 0.06, sustain: 0, release: 0.04 },
+    modulationEnvelope: { attack: 0.001, decay: 0.04, sustain: 0, release: 0.03 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+
+  const filter = new Tone.AutoFilter({
+    frequency: '8n', baseFrequency: 800, octaves: 3,
+  }).connect(_sfxLimiter).start();
+  synth.connect(filter);
+
+  synth.triggerAttackRelease('G5', '32n');
+  setTimeout(() => { synth.dispose(); filter.dispose(); }, 300);
+}
+
+/**
+ * Piece lock — satisfying "thunk" with sub-bass thud + noise.
+ */
+function sfxLock() {
+  ensureSfxChain();
+  const vol = -16 + (_sfxVol - 0.7) * 20;
+
+  // Sub thud
+  const sub = new Tone.MembraneSynth({
+    pitchDecay: 0.04,
+    octaves: 3,
+    envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.08 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+
+  // Noise crunch
+  const crunch = new Tone.NoiseSynth({
+    noise: { type: 'brown' },
+    envelope: { attack: 0.001, decay: 0.06, sustain: 0, release: 0.03 },
+    volume: vol - 6,
+  }).connect(_sfxLimiter);
+
+  sub.triggerAttackRelease('C2', '16n');
+  crunch.triggerAttackRelease('32n');
+  setTimeout(() => { sub.dispose(); crunch.dispose(); }, 300);
+}
+
+/**
+ * Hard drop — heavy slam. Membrane + noise + distorted pluck.
+ */
+function sfxHardDrop() {
+  ensureSfxChain();
+  const vol = -12 + (_sfxVol - 0.7) * 20;
+
+  const membrane = new Tone.MembraneSynth({
+    pitchDecay: 0.06,
+    octaves: 4,
+    envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+
+  const noise = new Tone.NoiseSynth({
+    noise: { type: 'white' },
+    envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.08 },
+    volume: vol - 3,
+  }).connect(_sfxLimiter);
+
+  const dist = new Tone.Distortion(0.4).connect(_sfxLimiter);
+  const pluck = new Tone.PluckSynth({ volume: vol - 6 }).connect(dist);
+
+  membrane.triggerAttackRelease('C1', '8n');
+  noise.triggerAttackRelease('16n');
+  pluck.triggerAttackRelease('G1');
+  setTimeout(() => { membrane.dispose(); noise.dispose(); pluck.dispose(); dist.dispose(); }, 500);
+}
+
+/**
+ * Line clear — ascending chime. More lines = richer chord.
+ * Each line adds a harmony note, like Candy Crush match escalation.
+ */
+function sfxLineClear(lines) {
+  ensureSfxChain();
+  const vol = -16 + (_sfxVol - 0.7) * 20;
+
+  // Musical scale notes — C major pentatonic for pleasant sound
+  const scaleNotes = [
+    ['C5'],                       // 1 line
+    ['C5', 'E5'],                 // 2 lines
+    ['C5', 'E5', 'G5'],          // 3 lines
+    ['C5', 'E5', 'G5', 'C6'],    // 4 lines (Tetris!)
+  ];
+  const notes = scaleNotes[Math.min(lines, 4) - 1];
+
+  // Shimmer synth — detuned oscillators for chorus effect
+  notes.forEach((note, i) => {
+    const delay = i * 0.06; // stagger for arpeggio effect
+    const synth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.01, decay: 0.25 + lines * 0.05, sustain: 0.1, release: 0.3 },
+      volume: vol + lines * 1.5,
+    }).connect(_sfxLimiter);
+
+    // Detune for richness
+    const detuneSynth = new Tone.Synth({
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.25 },
+      volume: vol - 6,
+      detune: 7,
+    }).connect(_sfxLimiter);
+
+    setTimeout(() => {
+      synth.triggerAttackRelease([note], 0.2 + lines * 0.05);
+      detuneSynth.triggerAttackRelease(note, 0.15);
+    }, delay * 1000);
+
+    setTimeout(() => { synth.dispose(); detuneSynth.dispose(); }, 800 + lines * 100);
+  });
+
+  // Sparkle noise on top
+  if (lines >= 2) {
+    const shimmer = new Tone.MetalSynth({
+      frequency: 800 + lines * 200,
+      envelope: { attack: 0.001, decay: 0.15, release: 0.1 },
+      harmonicity: 5.1,
+      modulationIndex: 16,
+      resonance: 4000 + lines * 500,
+      octaves: 1.5,
+      volume: vol - 10,
+    }).connect(_sfxLimiter);
+    shimmer.triggerAttackRelease('32n');
+    setTimeout(() => shimmer.dispose(), 400);
+  }
+}
+
+/**
+ * Combo sound — plays a note from an ascending scale.
+ * Higher combo = higher pitch, like Candy Crush chain reactions.
+ */
+function sfxCombo(comboCount) {
+  ensureSfxChain();
+  const vol = -18 + (_sfxVol - 0.7) * 20;
+
+  // C major scale ascending — clamp at 2 octaves
+  const comboScale = ['C4', 'E4', 'G4', 'C5', 'E5', 'G5', 'C6', 'E6', 'G6', 'C7'];
+  const noteIdx = Math.min(comboCount - 1, comboScale.length - 1);
+
+  const synth = new Tone.FMSynth({
+    harmonicity: 2,
+    modulationIndex: 4,
+    oscillator: { type: 'sine' },
+    modulation: { type: 'triangle' },
+    envelope: { attack: 0.005, decay: 0.12, sustain: 0.05, release: 0.15 },
+    modulationEnvelope: { attack: 0.005, decay: 0.08, sustain: 0, release: 0.1 },
+    volume: vol + Math.min(comboCount, 6),
+  }).connect(_sfxLimiter);
+
+  synth.triggerAttackRelease(comboScale[noteIdx], '16n');
+  setTimeout(() => synth.dispose(), 400);
+}
+
+/**
+ * Level win — triumphant fanfare with chord arpeggio.
+ */
+function sfxLevelWin() {
+  ensureSfxChain();
+  const vol = -14 + (_sfxVol - 0.7) * 20;
+
+  const fanfare = ['C4', 'E4', 'G4', 'C5', 'E5', 'G5', 'C6'];
+  const noteLen = 0.08;
+
+  fanfare.forEach((note, i) => {
+    const synth = new Tone.Synth({
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.01, decay: 0.3 - i * 0.02, sustain: 0.15, release: 0.4 },
+      volume: vol + i * 0.5,
+    }).connect(_sfxLimiter);
+
+    const bell = new Tone.FMSynth({
+      harmonicity: 4,
+      modulationIndex: 2,
+      envelope: { attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.3 },
+      volume: vol - 8,
+    }).connect(_sfxLimiter);
+
+    setTimeout(() => {
+      synth.triggerAttackRelease(note, 0.2);
+      bell.triggerAttackRelease(note, 0.15);
+    }, i * noteLen * 1000);
+
+    setTimeout(() => { synth.dispose(); bell.dispose(); }, 1500);
+  });
+
+  // Cymbal shimmer at the end
+  setTimeout(() => {
+    const cymbal = new Tone.MetalSynth({
+      frequency: 300,
+      envelope: { attack: 0.001, decay: 0.4, release: 0.3 },
+      harmonicity: 5.1,
+      modulationIndex: 32,
+      resonance: 5000,
+      octaves: 1.5,
+      volume: vol - 8,
+    }).connect(_sfxLimiter);
+    cymbal.triggerAttackRelease('8n');
+    setTimeout(() => cymbal.dispose(), 800);
+  }, fanfare.length * noteLen * 1000);
+}
+
+/**
+ * Level fail — descending sad tones.
+ */
+function sfxLevelFail() {
+  ensureSfxChain();
+  const vol = -16 + (_sfxVol - 0.7) * 20;
+
+  const notes = ['E4', 'C4', 'A3', 'F3'];
+  notes.forEach((note, i) => {
+    const synth = new Tone.Synth({
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.02, decay: 0.25, sustain: 0.1, release: 0.3 },
+      volume: vol - i * 2,
+    }).connect(_sfxLimiter);
+
+    const lpFilter = new Tone.Filter({
+      frequency: 2000 - i * 400,
+      type: 'lowpass',
+      rolloff: -12,
+    }).connect(_sfxLimiter);
+    synth.connect(lpFilter);
+
+    setTimeout(() => {
+      synth.triggerAttackRelease(note, 0.2);
+    }, i * 120);
+    setTimeout(() => { synth.dispose(); lpFilter.dispose(); }, 800);
+  });
+}
+
+/**
+ * UI tap — clean, clicky.
+ */
+function sfxUiTap() {
+  ensureSfxChain();
+  const vol = -22 + (_sfxVol - 0.7) * 20;
+
+  const synth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.001, decay: 0.03, sustain: 0, release: 0.02 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+
+  synth.triggerAttackRelease('A5', '64n');
+  setTimeout(() => synth.dispose(), 150);
+}
+
+/**
+ * Star earn — bright sparkle arpeggio.
+ */
+function sfxStarEarn() {
+  ensureSfxChain();
+  const vol = -16 + (_sfxVol - 0.7) * 20;
+
+  const notes = ['E6', 'G6', 'B6', 'E7'];
+  notes.forEach((note, i) => {
+    const synth = new Tone.FMSynth({
+      harmonicity: 3,
+      modulationIndex: 6,
+      envelope: { attack: 0.005, decay: 0.15, sustain: 0.05, release: 0.2 },
+      volume: vol,
+    }).connect(_sfxLimiter);
+    setTimeout(() => synth.triggerAttackRelease(note, '32n'), i * 50);
+    setTimeout(() => synth.dispose(), 400);
+  });
+}
+
+/**
+ * Coin earn — classic coin "pling".
+ */
+function sfxCoinEarn() {
+  ensureSfxChain();
+  const vol = -18 + (_sfxVol - 0.7) * 20;
+
+  const synth = new Tone.FMSynth({
+    harmonicity: 5,
+    modulationIndex: 10,
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.06 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+  const synth2 = new Tone.FMSynth({
+    harmonicity: 5,
+    modulationIndex: 10,
+    envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.06 },
+    volume: vol - 4,
+  }).connect(_sfxLimiter);
+
+  synth.triggerAttackRelease('B5', '32n');
+  setTimeout(() => synth2.triggerAttackRelease('E6', '32n'), 60);
+  setTimeout(() => { synth.dispose(); synth2.dispose(); }, 300);
+}
+
+/**
+ * Power-up activate — rising whoosh with shimmer.
+ */
+function sfxPowerup() {
+  ensureSfxChain();
+  const vol = -14 + (_sfxVol - 0.7) * 20;
+
+  const synth = new Tone.FMSynth({
+    harmonicity: 2,
+    modulationIndex: 12,
+    envelope: { attack: 0.02, decay: 0.2, sustain: 0.1, release: 0.2 },
+    modulationEnvelope: { attack: 0.02, decay: 0.15, sustain: 0, release: 0.1 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+
+  const shimmer = new Tone.MetalSynth({
+    frequency: 600,
+    envelope: { attack: 0.01, decay: 0.2, release: 0.15 },
+    volume: vol - 8,
+  }).connect(_sfxLimiter);
+
+  synth.triggerAttackRelease('C4', '8n');
+  setTimeout(() => synth.triggerAttackRelease('C5', '16n'), 100);
+  shimmer.triggerAttackRelease('16n');
+  setTimeout(() => { synth.dispose(); shimmer.dispose(); }, 600);
+}
+
+/**
+ * Boss attack — menacing low rumble.
+ */
+function sfxBossAttack() {
+  ensureSfxChain();
+  const vol = -12 + (_sfxVol - 0.7) * 20;
+
+  const membrane = new Tone.MembraneSynth({
+    pitchDecay: 0.08,
+    octaves: 5,
+    envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.2 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+
+  const noise = new Tone.NoiseSynth({
+    noise: { type: 'brown' },
+    envelope: { attack: 0.01, decay: 0.25, sustain: 0, release: 0.15 },
+    volume: vol - 4,
+  }).connect(_sfxLimiter);
+
+  const dist = new Tone.Distortion(0.6).connect(_sfxLimiter);
+  const metal = new Tone.MetalSynth({
+    frequency: 60,
+    envelope: { attack: 0.01, decay: 0.2, release: 0.1 },
+    harmonicity: 2,
+    modulationIndex: 20,
+    volume: vol - 6,
+  }).connect(dist);
+
+  membrane.triggerAttackRelease('E1', '8n');
+  noise.triggerAttackRelease('8n');
+  metal.triggerAttackRelease('16n');
+  setTimeout(() => { membrane.dispose(); noise.dispose(); metal.dispose(); dist.dispose(); }, 600);
+}
+
+/**
+ * Boss defeat — epic triumphant explosion.
+ */
+function sfxBossDefeat() {
+  ensureSfxChain();
+  const vol = -12 + (_sfxVol - 0.7) * 20;
+
+  // Ascending power chord
+  const chord = ['C4', 'G4', 'C5', 'E5', 'G5', 'C6'];
+  chord.forEach((note, i) => {
+    const synth = new Tone.Synth({
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.01, decay: 0.4 - i * 0.03, sustain: 0.1, release: 0.5 },
+      volume: vol - 4 + i,
+    }).connect(_sfxLimiter);
+
+    setTimeout(() => synth.triggerAttackRelease(note, 0.3), i * 70);
+    setTimeout(() => synth.dispose(), 1500);
+  });
+
+  // Cymbal crash
+  setTimeout(() => {
+    const crash = new Tone.MetalSynth({
+      frequency: 200,
+      envelope: { attack: 0.001, decay: 0.6, release: 0.4 },
+      harmonicity: 5.1,
+      modulationIndex: 40,
+      resonance: 5000,
+      octaves: 2,
+      volume: vol - 6,
+    }).connect(_sfxLimiter);
+    crash.triggerAttackRelease('4n');
+    setTimeout(() => crash.dispose(), 1200);
+  }, 200);
+}
+
+/**
+ * Hold piece — quick swap sound.
+ */
+function sfxHold() {
+  ensureSfxChain();
+  const vol = -20 + (_sfxVol - 0.7) * 20;
+
+  const synth = new Tone.FMSynth({
+    harmonicity: 2.5,
+    modulationIndex: 5,
+    envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.04 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+  const synth2 = new Tone.FMSynth({
+    harmonicity: 2.5,
+    modulationIndex: 5,
+    envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.04 },
+    volume: vol - 4,
+  }).connect(_sfxLimiter);
+
+  synth.triggerAttackRelease('D5', '64n');
+  setTimeout(() => synth2.triggerAttackRelease('A5', '64n'), 30);
+  setTimeout(() => { synth.dispose(); synth2.dispose(); }, 200);
+}
+
+/**
+ * Soft drop tick — very subtle.
+ */
+function sfxSoftDrop() {
+  ensureSfxChain();
+  const vol = -28 + (_sfxVol - 0.7) * 20;
+
+  const synth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.01 },
+    volume: vol,
+  }).connect(_sfxLimiter);
+  synth.triggerAttackRelease('E5', '64n');
+  setTimeout(() => synth.dispose(), 100);
+}
+
+/** SFX dispatch map. */
+const SFX_MAP = {
+  move: sfxMove,
+  rotate: sfxRotate,
+  lock: sfxLock,
+  softdrop: sfxSoftDrop,
+  harddrop: sfxHardDrop,
+  clear1: () => sfxLineClear(1),
+  clear2: () => sfxLineClear(2),
+  clear3: () => sfxLineClear(3),
+  clear4: () => sfxLineClear(4),
+  combo: () => sfxCombo(2),
+  levelWin: sfxLevelWin,
+  levelFail: sfxLevelFail,
+  uiTap: sfxUiTap,
+  starEarn: sfxStarEarn,
+  coinEarn: sfxCoinEarn,
+  powerup: sfxPowerup,
+  bossAttack: sfxBossAttack,
+  bossDefeat: sfxBossDefeat,
+  hold: sfxHold,
+};
+
+// ─── BGM: Procedural Per-World Music via Tone.js ─────────────────────
+
+/**
+ * Each world theme has:
+ * - A chord progression (4 chords looping)
+ * - A synth pad for harmonic bed
+ * - An arpeggio pattern for melody
+ * - A bass line
+ * - Optional percussion
+ * - Tempo + key signature
+ */
+
+const WORLD_MUSIC = {
+  menu: {
+    name: 'Menu',
+    bpm: 90,
+    chords: [['C4', 'E4', 'G4'], ['F4', 'A4', 'C5'], ['G4', 'B4', 'D5'], ['C4', 'E4', 'G4']],
+    arp: ['C5', 'E5', 'G5', 'E5', 'C5', 'G4', 'E4', 'G4'],
+    bass: ['C2', 'F2', 'G2', 'C2'],
+    padType: 'sine',
+    arpType: 'triangle',
+    style: 'gentle',
+  },
+  modern: {
+    name: 'Meadow',
+    bpm: 110,
+    chords: [['C4', 'E4', 'G4'], ['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['G3', 'B3', 'D4']],
+    arp: ['E5', 'G5', 'C6', 'G5', 'E5', 'D5', 'C5', 'D5'],
+    bass: ['C2', 'A1', 'F2', 'G2'],
+    padType: 'sine',
+    arpType: 'triangle',
+    style: 'bright',
+  },
+  deepsea: {
+    name: 'Deep Sea',
+    bpm: 80,
+    chords: [['D3', 'F3', 'A3'], ['Bb3', 'D4', 'F4'], ['C4', 'E4', 'G4'], ['A3', 'C4', 'E4']],
+    arp: ['A4', 'D5', 'F5', 'A5', 'F5', 'D5', 'C5', 'A4'],
+    bass: ['D2', 'Bb1', 'C2', 'A1'],
+    padType: 'sine',
+    arpType: 'sine',
+    style: 'ethereal',
+  },
+  volcano: {
+    name: 'Volcano',
+    bpm: 130,
+    chords: [['E3', 'G3', 'B3'], ['C3', 'E3', 'G3'], ['D3', 'F3', 'A3'], ['E3', 'G#3', 'B3']],
+    arp: ['E4', 'G4', 'B4', 'E5', 'B4', 'G4', 'F#4', 'E4'],
+    bass: ['E1', 'C2', 'D2', 'E1'],
+    padType: 'sawtooth',
+    arpType: 'square',
+    style: 'aggressive',
+  },
+  storm: {
+    name: 'Storm',
+    bpm: 120,
+    chords: [['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['D3', 'F3', 'A3'], ['E3', 'G#3', 'B3']],
+    arp: ['A4', 'C5', 'E5', 'A5', 'E5', 'C5', 'B4', 'A4'],
+    bass: ['A1', 'F2', 'D2', 'E2'],
+    padType: 'triangle',
+    arpType: 'sawtooth',
+    style: 'intense',
+  },
+  arctic: {
+    name: 'Arctic',
+    bpm: 85,
+    chords: [['E4', 'G#4', 'B4'], ['C#4', 'E4', 'G#4'], ['A3', 'C#4', 'E4'], ['B3', 'D#4', 'F#4']],
+    arp: ['B5', 'G#5', 'E5', 'B4', 'E5', 'G#5', 'C#6', 'B5'],
+    bass: ['E2', 'C#2', 'A1', 'B1'],
+    padType: 'sine',
+    arpType: 'sine',
+    style: 'crystalline',
+  },
+  cosmos: {
+    name: 'Cosmos',
+    bpm: 95,
+    chords: [['D4', 'F#4', 'A4'], ['B3', 'D4', 'F#4'], ['G3', 'B3', 'D4'], ['A3', 'C#4', 'E4']],
+    arp: ['D5', 'F#5', 'A5', 'D6', 'A5', 'F#5', 'E5', 'D5'],
+    bass: ['D2', 'B1', 'G1', 'A1'],
+    padType: 'triangle',
+    arpType: 'sine',
+    style: 'spacey',
+  },
+  nexus: {
+    name: 'Nexus',
+    bpm: 140,
+    chords: [['A3', 'C#4', 'E4'], ['F#3', 'A3', 'C#4'], ['D3', 'F#3', 'A3'], ['E3', 'G#3', 'B3']],
+    arp: ['A4', 'C#5', 'E5', 'A5', 'E5', 'C#5', 'B4', 'A4'],
+    bass: ['A1', 'F#1', 'D2', 'E2'],
+    padType: 'sawtooth',
+    arpType: 'square',
+    style: 'cyberpunk',
+  },
+  boss: {
+    name: 'Boss',
+    bpm: 145,
+    chords: [['E3', 'G3', 'Bb3'], ['D3', 'F3', 'A3'], ['C3', 'Eb3', 'G3'], ['D3', 'F#3', 'A3']],
+    arp: ['E4', 'Bb4', 'E5', 'Bb4', 'G4', 'E4', 'D4', 'E4'],
+    bass: ['E1', 'D1', 'C1', 'D1'],
+    padType: 'sawtooth',
+    arpType: 'square',
+    style: 'menacing',
+  },
+};
+// Aliases
+WORLD_MUSIC.neon = { ...WORLD_MUSIC.modern, name: 'Neon', bpm: 118, style: 'bright' };
+WORLD_MUSIC.vaporwave = { ...WORLD_MUSIC.deepsea, name: 'Vaporwave', bpm: 75, style: 'ethereal' };
+WORLD_MUSIC.gameboy = { ...WORLD_MUSIC.modern, name: 'Gameboy', bpm: 105, arpType: 'square', padType: 'square', style: 'chiptune' };
+
+/** Active BGM parts */
+let _bgmParts = null;
+let _currentBgmTrack = null;
+
+/**
+ * Create and start a procedural BGM track.
+ */
+function startBgm(theme) {
+  const def = WORLD_MUSIC[theme] || WORLD_MUSIC.menu;
+  Tone.getTransport().bpm.value = def.bpm;
+
+  // Master volume for BGM
+  const bgmGain = new Tone.Gain(_musicVol * 0.5).toDestination();
+
+  // --- Pad (chord bed) ---
+  const padFilter = new Tone.Filter({
+    frequency: def.style === 'aggressive' || def.style === 'menacing' ? 3000 : 1500,
+    type: 'lowpass',
+    rolloff: -12,
+  }).connect(bgmGain);
+
+  const padReverb = new Tone.Reverb({
+    decay: ['ethereal', 'crystalline', 'spacey'].includes(def.style) ? 4 : 2,
+    wet: 0.4,
+  }).connect(padFilter);
+
+  const pad = new Tone.PolySynth(Tone.Synth, {
+    oscillator: { type: def.padType },
+    envelope: {
+      attack: def.style === 'aggressive' ? 0.1 : 0.5,
+      decay: 0.3,
+      sustain: 0.6,
+      release: 1.0,
+    },
+    volume: -18,
+  }).connect(padReverb);
+
+  const padPart = new Tone.Sequence((time, chordIdx) => {
+    const chord = def.chords[chordIdx];
+    if (chord) {
+      pad.triggerAttackRelease(chord, '2n', time);
+    }
+  }, [0, 1, 2, 3], '1n');
+
+  // --- Arpeggio ---
+  const arpDelay = new Tone.FeedbackDelay({
+    delayTime: '16n',
+    feedback: 0.2,
+    wet: 0.15,
+  }).connect(bgmGain);
+
+  const arpSynth = new Tone.Synth({
+    oscillator: { type: def.arpType },
+    envelope: {
+      attack: 0.005,
+      decay: 0.1,
+      sustain: 0.05,
+      release: 0.15,
+    },
+    volume: -22,
+  }).connect(arpDelay);
+
+  const arpPart = new Tone.Sequence((time, note) => {
+    if (note) {
+      arpSynth.triggerAttackRelease(note, '16n', time);
+    }
+  }, def.arp, '8n');
+
+  // --- Bass ---
+  const bassFilter = new Tone.Filter({
+    frequency: 400,
+    type: 'lowpass',
+    rolloff: -24,
+  }).connect(bgmGain);
+
+  const bassSynth = new Tone.MonoSynth({
+    oscillator: { type: 'triangle' },
+    envelope: { attack: 0.05, decay: 0.3, sustain: 0.4, release: 0.3 },
+    filterEnvelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.2, baseFrequency: 100, octaves: 2 },
+    volume: -16,
+  }).connect(bassFilter);
+
+  const bassPart = new Tone.Sequence((time, note) => {
+    if (note) {
+      bassSynth.triggerAttackRelease(note, '2n', time);
+    }
+  }, def.bass, '1n');
+
+  // --- Percussion (only for energetic styles) ---
+  let kickPart = null;
+  let hihatPart = null;
+  let kickSynth = null;
+  let hihatSynth = null;
+
+  const hasPercussion = ['aggressive', 'intense', 'menacing', 'cyberpunk', 'bright', 'chiptune'].includes(def.style);
+  if (hasPercussion) {
+    kickSynth = new Tone.MembraneSynth({
+      pitchDecay: 0.02,
+      octaves: 4,
+      envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 },
+      volume: -20,
+    }).connect(bgmGain);
+
+    hihatSynth = new Tone.MetalSynth({
+      frequency: 400,
+      envelope: { attack: 0.001, decay: 0.05, release: 0.03 },
+      harmonicity: 5.1,
+      modulationIndex: 32,
+      resonance: 4000,
+      octaves: 1,
+      volume: -28,
+    }).connect(bgmGain);
+
+    // Kick on beats 1 and 3
+    kickPart = new Tone.Sequence((time, vel) => {
+      if (vel) kickSynth.triggerAttackRelease('C1', '16n', time, vel);
+    }, [1, null, null, null, 0.8, null, null, null], '8n');
+
+    // Hi-hat on every 8th note
+    hihatPart = new Tone.Sequence((time, vel) => {
+      if (vel) hihatSynth.triggerAttackRelease('32n', time, vel);
+    }, [0.3, 0.6, 0.3, 0.6, 0.3, 0.6, 0.3, 0.6], '8n');
+
+    kickPart.start(0);
+    hihatPart.start(0);
+  }
+
+  padPart.start(0);
+  arpPart.start(0);
+  bassPart.start(0);
+
+  Tone.getTransport().start();
+
+  _bgmParts = {
+    bgmGain,
+    pad, padPart, padFilter, padReverb,
+    arpSynth, arpPart, arpDelay,
+    bassSynth, bassPart, bassFilter,
+    kickSynth, kickPart,
+    hihatSynth, hihatPart,
+  };
+}
+
+/**
+ * Stop and clean up all BGM parts.
+ */
+function stopBgmParts() {
+  if (!_bgmParts) return;
+  Tone.getTransport().stop();
+  Tone.getTransport().cancel();
+
+  const p = _bgmParts;
+  p.padPart?.stop(); p.padPart?.dispose();
+  p.arpPart?.stop(); p.arpPart?.dispose();
+  p.bassPart?.stop(); p.bassPart?.dispose();
+  p.kickPart?.stop(); p.kickPart?.dispose();
+  p.hihatPart?.stop(); p.hihatPart?.dispose();
+  p.pad?.dispose();
+  p.arpSynth?.dispose();
+  p.bassSynth?.dispose();
+  p.kickSynth?.dispose();
+  p.hihatSynth?.dispose();
+  p.padFilter?.dispose();
+  p.padReverb?.dispose();
+  p.arpDelay?.dispose();
+  p.bassFilter?.dispose();
+  p.bgmGain?.dispose();
+
+  _bgmParts = null;
+}
 
 // ─── Public API ──────────────────────────────────────────────────────
 
 export const audio = {
   /**
    * Initialize audio system. Call once after user gesture.
-   * Respects persisted settings.
    */
   init(settings = {}) {
     if (_initialized) return;
@@ -285,9 +839,9 @@ export const audio = {
     if (settings.soundEnabled === false) _muted = true;
     if (settings.musicEnabled === false) _musicVol = 0;
 
-    // Unlock audio context on first user interaction
-    const unlock = () => {
-      getAudioCtx();
+    // Start Tone.js on first user interaction
+    const unlock = async () => {
+      await ensureTone();
       document.removeEventListener('touchstart', unlock);
       document.removeEventListener('click', unlock);
     };
@@ -297,34 +851,36 @@ export const audio = {
 
   /**
    * Play a sound effect.
-   * @param {string} name — SFX name (key in SFX_DEFS)
-   * @param {object} [opts] — { pitchMult, volumeMult }
+   * @param {string} name — SFX name
+   * @param {object} [_opts] — reserved for future use
    */
-  playSfx(name, opts) {
-    if (_muted) return;
-    playSynthSfx(name, opts);
-  },
-
-  /**
-   * Play line clear SFX based on count.
-   * @param {number} lines — 1-4
-   * @param {number} [combo] — current combo count for pitch scaling
-   */
-  playLineClear(lines, combo = 0) {
-    if (_muted) return;
-    const name = `clear${Math.min(lines, 4)}`;
-    const pitchMult = combo > 1 ? 1 + (combo - 1) * 0.08 : 1;
-    playSynthSfx(name, { pitchMult });
-    if (combo > 1) {
-      playSynthSfx('combo', { pitchMult: 1 + combo * 0.1 });
+  playSfx(name, _opts) {
+    if (_muted || _sfxVol <= 0) return;
+    if (!_toneStarted) return;
+    const fn = SFX_MAP[name];
+    if (fn) {
+      try { fn(); } catch { /* audio not available */ }
     }
   },
 
   /**
-   * Play BGM for a theme.
-   * @param {string} theme — 'menu', 'modern', 'boss', etc.
+   * Play line clear SFX + combo based on count.
+   * @param {number} lines — 1-4
+   * @param {number} [combo] — current combo count
    */
-  playBgm(theme) {
+  playLineClear(lines, combo = 0) {
+    if (_muted || _sfxVol <= 0 || !_toneStarted) return;
+    try {
+      sfxLineClear(lines);
+      if (combo > 1) sfxCombo(combo);
+    } catch { /* audio not available */ }
+  },
+
+  /**
+   * Play BGM for a world theme.
+   * @param {string} theme — 'menu', 'modern', 'deepsea', etc.
+   */
+  async playBgm(theme) {
     if (_currentBgmTrack === theme) return;
     this.stopBgm();
 
@@ -333,15 +889,11 @@ export const audio = {
       return;
     }
 
+    const ok = await ensureTone();
+    if (!ok) return;
+
     try {
-      const url = createBgmWavBlob(theme);
-      _bgmHowl = new Howl({
-        src: [url],
-        loop: true,
-        volume: _musicVol,
-        format: ['wav'],
-      });
-      _bgmId = _bgmHowl.play();
+      startBgm(theme);
       _currentBgmTrack = theme;
     } catch {
       // Audio not available
@@ -350,23 +902,18 @@ export const audio = {
 
   /** Stop current BGM. */
   stopBgm() {
-    if (_bgmHowl) {
-      _bgmHowl.stop();
-      _bgmHowl.unload();
-      _bgmHowl = null;
-      _bgmId = null;
-    }
+    stopBgmParts();
     _currentBgmTrack = null;
   },
 
-  /** Pause BGM (e.g., when game pauses). */
+  /** Pause BGM. */
   pauseBgm() {
-    if (_bgmHowl && _bgmId !== null) _bgmHowl.pause(_bgmId);
+    if (_bgmParts) Tone.getTransport().pause();
   },
 
-  /** Resume BGM after pause. */
+  /** Resume BGM. */
   resumeBgm() {
-    if (_bgmHowl && _bgmId !== null) _bgmHowl.play(_bgmId);
+    if (_bgmParts) Tone.getTransport().start();
   },
 
   /** @param {number} vol — 0..1 */
@@ -377,24 +924,21 @@ export const audio = {
   /** @param {number} vol — 0..1 */
   setMusicVolume(vol) {
     _musicVol = Math.max(0, Math.min(1, vol));
-    if (_bgmHowl) _bgmHowl.volume(_musicVol);
-    Howler.volume(_musicVol);
+    if (_bgmParts?.bgmGain) {
+      _bgmParts.bgmGain.gain.value = _musicVol * 0.5;
+    }
   },
 
   /** Toggle global mute. */
   toggleMute() {
     _muted = !_muted;
-    Howler.mute(_muted);
-    if (_muted) {
-      this.stopBgm();
-    }
+    if (_muted) this.stopBgm();
     return _muted;
   },
 
   /** @param {boolean} m */
   setMuted(m) {
     _muted = m;
-    Howler.mute(_muted);
     if (_muted) this.stopBgm();
   },
 

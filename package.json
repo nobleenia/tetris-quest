@@ -35,6 +35,6 @@
     "vite-plugin-pwa": "^1.2.0"
   },
   "dependencies": {
-    "howler": "^2.2.4"
+    "tone": "^15.1.22"
   }
 }
