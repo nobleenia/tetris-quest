@@ -193,6 +193,8 @@ function tryMove(st, dx, dy) {
 // ─── Main Loop ───────────────────────────────────────────────────────
 const loop = createLoop({
   onUpdate: (dt) => {
+    // Only tick the simulation when the game scene is active
+    if (sceneManager.current() !== 'game') return;
     if (state.paused || state.gameOver) return;
 
     simAcc += dt;
@@ -310,6 +312,9 @@ const loop = createLoop({
   },
 
   onRender: () => {
+    // Only render game elements when the game scene is active
+    if (sceneManager.current() !== 'game') return;
+
     renderBoardDiff(boardDOM.cells, state.prevVisible, state.nextVisible);
     renderPreview(previewDOM, state.nextId, 0);
     renderPreview(holdDOM, state.holdId, 0);

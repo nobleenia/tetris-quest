@@ -23,7 +23,7 @@ export function createHUD() {
       elDailyBest.textContent = `${m}:${r.toString().padStart(2, '0')}`;
     },
     setPaused(paused) {
-      pauseOverlay.classList.toggle('hidden', !paused);
+      if (pauseOverlay) pauseOverlay.classList.toggle('hidden', !paused);
     },
     showGameOver(score) {
       if (!gameOverOverlay) return;

@@ -108,6 +108,13 @@ export const gameScene = {
     if (ctx && ctx.state) {
       ctx.state.paused = true;
     }
+
+    // Force-hide legacy overlays so they don't bleed into other scenes
+    const pauseOv = document.querySelector('#pauseOverlay');
+    if (pauseOv) pauseOv.classList.add('hidden');
+    const goOv = document.querySelector('#gameOverOverlay');
+    if (goOv) goOv.classList.add('hidden');
+
     // Clear objective HUD
     updateObjectiveHUD(null);
   },
