@@ -25,6 +25,7 @@ import { createViewport } from './engine/viewport.js';
 import { createSceneManager } from './scenes/manager.js';
 import { createRouter } from './scenes/router.js';
 import { homeScene } from './scenes/home.js';
+import { playMenuScene } from './scenes/playMenu.js';
 import { mapScene } from './scenes/map.js';
 import { briefingScene } from './scenes/briefing.js';
 import { gameScene } from './scenes/game.js';
@@ -101,7 +102,7 @@ initAuth().then(() => syncProgress()).catch(() => {});
 // Scene manager + router — Phase 3: fully scene-driven
 const sceneCtx = { state, input, controls, touch, viewport, session, hud, juice, router: null };
 const sceneManager = createSceneManager({
-  scenes: [homeScene, mapScene, briefingScene, gameScene, resultsScene, shopScene, leaderboardScene, accountScene],
+  scenes: [homeScene, playMenuScene, mapScene, briefingScene, gameScene, resultsScene, shopScene, leaderboardScene, accountScene],
   container: document.body,
   ctx: sceneCtx,
 });

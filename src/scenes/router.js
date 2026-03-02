@@ -80,6 +80,13 @@ export function createRouter(sceneManager) {
       },
     },
     {
+      pattern: /^#\/play-menu$/,
+      scene: 'play-menu',
+      parseParams() {
+        return {};
+      },
+    },
+    {
       // Catch-all → home
       pattern: /^#?\/?$/,
       scene: 'home',
