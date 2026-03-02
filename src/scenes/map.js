@@ -236,6 +236,9 @@ async function renderLevelGrid(worldId) {
           html += `</div>`;
         }
 
+        // Difficulty tag
+        const diffTag = level.difficulty ? getDifficultyLabel(level.difficulty) : null;
+
         // Level node
         html += /* html */ `
           <button class="map__node ${nodeClass} ${isBoss ? 'map__node--boss' : ''}"
@@ -244,6 +247,7 @@ async function renderLevelGrid(worldId) {
                   data-level="${levelNum}"
                   data-level-id="${level.id}"
                   ${!isReached ? 'disabled' : ''}>
+            ${diffTag ? `<span class="map__node-tag map__node-tag--${level.difficulty}">${diffTag}</span>` : ''}
             <span class="map__node-face">
               <span class="map__node-num">${isBoss ? '👑' : levelNum}</span>
             </span>
@@ -263,6 +267,19 @@ async function renderLevelGrid(worldId) {
     levelsEl.innerHTML = `<p class="map__error">Failed to load levels</p>`;
     console.error('[map] Failed to load world data', err);
   }
+}
+
+/** Human-readable difficulty labels */
+function getDifficultyLabel(tag) {
+  const labels = {
+    'hard': 'Hard',
+    'very-hard': 'Very Hard',
+    'extremely-hard': 'Extremely Hard',
+    'nearly-impossible': 'Nearly Impossible',
+    'variable': 'Variable',
+    'impossible': 'Impossible',
+  };
+  return labels[tag] || null;
 }
 
 /** Tetromino decoration characters for road segments */

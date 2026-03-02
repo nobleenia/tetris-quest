@@ -25,8 +25,14 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "piecesUnder", "value": 15 },
-        "three": { "type": "piecesUnder", "value": 9 }
+        "two": {
+          "type": "piecesUnder",
+          "value": 15
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 9
+        }
       }
     },
     {
@@ -47,8 +53,14 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "piecesUnder", "value": 20 },
-        "three": { "type": "piecesUnder", "value": 12 }
+        "two": {
+          "type": "piecesUnder",
+          "value": 20
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 12
+        }
       }
     },
     {
@@ -64,13 +76,19 @@
       },
       "gravity": {
         "baseInterval": 1.2,
-        "minInterval": 1.0,
+        "minInterval": 1,
         "pressureRate": 0
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "piecesUnder", "value": 25 },
-        "three": { "type": "piecesUnder", "value": 16 }
+        "two": {
+          "type": "piecesUnder",
+          "value": 25
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 16
+        }
       }
     },
     {
@@ -90,8 +108,14 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 650 },
-        "three": { "type": "score", "value": 1000 }
+        "two": {
+          "type": "score",
+          "value": 650
+        },
+        "three": {
+          "type": "score",
+          "value": 1000
+        }
       }
     },
     {
@@ -105,14 +129,20 @@
         "description": "Survive for 45 seconds."
       },
       "gravity": {
-        "baseInterval": 1.0,
+        "baseInterval": 1,
         "minInterval": 0.5,
         "pressureRate": 0.6
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 500 },
-        "three": { "type": "score", "value": 900 }
+        "two": {
+          "type": "score",
+          "value": 500
+        },
+        "three": {
+          "type": "score",
+          "value": 900
+        }
       }
     },
     {
@@ -129,15 +159,22 @@
         "timeLimit": 120
       },
       "gravity": {
-        "baseInterval": 1.0,
+        "baseInterval": 1,
         "minInterval": 0.7,
         "pressureRate": 0.3
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "time", "value": 90 },
-        "three": { "type": "time", "value": 60 }
-      }
+        "two": {
+          "type": "time",
+          "value": 90
+        },
+        "three": {
+          "type": "time",
+          "value": 60
+        }
+      },
+      "difficulty": "extremely-hard"
     },
     {
       "id": "1-7",
@@ -159,9 +196,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 1200 },
-        "three": { "type": "score", "value": 1800 }
-      }
+        "two": {
+          "type": "score",
+          "value": 1200
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "difficulty": "hard"
     },
     {
       "id": "1-8",
@@ -177,15 +221,22 @@
         "pieceLimit": 30
       },
       "gravity": {
-        "baseInterval": 1.0,
+        "baseInterval": 1,
         "minInterval": 0.8,
         "pressureRate": 0
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "piecesUnder", "value": 25 },
-        "three": { "type": "piecesUnder", "value": 18 }
-      }
+        "two": {
+          "type": "piecesUnder",
+          "value": 25
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 18
+        }
+      },
+      "difficulty": "hard"
     },
     {
       "id": "1-9",
@@ -204,9 +255,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 800 },
-        "three": { "type": "score", "value": 1500 }
-      }
+        "two": {
+          "type": "score",
+          "value": 800
+        },
+        "three": {
+          "type": "score",
+          "value": 1500
+        }
+      },
+      "difficulty": "hard"
     },
     {
       "id": "1-10",
@@ -225,9 +283,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "time", "value": 120 },
-        "three": { "type": "time", "value": 80 }
-      }
+        "two": {
+          "type": "time",
+          "value": 120
+        },
+        "three": {
+          "type": "time",
+          "value": 80
+        }
+      },
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "1-11",
@@ -246,9 +311,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 700 },
-        "three": { "type": "score", "value": 1200 }
-      }
+        "two": {
+          "type": "score",
+          "value": 700
+        },
+        "three": {
+          "type": "score",
+          "value": 1200
+        }
+      },
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "1-12",
@@ -270,9 +342,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "time", "value": 70 },
-        "three": { "type": "time", "value": 50 }
-      }
+        "two": {
+          "type": "time",
+          "value": 70
+        },
+        "three": {
+          "type": "time",
+          "value": 50
+        }
+      },
+      "difficulty": "very-hard"
     },
     {
       "id": "1-13",
@@ -294,9 +373,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 2200 },
-        "three": { "type": "score", "value": 3000 }
-      }
+        "two": {
+          "type": "score",
+          "value": 2200
+        },
+        "three": {
+          "type": "score",
+          "value": 3000
+        }
+      },
+      "difficulty": "hard"
     },
     {
       "id": "1-14",
@@ -318,9 +404,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "piecesUnder", "value": 30 },
-        "three": { "type": "piecesUnder", "value": 22 }
-      }
+        "two": {
+          "type": "piecesUnder",
+          "value": 30
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 22
+        }
+      },
+      "difficulty": "very-hard"
     },
     {
       "id": "1-15",
@@ -339,9 +432,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 1000 },
-        "three": { "type": "score", "value": 1800 }
-      }
+        "two": {
+          "type": "score",
+          "value": 1000
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "difficulty": "hard"
     },
     {
       "id": "1-16",
@@ -359,14 +459,27 @@
         "pressureRate": 1.2
       },
       "speedEvents": [
-        { "atSeconds": 30, "newBaseInterval": 0.6 },
-        { "atSeconds": 60, "newBaseInterval": 0.45 }
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.6
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.45
+        }
       ],
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 1200 },
-        "three": { "type": "score", "value": 2000 }
-      }
+        "two": {
+          "type": "score",
+          "value": 1200
+        },
+        "three": {
+          "type": "score",
+          "value": 2000
+        }
+      },
+      "difficulty": "very-hard"
     },
     {
       "id": "1-17",
@@ -388,9 +501,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "time", "value": 110 },
-        "three": { "type": "time", "value": 75 }
-      }
+        "two": {
+          "type": "time",
+          "value": 110
+        },
+        "three": {
+          "type": "time",
+          "value": 75
+        }
+      },
+      "difficulty": "hard"
     },
     {
       "id": "1-18",
@@ -411,14 +531,27 @@
         "pressureRate": 0.8
       },
       "speedEvents": [
-        { "atSeconds": 40, "newBaseInterval": 0.55 },
-        { "atSeconds": 80, "newBaseInterval": 0.4 }
+        {
+          "atSeconds": 40,
+          "newBaseInterval": 0.55
+        },
+        {
+          "atSeconds": 80,
+          "newBaseInterval": 0.4
+        }
       ],
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 3500 },
-        "three": { "type": "score", "value": 5000 }
-      }
+        "two": {
+          "type": "score",
+          "value": 3500
+        },
+        "three": {
+          "type": "score",
+          "value": 5000
+        }
+      },
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "1-19",
@@ -440,9 +573,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "piecesUnder", "value": 45 },
-        "three": { "type": "piecesUnder", "value": 35 }
-      }
+        "two": {
+          "type": "piecesUnder",
+          "value": 45
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 35
+        }
+      },
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "1-20",
@@ -459,9 +599,21 @@
         "hp": 30,
         "attackInterval": 8,
         "phases": [
-          { "hpThreshold": 1.0, "attackInterval": 8, "rowCount": 1 },
-          { "hpThreshold": 0.5, "attackInterval": 6, "rowCount": 2 },
-          { "hpThreshold": 0.25, "attackInterval": 4, "rowCount": 2 }
+          {
+            "hpThreshold": 1,
+            "attackInterval": 8,
+            "rowCount": 1
+          },
+          {
+            "hpThreshold": 0.5,
+            "attackInterval": 6,
+            "rowCount": 2
+          },
+          {
+            "hpThreshold": 0.25,
+            "attackInterval": 4,
+            "rowCount": 2
+          }
         ]
       },
       "gravity": {
@@ -471,9 +623,16 @@
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 3000 },
-        "three": { "type": "score", "value": 5000 }
-      }
+        "two": {
+          "type": "score",
+          "value": 3000
+        },
+        "three": {
+          "type": "score",
+          "value": 5000
+        }
+      },
+      "difficulty": "impossible"
     }
   ]
 }

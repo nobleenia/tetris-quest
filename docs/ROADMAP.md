@@ -82,21 +82,46 @@
 - [x] World 9 "Starfield": 20 levels — gravity flip
 - [x] World 10 "The Nexus": 20 levels — all mechanics combined
 - [x] Daily challenge system
-- [ ] Backend integration (Firebase / Supabase) — planned Phase 7
-- [ ] Global leaderboards — planned Phase 7
-- [ ] Cloud save — planned Phase 7
-- [ ] Share feature — planned Phase 7
+- [x] Life refund on level success (adventure mode)
+- [x] Winding Tetris-themed level path (snaking 3-column road layout)
+- [x] Difficulty tags on levels (Hard → Impossible, boss always "Impossible")
 
 ## Phase 6 — Deployment & Final Polish
 
-- [ ] Production build optimization
-- [ ] SEO & meta tags
-- [ ] Landing page
-- [ ] Vercel deployment
-- [ ] Capacitor setup (iOS + Android)
-- [ ] Native features (haptics, push notifications)
-- [ ] Performance audit (Lighthouse 95+)
-- [ ] Accessibility audit (WCAG 2.1 AA)
-- [ ] Error tracking (Sentry)
+- [ ] Production build optimization (tree-shaking, minification, chunk splitting)
+- [ ] SEO & meta tags (Open Graph, Twitter card, canonical URL)
+- [ ] Landing page (hero, features, screenshots, CTA)
+- [ ] Vercel deployment (CI/CD from main branch)
+- [ ] Capacitor setup (iOS + Android shell)
+- [ ] Native features (haptics, push notifications, splash screen)
+- [ ] Performance audit (Lighthouse 95+ on all categories)
+- [ ] Accessibility audit (WCAG 2.1 AA — keyboard nav, screen reader, contrast)
+- [ ] Error tracking (Sentry integration)
 - [ ] Beta testing & iteration
 - [ ] Portfolio presentation (README, case study)
+
+## Phase 7 — Backend & Cloud Services (Supabase)
+
+- [ ] **7.1 Supabase project setup** — Create project, configure env vars, install `@supabase/supabase-js`
+- [ ] **7.2 Auth system** — Anonymous sign-in (auto on first launch) + optional email/Google OAuth upgrade. Profile creation on first sign-in
+- [ ] **7.3 Player profiles table** — `profiles(id, display_name, avatar_url, created_at, total_stars, highest_world, highest_level)`. Row-level security policies
+- [ ] **7.4 Cloud save / progress sync** — `player_progress(user_id, level_id, stars, score, best_time)` table. Bidirectional merge: local ↔ cloud, last-write-wins with conflict UI. Auto-sync on login, manual "Sync" button in settings
+- [ ] **7.5 Global leaderboards** — Tables: `leaderboard_level(level_id, user_id, score, rank)`, `leaderboard_stars(user_id, total_stars)`, `leaderboard_daily(date, user_id, score)`. Top 100 per level + overall star ranking + daily challenge board. Basic anti-cheat: server-side score plausibility checks (max theoretical score per level)
+- [ ] **7.6 Daily challenge cloud storage** — Store daily seed + results server-side. Prevent replays. Show global daily ranking
+- [ ] **7.7 Friends system** — Add friends by code/link. Friends leaderboard overlay on level complete. Compare stars per world
+- [ ] **7.8 Share feature** — "Share" button on level complete: canvas-rendered image card (level name + stars + score + world theme). Web Share API on mobile, copy-to-clipboard fallback on desktop. Deep link back to the game
+
+## Phase 8 — Live Ops & Engagement
+
+- [ ] **8.1 Weekly events** — Rotating themed challenges (e.g., "Speed Week", "No-Rotate Challenge"). Event leaderboard with rewards
+- [ ] **8.2 Season pass / battle pass** — Free + premium track. XP from playing levels. Cosmetic rewards (themes, particle effects, block skins)
+- [ ] **8.3 Push notifications** — "Lives refilled!", "New daily challenge!", "Friend beat your score!". Opt-in with permission prompt
+- [ ] **8.4 A/B testing framework** — Feature flags via Supabase remote config. Test difficulty curves, economy balance, UI variants
+- [ ] **8.5 Analytics dashboard** — Track: DAU/MAU, level completion rates, drop-off points, purchase conversion, retention cohorts. PostHog or Supabase analytics
+
+## Phase 9 — Monetization & Sustainability
+
+- [ ] **9.1 In-app purchases** — Coin packs, life refills, power-up bundles. Stripe integration for web, IAP for native
+- [ ] **9.2 Rewarded ads** — Watch ad → earn coins/extra life. AdMob for native, optional for web
+- [ ] **9.3 Premium cosmetics** — Purchasable block skins, board themes, particle effects. Purely cosmetic, no pay-to-win
+- [ ] **9.4 Remove ads option** — One-time purchase to disable all ads

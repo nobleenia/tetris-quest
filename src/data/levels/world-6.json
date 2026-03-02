@@ -185,7 +185,8 @@
       },
       "modifiers": [
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "6-7",
@@ -215,7 +216,8 @@
       },
       "modifiers": [
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "6-8",
@@ -245,7 +247,8 @@
       },
       "modifiers": [
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "6-9",
@@ -275,7 +278,8 @@
       },
       "modifiers": [
         "darkBlocks"
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "6-10",
@@ -314,7 +318,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.61
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "6-11",
@@ -350,7 +355,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.57
         }
-      ]
+      ],
+      "difficulty": "hard"
     },
     {
       "id": "6-12",
@@ -386,7 +392,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.54
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "6-13",
@@ -422,7 +429,8 @@
           "atSeconds": 45,
           "newBaseInterval": 0.5
         }
-      ]
+      ],
+      "difficulty": "nearly-impossible"
     },
     {
       "id": "6-14",
@@ -462,7 +470,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.32
         }
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "6-15",
@@ -505,7 +514,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.3
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "6-16",
@@ -545,7 +555,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.28
         }
-      ]
+      ],
+      "difficulty": "very-hard"
     },
     {
       "id": "6-17",
@@ -585,7 +596,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.25
         }
-      ]
+      ],
+      "difficulty": "variable"
     },
     {
       "id": "6-18",
@@ -625,7 +637,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.23
         }
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "6-19",
@@ -665,7 +678,8 @@
           "atSeconds": 60,
           "newBaseInterval": 0.21
         }
-      ]
+      ],
+      "difficulty": "extremely-hard"
     },
     {
       "id": "6-20",
@@ -713,7 +727,8 @@
           "type": "score",
           "value": 9800
         }
-      }
+      },
+      "difficulty": "impossible"
     }
   ]
 }

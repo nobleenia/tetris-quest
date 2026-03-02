@@ -586,6 +586,64 @@
   text-shadow: 0 0 4px rgba(251,191,36,0.3);
 }
 
+/* ── Difficulty tag badges ──────────────── */
+.map__node-tag {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 2;
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+.map__node-tag--hard {
+  background: #dc2626;
+  color: #fff;
+}
+
+.map__node-tag--very-hard {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.map__node-tag--extremely-hard {
+  background: #111;
+  color: #e5e5e5;
+}
+
+.map__node-tag--nearly-impossible {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+
+.map__node-tag--variable {
+  background: #7e22ce;
+  color: #e9d5ff;
+}
+
+.map__node-tag--impossible {
+  background: #4b5563;
+  color: #d1d5db;
+  font-size: 6.5px;
+  letter-spacing: 0.5px;
+}
+
+/* Hide tags on locked nodes */
+.map__node--locked .map__node-tag {
+  display: none;
+}
+
 .map__loading,
 .map__error {
   text-align: center;
