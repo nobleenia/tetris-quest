@@ -188,44 +188,87 @@ async function renderLevelGrid(worldId) {
     const highest = getHighestReached();
     const levels = worldData.levels || [];
 
-    levelsEl.innerHTML = /* html */ `
-      <div class="map__level-grid">
-        ${levels
-          .map((level) => {
-            const stars = getLevelStars(level.id);
-            const levelNum = level.level;
-            const isReached =
-              worldId < highest.world ||
-              (worldId === highest.world && levelNum <= highest.level);
-            const isBoss = !!level.boss;
+    // Build winding path: 3 columns, snaking left→right then right→left
+    const COLS = 3;
+    const rows = [];
+    for (let i = 0; i < levels.length; i += COLS) {
+      rows.push(levels.slice(i, i + COLS));
+    }
 
-            const nodeClass = stars > 0
-              ? 'map__level--cleared'
-              : isReached
-                ? 'map__level--current'
-                : 'map__level--locked';
+    let html = '<div class="map__path">';
 
-            return /* html */ `
-              <button class="map__level ${nodeClass} ${isBoss ? 'map__level--boss' : ''}"
-                      data-action="play-level"
-                      data-world="${worldId}"
-                      data-level="${levelNum}"
-                      data-level-id="${level.id}"
-                      ${!isReached ? 'disabled' : ''}>
-                <span class="map__level-num">${isBoss ? '👑' : levelNum}</span>
-                <span class="map__level-stars">
-                  ${stars >= 1 ? '⭐' : '☆'}${stars >= 2 ? '⭐' : '☆'}${stars >= 3 ? '⭐' : '☆'}
-                </span>
-              </button>
-            `;
-          })
-          .join('')}
-      </div>
-    `;
+    rows.forEach((row, rowIdx) => {
+      const isReversed = rowIdx % 2 === 1;
+      const orderedRow = isReversed ? [...row].reverse() : row;
+
+      // Vertical connector between rows
+      if (rowIdx > 0) {
+        const side = isReversed ? 'right' : 'left';
+        html += `<div class="map__road-turn map__road-turn--${side}"></div>`;
+      }
+
+      html += `<div class="map__road-row ${isReversed ? 'map__road-row--rtl' : ''}">`;
+
+      orderedRow.forEach((level, colIdx) => {
+        const stars = getLevelStars(level.id);
+        const levelNum = level.level;
+        const isReached =
+          worldId < highest.world ||
+          (worldId === highest.world && levelNum <= highest.level);
+        const isBoss = !!level.boss;
+        const isCleared = stars > 0;
+        const isCurrent = isReached && !isCleared;
+
+        const nodeClass = isCleared
+          ? 'map__node--cleared'
+          : isCurrent
+            ? 'map__node--current'
+            : 'map__node--locked';
+
+        // Road segment before each node (except first in row)
+        if (colIdx > 0) {
+          const roadActive = isReached || isCleared;
+          html += `<div class="map__road-seg ${roadActive ? 'map__road-seg--active' : ''}">`;
+          // Random tetromino decoration on some road segments
+          if ((levelNum + rowIdx) % 3 === 0) {
+            html += `<span class="map__road-deco">${getTetroDeco(levelNum)}</span>`;
+          }
+          html += `</div>`;
+        }
+
+        // Level node
+        html += /* html */ `
+          <button class="map__node ${nodeClass} ${isBoss ? 'map__node--boss' : ''}"
+                  data-action="play-level"
+                  data-world="${worldId}"
+                  data-level="${levelNum}"
+                  data-level-id="${level.id}"
+                  ${!isReached ? 'disabled' : ''}>
+            <span class="map__node-face">
+              <span class="map__node-num">${isBoss ? '👑' : levelNum}</span>
+            </span>
+            <span class="map__node-stars">
+              ${stars >= 1 ? '★' : '☆'}${stars >= 2 ? '★' : '☆'}${stars >= 3 ? '★' : '☆'}
+            </span>
+          </button>
+        `;
+      });
+
+      html += '</div>';
+    });
+
+    html += '</div>';
+    levelsEl.innerHTML = html;
   } catch (err) {
     levelsEl.innerHTML = `<p class="map__error">Failed to load levels</p>`;
     console.error('[map] Failed to load world data', err);
   }
+}
+
+/** Tetromino decoration characters for road segments */
+function getTetroDeco(seed) {
+  const decos = ['▪', '◆', '▣', '⬥', '⬦', '◈'];
+  return decos[seed % decos.length];
 }
 
 // ─── Events ──────────────────────────────────────────────────────────

@@ -339,81 +339,251 @@
   display: none;
 }
 
-/* Level grid — Candy Crush node style */
+/* Level grid — Tetris winding adventure path */
 .map__levels {
   margin-top: var(--gap-md);
 }
 
-.map__level-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+.map__path {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 8px 4px;
 }
 
-.map__level {
+/* ── Road rows ─────────────────────────── */
+.map__road-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.map__road-row--rtl {
+  flex-direction: row;
+}
+
+/* ── Road segments (horizontal connectors) */
+.map__road-seg {
+  flex: 1;
+  height: 6px;
+  max-width: 48px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Pixel-block dashed pattern */
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,0.06) 0px,
+    rgba(255,255,255,0.06) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.map__road-seg--active {
+  background: linear-gradient(90deg, rgba(59,130,246,0.35), rgba(96,165,250,0.2));
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(96,165,250,0.4) 0px,
+    rgba(96,165,250,0.4) 4px,
+    rgba(59,130,246,0.15) 4px,
+    rgba(59,130,246,0.15) 8px
+  );
+  box-shadow: 0 0 6px rgba(59,130,246,0.15);
+}
+
+.map__road-deco {
+  position: absolute;
+  font-size: 8px;
+  opacity: 0.25;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: #a5b4fc;
+}
+
+.map__road-seg--active .map__road-deco {
+  opacity: 0.5;
+}
+
+/* ── Road turns (vertical S-connectors between rows) */
+.map__road-turn {
+  width: 100%;
+  height: 28px;
+  position: relative;
+}
+
+.map__road-turn::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  border-radius: 3px;
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(255,255,255,0.06) 0px,
+    rgba(255,255,255,0.06) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.map__road-turn--right::before {
+  right: 22px;
+}
+
+.map__road-turn--left::before {
+  left: 22px;
+}
+
+/* ── Level nodes ───────────────────────── */
+.map__node {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  gap: 3px;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 8px;          /* Block-shaped, not circular */
+  border: 2.5px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,0.10) 0%,
+    rgba(255,255,255,0.03) 100%
+  );
   cursor: pointer;
   font: inherit;
   color: inherit;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 3px 0 rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.2s;
+  box-shadow:
+    0 3px 0 rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.08);
   position: relative;
 }
 
-.map__level:hover:not(:disabled) {
-  transform: scale(1.1);
-  box-shadow: 0 4px 0 rgba(0,0,0,0.2), 0 6px 16px rgba(0,0,0,0.2);
+.map__node::after {
+  /* Subtle grid overlay to give a "block cell" feel */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 8px 8px;
+  pointer-events: none;
 }
 
-.map__level--cleared {
+.map__node:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow:
+    0 5px 0 rgba(0,0,0,0.2),
+    0 8px 20px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.map__node:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* ── Node states ───────────────────────── */
+.map__node--cleared {
   border-color: rgba(16, 185, 129, 0.6);
-  background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(5,150,105,0.1));
-  box-shadow: 0 3px 0 rgba(4,120,87,0.4), 0 4px 12px rgba(16,185,129,0.15);
+  background: linear-gradient(
+    145deg,
+    rgba(16,185,129,0.28) 0%,
+    rgba(5,150,105,0.10) 100%
+  );
+  box-shadow:
+    0 3px 0 rgba(4,120,87,0.45),
+    0 4px 12px rgba(16,185,129,0.12),
+    inset 0 1px 0 rgba(110,231,183,0.15);
 }
 
-.map__level--current {
+.map__node--current {
   border-color: #60a5fa;
-  background: linear-gradient(135deg, rgba(96,165,250,0.2), rgba(59,130,246,0.08));
-  box-shadow: 0 3px 0 rgba(29,78,216,0.4), 0 0 16px rgba(59,130,246,0.25);
-  animation: node-pulse 2s ease-in-out infinite;
+  background: linear-gradient(
+    145deg,
+    rgba(96,165,250,0.25) 0%,
+    rgba(59,130,246,0.08) 100%
+  );
+  box-shadow:
+    0 3px 0 rgba(29,78,216,0.45),
+    0 0 18px rgba(59,130,246,0.25),
+    inset 0 1px 0 rgba(147,197,253,0.15);
+  animation: tetris-node-pulse 2s ease-in-out infinite;
 }
 
-@keyframes node-pulse {
-  0%, 100% { box-shadow: 0 3px 0 rgba(29,78,216,0.4), 0 0 16px rgba(59,130,246,0.2); }
-  50% { box-shadow: 0 3px 0 rgba(29,78,216,0.4), 0 0 24px rgba(59,130,246,0.4); }
+@keyframes tetris-node-pulse {
+  0%, 100% {
+    box-shadow:
+      0 3px 0 rgba(29,78,216,0.45),
+      0 0 14px rgba(59,130,246,0.2),
+      inset 0 1px 0 rgba(147,197,253,0.12);
+  }
+  50% {
+    box-shadow:
+      0 3px 0 rgba(29,78,216,0.45),
+      0 0 26px rgba(59,130,246,0.40),
+      inset 0 1px 0 rgba(147,197,253,0.2);
+  }
 }
 
-.map__level--locked {
-  opacity: 0.3;
+.map__node--locked {
+  opacity: 0.28;
   cursor: not-allowed;
-  filter: grayscale(0.5);
+  filter: grayscale(0.6);
 }
 
-.map__level--boss {
-  border-color: rgba(234, 179, 8, 0.6);
-  background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(161,98,7,0.08));
-  box-shadow: 0 3px 0 rgba(161,98,7,0.4), 0 0 12px rgba(234,179,8,0.15);
+.map__node--boss {
+  border-color: rgba(234, 179, 8, 0.65);
+  background: linear-gradient(
+    145deg,
+    rgba(234,179,8,0.22) 0%,
+    rgba(161,98,7,0.08) 100%
+  );
+  box-shadow:
+    0 3px 0 rgba(161,98,7,0.5),
+    0 0 14px rgba(234,179,8,0.15),
+    inset 0 1px 0 rgba(253,224,71,0.12);
 }
 
-.map__level-num {
-  font-family: 'Fredoka', sans-serif;
-  font-size: clamp(14px, 3.5vw, 18px);
+/* ── Node face & text ──────────────────── */
+.map__node-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map__node-num {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: clamp(15px, 3.8vw, 20px);
   font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  line-height: 1;
 }
 
-.map__level-stars {
-  font-size: 8px;
-  letter-spacing: -1px;
+.map__node-stars {
+  font-size: 9px;
+  letter-spacing: -0.5px;
   line-height: 1;
+  opacity: 0.85;
+}
+
+.map__node--cleared .map__node-stars {
+  color: #fbbf24;
+  text-shadow: 0 0 4px rgba(251,191,36,0.3);
 }
 
 .map__loading,

@@ -300,6 +300,21 @@ export function spendLife() {
 }
 
 /**
+ * Add a single life (used to refund on level success).
+ * Won't exceed max lives.
+ */
+export function addLife() {
+  if (!_save) load();
+  _applyLifeRegen();
+  _save.lives = Math.min(_save.maxLives, _save.lives + 1);
+  // If now at max, stop regen timer
+  if (_save.lives >= _save.maxLives) {
+    _save.lastLifeRegenTimestamp = 0;
+  }
+  save();
+}
+
+/**
  * Refill all lives.
  */
 export function refillLives() {
