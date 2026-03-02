@@ -53,7 +53,7 @@ import {
   reducePressureOnClear,
 } from './game/pressure.js';
 import { handleTopOut } from './game/lives.js';
-import { recordClassicResult } from './systems/progress.js';
+import { recordClassicResult, getLives } from './systems/progress.js';
 
 // --- Session (Phase 2) ---
 import { createSession } from './game/session.js';
@@ -387,11 +387,22 @@ const loop = createLoop({
 
     if (state.gameOver && !state._gameOverShown) {
       state._gameOverShown = true;
-      juice.onGameOver();
-      // Navigate to results after a brief delay for the game-over SFX
+
+      // Sync runtime lives with the persistent progress system
+      const { lives: progressLives } = getLives();
+      state.lives = progressLives;
+
+      // Choose SFX: level-fail (still have lives) vs game-over (no lives left)
+      if (progressLives <= 0) {
+        juice.onGameOver();
+      } else {
+        juice.onLifeLoss();
+        juice.onLevelFail();
+      }
+
+      // Navigate to results after a brief delay for the SFX to play
       setTimeout(() => {
         hud.hideGameOver();
-        // Build a fail result for the results scene
         const failResult = {
           outcome: 'fail',
           mode: session.getMode?.() === 'level' ? 'adventure' : 'classic',
