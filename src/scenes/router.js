@@ -66,6 +66,20 @@ export function createRouter(sceneManager) {
       },
     },
     {
+      pattern: /^#\/leaderboard$/,
+      scene: 'leaderboard',
+      parseParams() {
+        return {};
+      },
+    },
+    {
+      pattern: /^#\/account$/,
+      scene: 'account',
+      parseParams() {
+        return {};
+      },
+    },
+    {
       // Catch-all → home
       pattern: /^#?\/?$/,
       scene: 'home',

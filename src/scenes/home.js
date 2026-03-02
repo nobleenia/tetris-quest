@@ -8,6 +8,8 @@
 import { getLives, getCoins, getTotalStars } from '../systems/progress.js';
 import { getDailyStatus, generateDailyChallenge } from '../game/dailyChallenge.js';
 import { hideGameUI, showGameUI } from './helpers.js';
+import { getProfile, hasRealAccount } from '../systems/auth.js';
+import { isSupabaseConfigured } from '../systems/supabase.js';
 
 let containerEl = null;
 
@@ -81,6 +83,11 @@ function render(ctx) {
 
       <div class="home__secondary">
         <button class="btn btn--secondary btn--small" data-action="shop">🛒 Shop</button>
+        <button class="btn btn--secondary btn--small" data-action="leaderboard">🏆 Leaderboards</button>
+        ${isSupabaseConfigured ? `
+          <button class="btn btn--secondary btn--small" data-action="account">
+            ${hasRealAccount() ? `👤 ${getProfile().displayName}` : '🔐 Sign In'}
+          </button>` : ''}
       </div>
     </div>
   `;
@@ -105,6 +112,10 @@ function wireEvents(ctx) {
       ctx.router.navigate('#/play/classic');
     } else if (action === 'shop') {
       ctx.router.navigate('#/shop');
+    } else if (action === 'leaderboard') {
+      ctx.router.navigate('#/leaderboard');
+    } else if (action === 'account') {
+      ctx.router.navigate('#/account');
     }
   });
 }
