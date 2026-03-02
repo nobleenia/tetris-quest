@@ -1,0 +1,719 @@
+{
+  "$schema": "./schema.json",
+  "world": 2,
+  "name": "Retro Land",
+  "theme": "gameboy",
+  "cssClass": "style-gameboy",
+  "starsToUnlock": 20,
+  "description": "Think before you drop. Every piece counts in this retro challenge.",
+  "levels": [
+    {
+      "id": "2-1",
+      "world": 2,
+      "level": 1,
+      "name": "Retro Start",
+      "objective": {
+        "type": "clearLines",
+        "target": 9,
+        "description": "Clear 9 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 117
+        },
+        "three": {
+          "type": "time",
+          "value": 78
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.35,
+        "minInterval": 1.15,
+        "pressureRate": 0.2
+      }
+    },
+    {
+      "id": "2-2",
+      "world": 2,
+      "level": 2,
+      "name": "Pixel Challenge",
+      "objective": {
+        "type": "reachScore",
+        "target": 945,
+        "description": "Score 945 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1418
+        },
+        "three": {
+          "type": "score",
+          "value": 2079
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.3,
+        "minInterval": 1.1,
+        "pressureRate": 0.3
+      }
+    },
+    {
+      "id": "2-3",
+      "world": 2,
+      "level": 3,
+      "name": "Classic Move",
+      "objective": {
+        "type": "survive",
+        "target": 56,
+        "description": "Survive for 56 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 740
+        },
+        "three": {
+          "type": "score",
+          "value": 1300
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.25,
+        "minInterval": 1.05,
+        "pressureRate": 0.4
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-4",
+      "world": 2,
+      "level": 4,
+      "name": "Piece Economy",
+      "objective": {
+        "type": "clearLines",
+        "target": 8,
+        "description": "Clear 8 lines within 105 seconds."
+      },
+      "constraints": {
+        "timeLimit": 105
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 70
+        },
+        "three": {
+          "type": "time",
+          "value": 50
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.2,
+        "minInterval": 1,
+        "pressureRate": 0.5
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-5",
+      "world": 2,
+      "level": 5,
+      "name": "Counting Blocks",
+      "objective": {
+        "type": "clearLines",
+        "target": 8,
+        "description": "Clear 8 lines with only 28 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 28
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 24
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 18
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.15,
+        "minInterval": 0.95,
+        "pressureRate": 0.6
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-6",
+      "world": 2,
+      "level": 6,
+      "name": "No Waste Zone",
+      "objective": {
+        "type": "clearLines",
+        "target": 17,
+        "description": "Clear 17 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 102
+        },
+        "three": {
+          "type": "time",
+          "value": 68
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.1,
+        "minInterval": 0.9,
+        "pressureRate": 0.7
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-7",
+      "world": 2,
+      "level": 7,
+      "name": "Careful Stack",
+      "objective": {
+        "type": "reachScore",
+        "target": 1785,
+        "description": "Score 1785 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2678
+        },
+        "three": {
+          "type": "score",
+          "value": 3927
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.05,
+        "minInterval": 0.85,
+        "pressureRate": 0.8
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-8",
+      "world": 2,
+      "level": 8,
+      "name": "Efficiency Test",
+      "objective": {
+        "type": "survive",
+        "target": 76,
+        "description": "Survive for 76 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1140
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "gravity": {
+        "baseInterval": 1,
+        "minInterval": 0.8,
+        "pressureRate": 0.9
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-9",
+      "world": 2,
+      "level": 9,
+      "name": "Retro Rush",
+      "objective": {
+        "type": "comboChain",
+        "target": 4,
+        "description": "Achieve a 4× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1700
+        },
+        "three": {
+          "type": "score",
+          "value": 2580
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.95,
+        "minInterval": 0.75,
+        "pressureRate": 1
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "2-10",
+      "world": 2,
+      "level": 10,
+      "name": "Green Screen",
+      "objective": {
+        "type": "clearLines",
+        "target": 11,
+        "description": "Clear 11 lines with only 39 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 39
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 33
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 25
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.9,
+        "minInterval": 0.7,
+        "pressureRate": 1.1
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.72
+        }
+      ]
+    },
+    {
+      "id": "2-11",
+      "world": 2,
+      "level": 11,
+      "name": "Minimal Moves",
+      "objective": {
+        "type": "clearLines",
+        "target": 25,
+        "description": "Clear 25 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 87
+        },
+        "three": {
+          "type": "time",
+          "value": 58
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.85,
+        "minInterval": 0.65,
+        "pressureRate": 1.2
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.68
+        }
+      ]
+    },
+    {
+      "id": "2-12",
+      "world": 2,
+      "level": 12,
+      "name": "Block Budget",
+      "objective": {
+        "type": "reachScore",
+        "target": 2625,
+        "description": "Score 2625 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 3938
+        },
+        "three": {
+          "type": "score",
+          "value": 5775
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.8,
+        "minInterval": 0.6,
+        "pressureRate": 1.3
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.64
+        }
+      ]
+    },
+    {
+      "id": "2-13",
+      "world": 2,
+      "level": 13,
+      "name": "Lean Machine",
+      "objective": {
+        "type": "survive",
+        "target": 96,
+        "description": "Survive for 96 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1540
+        },
+        "three": {
+          "type": "score",
+          "value": 2300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.75,
+        "minInterval": 0.55,
+        "pressureRate": 1.4
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.6
+        }
+      ]
+    },
+    {
+      "id": "2-14",
+      "world": 2,
+      "level": 14,
+      "name": "Pixel Perfect",
+      "objective": {
+        "type": "comboChain",
+        "target": 5,
+        "description": "Achieve a 5× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2200
+        },
+        "three": {
+          "type": "score",
+          "value": 3180
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.7,
+        "minInterval": 0.5,
+        "pressureRate": 1.5
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.52
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.39
+        }
+      ]
+    },
+    {
+      "id": "2-15",
+      "world": 2,
+      "level": 15,
+      "name": "Clutch Plays",
+      "objective": {
+        "type": "clearLines",
+        "target": 13,
+        "description": "Clear 13 lines with only 46 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 46
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 39
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 30
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.65,
+        "minInterval": 0.45,
+        "pressureRate": 1.6
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.49
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.36
+        }
+      ]
+    },
+    {
+      "id": "2-16",
+      "world": 2,
+      "level": 16,
+      "name": "Piece Crunch",
+      "objective": {
+        "type": "clearLines",
+        "target": 33,
+        "description": "Clear 33 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 72
+        },
+        "three": {
+          "type": "time",
+          "value": 48
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.6,
+        "minInterval": 0.4,
+        "pressureRate": 1.7
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.45
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.33
+        }
+      ]
+    },
+    {
+      "id": "2-17",
+      "world": 2,
+      "level": 17,
+      "name": "Retro Master",
+      "objective": {
+        "type": "reachScore",
+        "target": 3465,
+        "description": "Score 3465 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 5198
+        },
+        "three": {
+          "type": "score",
+          "value": 7623
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.55,
+        "minInterval": 0.35,
+        "pressureRate": 1.8
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.41
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.3
+        }
+      ]
+    },
+    {
+      "id": "2-18",
+      "world": 2,
+      "level": 18,
+      "name": "Economy King",
+      "objective": {
+        "type": "survive",
+        "target": 116,
+        "description": "Survive for 116 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1940
+        },
+        "three": {
+          "type": "score",
+          "value": 2800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.5,
+        "minInterval": 0.3,
+        "pressureRate": 1.9
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.38
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.28
+        }
+      ]
+    },
+    {
+      "id": "2-19",
+      "world": 2,
+      "level": 19,
+      "name": "The Final Count",
+      "objective": {
+        "type": "comboChain",
+        "target": 6,
+        "description": "Achieve a 6× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2700
+        },
+        "three": {
+          "type": "score",
+          "value": 3780
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.45,
+        "minInterval": 0.25,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.34
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.25
+        }
+      ]
+    },
+    {
+      "id": "2-20",
+      "world": 2,
+      "level": 20,
+      "name": "Retro Boss",
+      "objective": {
+        "type": "clearLines",
+        "target": 25,
+        "description": "Clear 25 lines to defeat the boss!"
+      },
+      "boss": {
+        "type": "pieceFamine",
+        "hp": 25,
+        "phases": [
+          {
+            "hpThreshold": 1,
+            "attackInterval": 10
+          },
+          {
+            "hpThreshold": 0.5,
+            "attackInterval": 7
+          },
+          {
+            "hpThreshold": 0.25,
+            "attackInterval": 4
+          }
+        ]
+      },
+      "gravity": {
+        "baseInterval": 0.65,
+        "minInterval": 0.3,
+        "pressureRate": 0.4
+      },
+      "modifiers": [
+        "pieceLimited"
+      ],
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 4000
+        },
+        "three": {
+          "type": "score",
+          "value": 6600
+        }
+      }
+    }
+  ]
+}

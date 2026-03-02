@@ -54,6 +54,7 @@ import {
 } from './game/pressure.js';
 import { handleTopOut } from './game/lives.js';
 import { recordClassicResult, getLives } from './systems/progress.js';
+import { recordDailyCompletion, todayKey } from './game/dailyChallenge.js';
 
 // --- Session (Phase 2) ---
 import { createSession } from './game/session.js';
@@ -105,6 +106,11 @@ session.on({
     console.log('[session] Level complete!', result);
     state.paused = true;
     juice.onLevelComplete({ stars: result.stars, score: result.score });
+    // Record daily challenge completion
+    if (state._isDaily) {
+      recordDailyCompletion(todayKey(), result.score, result.stars);
+      result._isDaily = true;
+    }
     sceneCtx._lastResult = result;
     router.navigate('#/results');
   },

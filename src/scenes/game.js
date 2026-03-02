@@ -10,11 +10,12 @@
  */
 
 import { loadLevel } from '../game/levelConfig.js';
-import { applyWorldTheme } from '../ui/stylemanager.js';
+import { applyWorldTheme, applyStyle } from '../ui/stylemanager.js';
 import { initQueue, spawnFromQueue } from '../game/spawn.js';
 import { activatePowerup } from '../game/powerups.js';
 import { showTutorial } from '../ui/tutorial.js';
 import { spendLife, getLives } from '../systems/progress.js';
+import { generateDailyChallenge } from '../game/dailyChallenge.js';
 import { showGameUI } from './helpers.js';
 
 export const gameScene = {
@@ -36,6 +37,33 @@ export const gameScene = {
       state.paused = false;
       state._gameOverShown = false;
       updateObjectiveHUD(null);
+      return;
+    }
+
+    if (params.mode === 'daily') {
+      // ── Daily Challenge mode ──
+      const dailyCfg = generateDailyChallenge();
+      applyStyle(dailyCfg.theme);
+
+      // Build a minimal worldCfg for session
+      const worldCfg = {
+        id: 0,
+        name: 'Daily Challenge',
+        theme: dailyCfg.theme,
+        cssClass: dailyCfg.cssClass,
+      };
+
+      session.startLevel(dailyCfg, worldCfg);
+
+      const bag = session.getBag();
+      initQueue(state, bag);
+      const ok = spawnFromQueue(state, bag);
+      if (ok) session.onPieceSpawned();
+      state.paused = false;
+      state._gameOverShown = false;
+      state._isDaily = true;
+
+      updateObjectiveHUD(state.objective);
       return;
     }
 

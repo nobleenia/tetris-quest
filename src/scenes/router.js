@@ -32,6 +32,7 @@ export function createRouter(sceneManager) {
       parseParams(match) {
         const id = match[1];
         if (id === 'classic') return { mode: 'classic' };
+        if (id === 'daily') return { mode: 'daily' };
         const [world, level] = id.split('-').map(Number);
         return { world, level, id };
       },

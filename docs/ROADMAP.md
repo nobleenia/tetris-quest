@@ -44,48 +44,48 @@
 
 ## Phase 3 — Progression, Map & Economy
 
-- [ ] Progress manager (src/systems/progress.js)
-- [ ] World map screen UI (10 worlds)
-- [ ] Level briefing popup
-- [ ] Level complete / fail screens
-- [ ] Lives system (regeneration + purchase)
-- [ ] Currency system (coins)
-- [ ] Power-ups implementation
-- [ ] Shop screen
-- [ ] World 1 "Foundation": 20 levels with full configs
-- [ ] World 2 "Retro Land": 20 levels (piece-limited challenges)
-- [ ] Tutorial / onboarding overlays (levels 1-1 to 1-3)
-- [ ] Achievement system
+- [x] Progress manager (src/systems/progress.js)
+- [x] World map screen UI (10 worlds)
+- [x] Level briefing popup
+- [x] Level complete / fail screens
+- [x] Lives system (regeneration + purchase)
+- [x] Currency system (coins)
+- [x] Power-ups implementation
+- [x] Shop screen
+- [x] World 1 "Foundation": 20 levels with full configs
+- [x] World 2 "Retro Land": 20 levels (piece-limited challenges)
+- [x] Tutorial / onboarding overlays (levels 1-1 to 1-3)
+- [x] Achievement system
 
 ## Phase 4 — Juice, Audio & Visual Polish
 
-- [ ] Audio engine integration (Howler.js)
-- [ ] Sound effects (20+ SFX)
-- [ ] Background music (per world — 12 tracks)
-- [ ] 6 new CSS world themes (deepsea, volcano, storm, arctic, cosmos, nexus)
-- [ ] Theme-per-world auto-switching system
-- [ ] Particle system overhaul (bubbles, embers, snow, lightning, stars)
-- [ ] Screen shake effects
-- [ ] Score popups
-- [ ] Haptic feedback (mobile)
-- [ ] Animations (spawn, clear, complete)
-- [ ] Reduced motion mode
+- [x] Audio engine integration (Tone.js)
+- [x] Sound effects (20+ SFX)
+- [x] Background music (per world — 10 procedural themes)
+- [x] 6 new CSS world themes (deepsea, volcano, storm, arctic, cosmos, nexus)
+- [x] Theme-per-world auto-switching system
+- [x] Particle system overhaul (bubbles, embers, snow, lightning, stars)
+- [x] Screen shake effects
+- [x] Score popups
+- [x] Haptic feedback (mobile)
+- [x] Animations (spawn, clear, complete)
+- [x] Reduced motion mode
 
 ## Phase 5 — Content Expansion & Social
 
-- [ ] World 3 "Coral Depths": 20 levels — ice blocks
-- [ ] World 4 "Neon District": 20 levels — speed/combo emphasis
-- [ ] World 5 "Molten Core": 20 levels — bomb blocks
-- [ ] World 6 "Dreamscape": 20 levels — dark blocks
-- [ ] World 7 "Thunderspire": 20 levels — stone blocks
-- [ ] World 8 "Frozen Peaks": 20 levels — gravity shifts
-- [ ] World 9 "Starfield": 20 levels — gravity flip
-- [ ] World 10 "The Nexus": 20 levels — all mechanics combined
-- [ ] Daily challenge system
-- [ ] Backend integration (Supabase)
-- [ ] Global leaderboards
-- [ ] Cloud save
-- [ ] Share feature
+- [x] World 3 "Coral Depths": 20 levels — ice blocks
+- [x] World 4 "Neon District": 20 levels — speed/combo emphasis
+- [x] World 5 "Molten Core": 20 levels — bomb blocks
+- [x] World 6 "Dreamscape": 20 levels — dark blocks
+- [x] World 7 "Thunderspire": 20 levels — stone blocks
+- [x] World 8 "Frozen Peaks": 20 levels — gravity shifts
+- [x] World 9 "Starfield": 20 levels — gravity flip
+- [x] World 10 "The Nexus": 20 levels — all mechanics combined
+- [x] Daily challenge system
+- [ ] Backend integration (Firebase / Supabase) — planned Phase 7
+- [ ] Global leaderboards — planned Phase 7
+- [ ] Cloud save — planned Phase 7
+- [ ] Share feature — planned Phase 7
 
 ## Phase 6 — Deployment & Final Polish
 

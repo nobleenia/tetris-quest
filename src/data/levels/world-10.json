@@ -1,0 +1,750 @@
+{
+  "$schema": "./schema.json",
+  "world": 10,
+  "name": "The Nexus",
+  "theme": "nexus",
+  "cssClass": "style-nexus",
+  "starsToUnlock": 360,
+  "description": "Everything you've learned. Every mechanic. The ultimate test.",
+  "levels": [
+    {
+      "id": "10-1",
+      "world": 10,
+      "level": 1,
+      "name": "Nexus Gate",
+      "objective": {
+        "type": "clearLines",
+        "target": 33,
+        "description": "Clear 33 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 117
+        },
+        "three": {
+          "type": "time",
+          "value": 78
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.92,
+        "minInterval": 0.78,
+        "pressureRate": 0.6
+      }
+    },
+    {
+      "id": "10-2",
+      "world": 10,
+      "level": 2,
+      "name": "Memory Lane",
+      "objective": {
+        "type": "reachScore",
+        "target": 3465,
+        "description": "Score 3465 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 5198
+        },
+        "three": {
+          "type": "score",
+          "value": 7623
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.88,
+        "minInterval": 0.75,
+        "pressureRate": 0.7
+      }
+    },
+    {
+      "id": "10-3",
+      "world": 10,
+      "level": 3,
+      "name": "All Together",
+      "objective": {
+        "type": "survive",
+        "target": 56,
+        "description": "Survive for 56 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 740
+        },
+        "three": {
+          "type": "score",
+          "value": 1300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.85,
+        "minInterval": 0.71,
+        "pressureRate": 0.8
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "10-4",
+      "world": 10,
+      "level": 4,
+      "name": "Fusion Start",
+      "objective": {
+        "type": "clearLines",
+        "target": 30,
+        "description": "Clear 30 lines within 105 seconds."
+      },
+      "constraints": {
+        "timeLimit": 105
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 70
+        },
+        "three": {
+          "type": "time",
+          "value": 50
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.82,
+        "minInterval": 0.68,
+        "pressureRate": 0.9
+      },
+      "modifiers": [
+        "pieceLimited"
+      ]
+    },
+    {
+      "id": "10-5",
+      "world": 10,
+      "level": 5,
+      "name": "Hybrid Challenge",
+      "objective": {
+        "type": "digDown",
+        "target": 16,
+        "description": "Dig through 16 garbage rows to clear the board."
+      },
+      "startingBoard": {
+        "garbageRows": 16
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 35
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 23
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.78,
+        "minInterval": 0.65,
+        "pressureRate": 1
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "10-6",
+      "world": 10,
+      "level": 6,
+      "name": "Nexus Pulse",
+      "objective": {
+        "type": "clearLines",
+        "target": 63,
+        "description": "Clear 63 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 102
+        },
+        "three": {
+          "type": "time",
+          "value": 68
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.75,
+        "minInterval": 0.61,
+        "pressureRate": 1.1
+      },
+      "modifiers": [
+        "bombBlocks"
+      ]
+    },
+    {
+      "id": "10-7",
+      "world": 10,
+      "level": 7,
+      "name": "Total Recall",
+      "objective": {
+        "type": "reachScore",
+        "target": 6545,
+        "description": "Score 6545 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 9818
+        },
+        "three": {
+          "type": "score",
+          "value": 14399
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.71,
+        "minInterval": 0.58,
+        "pressureRate": 1.2
+      },
+      "modifiers": [
+        "darkBlocks"
+      ]
+    },
+    {
+      "id": "10-8",
+      "world": 10,
+      "level": 8,
+      "name": "Combined Arms",
+      "objective": {
+        "type": "survive",
+        "target": 76,
+        "description": "Survive for 76 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1140
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.68,
+        "minInterval": 0.54,
+        "pressureRate": 1.3
+      },
+      "modifiers": [
+        "stoneBlocks"
+      ]
+    },
+    {
+      "id": "10-9",
+      "world": 10,
+      "level": 9,
+      "name": "The Crucible",
+      "objective": {
+        "type": "comboChain",
+        "target": 4,
+        "description": "Achieve a 4× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1700
+        },
+        "three": {
+          "type": "score",
+          "value": 2580
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.65,
+        "minInterval": 0.51,
+        "pressureRate": 1.4
+      },
+      "modifiers": [
+        "gravityShift"
+      ]
+    },
+    {
+      "id": "10-10",
+      "world": 10,
+      "level": 10,
+      "name": "Nexus Storm",
+      "objective": {
+        "type": "digDown",
+        "target": 18,
+        "description": "Dig through 18 garbage rows to clear the board."
+      },
+      "startingBoard": {
+        "garbageRows": 18
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 40
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 26
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.61,
+        "minInterval": 0.48,
+        "pressureRate": 1.5
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.49
+        }
+      ],
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "10-11",
+      "world": 10,
+      "level": 11,
+      "name": "Ultimate Mix",
+      "objective": {
+        "type": "clearLines",
+        "target": 92,
+        "description": "Clear 92 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 87
+        },
+        "three": {
+          "type": "time",
+          "value": 58
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.58,
+        "minInterval": 0.44,
+        "pressureRate": 1.6
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.46
+        }
+      ],
+      "modifiers": [
+        "iceBlocks",
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "10-12",
+      "world": 10,
+      "level": 12,
+      "name": "Master Fusion",
+      "objective": {
+        "type": "reachScore",
+        "target": 9625,
+        "description": "Score 9625 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 14438
+        },
+        "three": {
+          "type": "score",
+          "value": 21175
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.54,
+        "minInterval": 0.41,
+        "pressureRate": 1.7
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.43
+        }
+      ],
+      "modifiers": [
+        "bombBlocks",
+        "darkBlocks"
+      ]
+    },
+    {
+      "id": "10-13",
+      "world": 10,
+      "level": 13,
+      "name": "Convergence",
+      "objective": {
+        "type": "survive",
+        "target": 96,
+        "description": "Survive for 96 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1540
+        },
+        "three": {
+          "type": "score",
+          "value": 2300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.51,
+        "minInterval": 0.37,
+        "pressureRate": 1.8
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.41
+        }
+      ],
+      "modifiers": [
+        "stoneBlocks",
+        "gravityShift"
+      ]
+    },
+    {
+      "id": "10-14",
+      "world": 10,
+      "level": 14,
+      "name": "Entropy",
+      "objective": {
+        "type": "comboChain",
+        "target": 5,
+        "description": "Achieve a 5× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2200
+        },
+        "three": {
+          "type": "score",
+          "value": 3180
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.48,
+        "minInterval": 0.34,
+        "pressureRate": 1.9
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.36
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.26
+        }
+      ],
+      "modifiers": [
+        "pieceLimited",
+        "bombBlocks"
+      ]
+    },
+    {
+      "id": "10-15",
+      "world": 10,
+      "level": 15,
+      "name": "Nexus Prime",
+      "objective": {
+        "type": "digDown",
+        "target": 20,
+        "description": "Dig through 20 garbage rows to clear the board."
+      },
+      "startingBoard": {
+        "garbageRows": 20
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 45
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 29
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.44,
+        "minInterval": 0.31,
+        "pressureRate": 2
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.33
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.24
+        }
+      ],
+      "modifiers": [
+        "iceBlocks",
+        "stoneBlocks",
+        "darkBlocks"
+      ]
+    },
+    {
+      "id": "10-16",
+      "world": 10,
+      "level": 16,
+      "name": "Omega Protocol",
+      "objective": {
+        "type": "clearLines",
+        "target": 122,
+        "description": "Clear 122 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 72
+        },
+        "three": {
+          "type": "time",
+          "value": 48
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.41,
+        "minInterval": 0.27,
+        "pressureRate": 2
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.31
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.23
+        }
+      ],
+      "modifiers": [
+        "comboMultiplier",
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "10-17",
+      "world": 10,
+      "level": 17,
+      "name": "The Gauntlet",
+      "objective": {
+        "type": "reachScore",
+        "target": 12705,
+        "description": "Score 12705 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 19058
+        },
+        "three": {
+          "type": "score",
+          "value": 27951
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.37,
+        "minInterval": 0.24,
+        "pressureRate": 2
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.28
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.2
+        }
+      ],
+      "modifiers": [
+        "bombBlocks",
+        "stoneBlocks",
+        "gravityShift"
+      ]
+    },
+    {
+      "id": "10-18",
+      "world": 10,
+      "level": 18,
+      "name": "Nexus Master",
+      "objective": {
+        "type": "survive",
+        "target": 116,
+        "description": "Survive for 116 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1940
+        },
+        "three": {
+          "type": "score",
+          "value": 2800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.34,
+        "minInterval": 0.2,
+        "pressureRate": 2
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.26
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.19
+        }
+      ],
+      "modifiers": [
+        "iceBlocks",
+        "darkBlocks",
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "10-19",
+      "world": 10,
+      "level": 19,
+      "name": "Point of No Return",
+      "objective": {
+        "type": "comboChain",
+        "target": 6,
+        "description": "Achieve a 6× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2700
+        },
+        "three": {
+          "type": "score",
+          "value": 3780
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.31,
+        "minInterval": 0.17,
+        "pressureRate": 2
+      },
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.23
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.17
+        }
+      ]
+    },
+    {
+      "id": "10-20",
+      "world": 10,
+      "level": 20,
+      "name": "The Final Boss",
+      "objective": {
+        "type": "clearLines",
+        "target": 50,
+        "description": "Clear 50 lines to defeat the boss!"
+      },
+      "boss": {
+        "type": "finalBoss",
+        "hp": 50,
+        "phases": [
+          {
+            "hpThreshold": 1,
+            "attackInterval": 12,
+            "rowCount": 1
+          },
+          {
+            "hpThreshold": 0.7,
+            "attackInterval": 9,
+            "rowCount": 1,
+            "modifiers": [
+              "iceBlocks"
+            ]
+          },
+          {
+            "hpThreshold": 0.5,
+            "attackInterval": 7,
+            "rowCount": 2,
+            "modifiers": [
+              "bombBlocks"
+            ]
+          },
+          {
+            "hpThreshold": 0.3,
+            "attackInterval": 5,
+            "rowCount": 2,
+            "modifiers": [
+              "darkBlocks",
+              "stoneBlocks"
+            ]
+          },
+          {
+            "hpThreshold": 0.1,
+            "attackInterval": 3,
+            "rowCount": 3,
+            "modifiers": [
+              "gravityFlip"
+            ]
+          }
+        ]
+      },
+      "gravity": {
+        "baseInterval": 0.41,
+        "minInterval": 0.14,
+        "pressureRate": 1.2
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 8000
+        },
+        "three": {
+          "type": "score",
+          "value": 13000
+        }
+      }
+    }
+  ]
+}
