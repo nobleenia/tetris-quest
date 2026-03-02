@@ -17,7 +17,7 @@ export function hideGameUI() {
 /** Restore the game board, sidebar, and HUD header. */
 export function showGameUI() {
   const gameRoot = document.querySelector('#gameRoot');
-  if (gameRoot) gameRoot.style.display = '';
+  if (gameRoot) gameRoot.style.display = 'flex';
   const hud = document.querySelector('#hud');
   if (hud) hud.style.display = '';
 }
