@@ -1,0 +1,722 @@
+{
+  "$schema": "./schema.json",
+  "world": 3,
+  "name": "Coral Depths",
+  "theme": "deepsea",
+  "cssClass": "style-deepsea",
+  "starsToUnlock": 45,
+  "description": "Dive deep. Shatter the ice that blocks your path.",
+  "levels": [
+    {
+      "id": "3-1",
+      "world": 3,
+      "level": 1,
+      "name": "Shallow Waters",
+      "objective": {
+        "type": "clearLines",
+        "target": 12,
+        "description": "Clear 12 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 117
+        },
+        "three": {
+          "type": "time",
+          "value": 78
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.3,
+        "minInterval": 1.1,
+        "pressureRate": 0.3
+      }
+    },
+    {
+      "id": "3-2",
+      "world": 3,
+      "level": 2,
+      "name": "First Dive",
+      "objective": {
+        "type": "reachScore",
+        "target": 1260,
+        "description": "Score 1260 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1890
+        },
+        "three": {
+          "type": "score",
+          "value": 2772
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.25,
+        "minInterval": 1.06,
+        "pressureRate": 0.4
+      }
+    },
+    {
+      "id": "3-3",
+      "world": 3,
+      "level": 3,
+      "name": "Coral Gardens",
+      "objective": {
+        "type": "survive",
+        "target": 56,
+        "description": "Survive for 56 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 740
+        },
+        "three": {
+          "type": "score",
+          "value": 1300
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.2,
+        "minInterval": 1.01,
+        "pressureRate": 0.5
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-4",
+      "world": 3,
+      "level": 4,
+      "name": "Frozen Current",
+      "objective": {
+        "type": "clearLines",
+        "target": 11,
+        "description": "Clear 11 lines within 105 seconds."
+      },
+      "constraints": {
+        "timeLimit": 105
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 70
+        },
+        "three": {
+          "type": "time",
+          "value": 50
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.15,
+        "minInterval": 0.96,
+        "pressureRate": 0.6
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-5",
+      "world": 3,
+      "level": 5,
+      "name": "Ice Breaker",
+      "objective": {
+        "type": "clearLines",
+        "target": 11,
+        "description": "Clear 11 lines with only 39 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 39
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 33
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 25
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.1,
+        "minInterval": 0.91,
+        "pressureRate": 0.7
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-6",
+      "world": 3,
+      "level": 6,
+      "name": "Deep Blue",
+      "objective": {
+        "type": "clearLines",
+        "target": 23,
+        "description": "Clear 23 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 102
+        },
+        "three": {
+          "type": "time",
+          "value": 68
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.06,
+        "minInterval": 0.86,
+        "pressureRate": 0.8
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-7",
+      "world": 3,
+      "level": 7,
+      "name": "Crystal Cave",
+      "objective": {
+        "type": "reachScore",
+        "target": 2380,
+        "description": "Score 2380 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 3570
+        },
+        "three": {
+          "type": "score",
+          "value": 5236
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.01,
+        "minInterval": 0.82,
+        "pressureRate": 0.9
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-8",
+      "world": 3,
+      "level": 8,
+      "name": "Pressure Dive",
+      "objective": {
+        "type": "survive",
+        "target": 76,
+        "description": "Survive for 76 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1140
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.96,
+        "minInterval": 0.77,
+        "pressureRate": 1
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-9",
+      "world": 3,
+      "level": 9,
+      "name": "Icicle Ridge",
+      "objective": {
+        "type": "comboChain",
+        "target": 4,
+        "description": "Achieve a 4× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1700
+        },
+        "three": {
+          "type": "score",
+          "value": 2580
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.91,
+        "minInterval": 0.72,
+        "pressureRate": 1.1
+      },
+      "modifiers": [
+        "iceBlocks"
+      ]
+    },
+    {
+      "id": "3-10",
+      "world": 3,
+      "level": 10,
+      "name": "Abyssal Plain",
+      "objective": {
+        "type": "clearLines",
+        "target": 14,
+        "description": "Clear 14 lines with only 49 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 49
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 42
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 32
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.86,
+        "minInterval": 0.67,
+        "pressureRate": 1.2
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.69
+        }
+      ]
+    },
+    {
+      "id": "3-11",
+      "world": 3,
+      "level": 11,
+      "name": "Frost Maze",
+      "objective": {
+        "type": "clearLines",
+        "target": 34,
+        "description": "Clear 34 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 87
+        },
+        "three": {
+          "type": "time",
+          "value": 58
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.82,
+        "minInterval": 0.62,
+        "pressureRate": 1.3
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.66
+        }
+      ]
+    },
+    {
+      "id": "3-12",
+      "world": 3,
+      "level": 12,
+      "name": "Subzero Rush",
+      "objective": {
+        "type": "reachScore",
+        "target": 3500,
+        "description": "Score 3500 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 5250
+        },
+        "three": {
+          "type": "score",
+          "value": 7700
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.77,
+        "minInterval": 0.58,
+        "pressureRate": 1.4
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.62
+        }
+      ]
+    },
+    {
+      "id": "3-13",
+      "world": 3,
+      "level": 13,
+      "name": "Deep Freeze",
+      "objective": {
+        "type": "survive",
+        "target": 96,
+        "description": "Survive for 96 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1540
+        },
+        "three": {
+          "type": "score",
+          "value": 2300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.72,
+        "minInterval": 0.53,
+        "pressureRate": 1.5
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.58
+        }
+      ]
+    },
+    {
+      "id": "3-14",
+      "world": 3,
+      "level": 14,
+      "name": "Ice Fortress",
+      "objective": {
+        "type": "comboChain",
+        "target": 5,
+        "description": "Achieve a 5× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2200
+        },
+        "three": {
+          "type": "score",
+          "value": 3180
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.67,
+        "minInterval": 0.48,
+        "pressureRate": 1.6
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.5
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.37
+        }
+      ]
+    },
+    {
+      "id": "3-15",
+      "world": 3,
+      "level": 15,
+      "name": "Glacial Sprint",
+      "objective": {
+        "type": "clearLines",
+        "target": 17,
+        "description": "Clear 17 lines with only 60 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 60
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 51
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 39
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.62,
+        "minInterval": 0.43,
+        "pressureRate": 1.7
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.46
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.34
+        }
+      ]
+    },
+    {
+      "id": "3-16",
+      "world": 3,
+      "level": 16,
+      "name": "Frozen Abyss",
+      "objective": {
+        "type": "clearLines",
+        "target": 44,
+        "description": "Clear 44 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 72
+        },
+        "three": {
+          "type": "time",
+          "value": 48
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.58,
+        "minInterval": 0.38,
+        "pressureRate": 1.8
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.43
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.32
+        }
+      ]
+    },
+    {
+      "id": "3-17",
+      "world": 3,
+      "level": 17,
+      "name": "Neptune's Test",
+      "objective": {
+        "type": "reachScore",
+        "target": 4620,
+        "description": "Score 4620 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 6930
+        },
+        "three": {
+          "type": "score",
+          "value": 10164
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.53,
+        "minInterval": 0.34,
+        "pressureRate": 1.9
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.4
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.29
+        }
+      ]
+    },
+    {
+      "id": "3-18",
+      "world": 3,
+      "level": 18,
+      "name": "Ice Storm",
+      "objective": {
+        "type": "survive",
+        "target": 116,
+        "description": "Survive for 116 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1940
+        },
+        "three": {
+          "type": "score",
+          "value": 2800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.48,
+        "minInterval": 0.29,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.36
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.26
+        }
+      ]
+    },
+    {
+      "id": "3-19",
+      "world": 3,
+      "level": 19,
+      "name": "Depth Charge",
+      "objective": {
+        "type": "comboChain",
+        "target": 6,
+        "description": "Achieve a 6× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2700
+        },
+        "three": {
+          "type": "score",
+          "value": 3780
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.43,
+        "minInterval": 0.24,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.32
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.24
+        }
+      ]
+    },
+    {
+      "id": "3-20",
+      "world": 3,
+      "level": 20,
+      "name": "Tidal Boss",
+      "objective": {
+        "type": "clearLines",
+        "target": 30,
+        "description": "Clear 30 lines to defeat the boss!"
+      },
+      "boss": {
+        "type": "risingTide",
+        "hp": 30,
+        "phases": [
+          {
+            "hpThreshold": 1,
+            "attackInterval": 12,
+            "rowCount": 1
+          },
+          {
+            "hpThreshold": 0.5,
+            "attackInterval": 8,
+            "rowCount": 1
+          },
+          {
+            "hpThreshold": 0.25,
+            "attackInterval": 5,
+            "rowCount": 2
+          }
+        ]
+      },
+      "gravity": {
+        "baseInterval": 0.62,
+        "minInterval": 0.28,
+        "pressureRate": 0.5
+      },
+      "modifiers": [
+        "iceBlocks"
+      ],
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 4500
+        },
+        "three": {
+          "type": "score",
+          "value": 7400
+        }
+      }
+    }
+  ]
+}

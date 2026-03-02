@@ -1,0 +1,719 @@
+{
+  "$schema": "./schema.json",
+  "world": 4,
+  "name": "Neon District",
+  "theme": "neon",
+  "cssClass": "style-neon",
+  "starsToUnlock": 75,
+  "description": "Chain combos, build momentum, dominate the neon grid.",
+  "levels": [
+    {
+      "id": "4-1",
+      "world": 4,
+      "level": 1,
+      "name": "Neon Glow",
+      "objective": {
+        "type": "clearLines",
+        "target": 15,
+        "description": "Clear 15 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 117
+        },
+        "three": {
+          "type": "time",
+          "value": 78
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.24,
+        "minInterval": 1.06,
+        "pressureRate": 0.3
+      }
+    },
+    {
+      "id": "4-2",
+      "world": 4,
+      "level": 2,
+      "name": "First Combo",
+      "objective": {
+        "type": "reachScore",
+        "target": 1575,
+        "description": "Score 1575 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2363
+        },
+        "three": {
+          "type": "score",
+          "value": 3465
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.2,
+        "minInterval": 1.01,
+        "pressureRate": 0.4
+      }
+    },
+    {
+      "id": "4-3",
+      "world": 4,
+      "level": 3,
+      "name": "Chain Starter",
+      "objective": {
+        "type": "survive",
+        "target": 56,
+        "description": "Survive for 56 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 740
+        },
+        "three": {
+          "type": "score",
+          "value": 1300
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.15,
+        "minInterval": 0.97,
+        "pressureRate": 0.5
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-4",
+      "world": 4,
+      "level": 4,
+      "name": "Electric Slide",
+      "objective": {
+        "type": "clearLines",
+        "target": 14,
+        "description": "Clear 14 lines within 105 seconds."
+      },
+      "constraints": {
+        "timeLimit": 105
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 70
+        },
+        "three": {
+          "type": "time",
+          "value": 50
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.1,
+        "minInterval": 0.92,
+        "pressureRate": 0.6
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-5",
+      "world": 4,
+      "level": 5,
+      "name": "Multiplier Intro",
+      "objective": {
+        "type": "clearLines",
+        "target": 14,
+        "description": "Clear 14 lines with only 49 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 49
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 42
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 32
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.06,
+        "minInterval": 0.87,
+        "pressureRate": 0.7
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-6",
+      "world": 4,
+      "level": 6,
+      "name": "Combo Street",
+      "objective": {
+        "type": "clearLines",
+        "target": 29,
+        "description": "Clear 29 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 102
+        },
+        "three": {
+          "type": "time",
+          "value": 68
+        }
+      },
+      "gravity": {
+        "baseInterval": 1.01,
+        "minInterval": 0.83,
+        "pressureRate": 0.8
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-7",
+      "world": 4,
+      "level": 7,
+      "name": "Neon Blitz",
+      "objective": {
+        "type": "reachScore",
+        "target": 2975,
+        "description": "Score 2975 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 4463
+        },
+        "three": {
+          "type": "score",
+          "value": 6545
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.97,
+        "minInterval": 0.78,
+        "pressureRate": 0.9
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-8",
+      "world": 4,
+      "level": 8,
+      "name": "Chain Lightning",
+      "objective": {
+        "type": "survive",
+        "target": 76,
+        "description": "Survive for 76 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1140
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.92,
+        "minInterval": 0.74,
+        "pressureRate": 1
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-9",
+      "world": 4,
+      "level": 9,
+      "name": "Voltage Spike",
+      "objective": {
+        "type": "comboChain",
+        "target": 4,
+        "description": "Achieve a 4× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1700
+        },
+        "three": {
+          "type": "score",
+          "value": 2580
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.87,
+        "minInterval": 0.69,
+        "pressureRate": 1.1
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ]
+    },
+    {
+      "id": "4-10",
+      "world": 4,
+      "level": 10,
+      "name": "Circuit Break",
+      "objective": {
+        "type": "clearLines",
+        "target": 18,
+        "description": "Clear 18 lines with only 63 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 63
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 54
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 41
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.83,
+        "minInterval": 0.64,
+        "pressureRate": 1.2
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.66
+        }
+      ]
+    },
+    {
+      "id": "4-11",
+      "world": 4,
+      "level": 11,
+      "name": "Double Chain",
+      "objective": {
+        "type": "clearLines",
+        "target": 42,
+        "description": "Clear 42 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 87
+        },
+        "three": {
+          "type": "time",
+          "value": 58
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.78,
+        "minInterval": 0.6,
+        "pressureRate": 1.3
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.62
+        }
+      ]
+    },
+    {
+      "id": "4-12",
+      "world": 4,
+      "level": 12,
+      "name": "Neon Rush",
+      "objective": {
+        "type": "reachScore",
+        "target": 4375,
+        "description": "Score 4375 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 6563
+        },
+        "three": {
+          "type": "score",
+          "value": 9625
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.74,
+        "minInterval": 0.55,
+        "pressureRate": 1.4
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.59
+        }
+      ]
+    },
+    {
+      "id": "4-13",
+      "world": 4,
+      "level": 13,
+      "name": "Cascade Effect",
+      "objective": {
+        "type": "survive",
+        "target": 96,
+        "description": "Survive for 96 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1540
+        },
+        "three": {
+          "type": "score",
+          "value": 2300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.69,
+        "minInterval": 0.51,
+        "pressureRate": 1.5
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.55
+        }
+      ]
+    },
+    {
+      "id": "4-14",
+      "world": 4,
+      "level": 14,
+      "name": "Lightning Rod",
+      "objective": {
+        "type": "comboChain",
+        "target": 5,
+        "description": "Achieve a 5× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2200
+        },
+        "three": {
+          "type": "score",
+          "value": 3180
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.64,
+        "minInterval": 0.46,
+        "pressureRate": 1.6
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.48
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.35
+        }
+      ]
+    },
+    {
+      "id": "4-15",
+      "world": 4,
+      "level": 15,
+      "name": "Surge Protector",
+      "objective": {
+        "type": "clearLines",
+        "target": 21,
+        "description": "Clear 21 lines with only 74 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 74
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 63
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 48
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.6,
+        "minInterval": 0.41,
+        "pressureRate": 1.7
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.45
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.33
+        }
+      ]
+    },
+    {
+      "id": "4-16",
+      "world": 4,
+      "level": 16,
+      "name": "Overdrive",
+      "objective": {
+        "type": "clearLines",
+        "target": 56,
+        "description": "Clear 56 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 72
+        },
+        "three": {
+          "type": "time",
+          "value": 48
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.55,
+        "minInterval": 0.37,
+        "pressureRate": 1.8
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.41
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.3
+        }
+      ]
+    },
+    {
+      "id": "4-17",
+      "world": 4,
+      "level": 17,
+      "name": "Mega Chain",
+      "objective": {
+        "type": "reachScore",
+        "target": 5775,
+        "description": "Score 5775 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 8663
+        },
+        "three": {
+          "type": "score",
+          "value": 12705
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.51,
+        "minInterval": 0.32,
+        "pressureRate": 1.9
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.38
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.28
+        }
+      ]
+    },
+    {
+      "id": "4-18",
+      "world": 4,
+      "level": 18,
+      "name": "Neon Storm",
+      "objective": {
+        "type": "survive",
+        "target": 116,
+        "description": "Survive for 116 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1940
+        },
+        "three": {
+          "type": "score",
+          "value": 2800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.46,
+        "minInterval": 0.28,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.35
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.25
+        }
+      ]
+    },
+    {
+      "id": "4-19",
+      "world": 4,
+      "level": 19,
+      "name": "Critical Mass",
+      "objective": {
+        "type": "comboChain",
+        "target": 6,
+        "description": "Achieve a 6× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2700
+        },
+        "three": {
+          "type": "score",
+          "value": 3780
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.41,
+        "minInterval": 0.23,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.31
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.23
+        }
+      ]
+    },
+    {
+      "id": "4-20",
+      "world": 4,
+      "level": 20,
+      "name": "Speed Demon",
+      "objective": {
+        "type": "clearLines",
+        "target": 35,
+        "description": "Clear 35 lines to defeat the boss!"
+      },
+      "boss": {
+        "type": "speedDemon",
+        "hp": 35,
+        "phases": [
+          {
+            "hpThreshold": 1,
+            "attackInterval": 10
+          },
+          {
+            "hpThreshold": 0.5,
+            "attackInterval": 6
+          },
+          {
+            "hpThreshold": 0.25,
+            "attackInterval": 3
+          }
+        ]
+      },
+      "gravity": {
+        "baseInterval": 0.59,
+        "minInterval": 0.26,
+        "pressureRate": 0.6
+      },
+      "modifiers": [
+        "comboMultiplier"
+      ],
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 5000
+        },
+        "three": {
+          "type": "score",
+          "value": 8200
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,719 @@
+{
+  "$schema": "./schema.json",
+  "world": 9,
+  "name": "Starfield",
+  "theme": "cosmos",
+  "cssClass": "style-cosmos",
+  "starsToUnlock": 300,
+  "description": "Up is down. Master the gravity flip to survive the void.",
+  "levels": [
+    {
+      "id": "9-1",
+      "world": 9,
+      "level": 1,
+      "name": "Launch Pad",
+      "objective": {
+        "type": "clearLines",
+        "target": 30,
+        "description": "Clear 30 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 117
+        },
+        "three": {
+          "type": "time",
+          "value": 78
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.97,
+        "minInterval": 0.83,
+        "pressureRate": 0.6
+      }
+    },
+    {
+      "id": "9-2",
+      "world": 9,
+      "level": 2,
+      "name": "First Orbit",
+      "objective": {
+        "type": "reachScore",
+        "target": 3150,
+        "description": "Score 3150 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 4725
+        },
+        "three": {
+          "type": "score",
+          "value": 6930
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.94,
+        "minInterval": 0.79,
+        "pressureRate": 0.7
+      }
+    },
+    {
+      "id": "9-3",
+      "world": 9,
+      "level": 3,
+      "name": "Starlight",
+      "objective": {
+        "type": "survive",
+        "target": 56,
+        "description": "Survive for 56 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 740
+        },
+        "three": {
+          "type": "score",
+          "value": 1300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.9,
+        "minInterval": 0.76,
+        "pressureRate": 0.8
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-4",
+      "world": 9,
+      "level": 4,
+      "name": "Gravity Pull",
+      "objective": {
+        "type": "clearLines",
+        "target": 28,
+        "description": "Clear 28 lines within 105 seconds."
+      },
+      "constraints": {
+        "timeLimit": 105
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 70
+        },
+        "three": {
+          "type": "time",
+          "value": 50
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.86,
+        "minInterval": 0.72,
+        "pressureRate": 0.9
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-5",
+      "world": 9,
+      "level": 5,
+      "name": "Flip Protocol",
+      "objective": {
+        "type": "digDown",
+        "target": 15,
+        "description": "Dig through 15 garbage rows to clear the board."
+      },
+      "startingBoard": {
+        "garbageRows": 15
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 35
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 23
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.83,
+        "minInterval": 0.68,
+        "pressureRate": 0.9
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-6",
+      "world": 9,
+      "level": 6,
+      "name": "Nebula Drift",
+      "objective": {
+        "type": "clearLines",
+        "target": 57,
+        "description": "Clear 57 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 102
+        },
+        "three": {
+          "type": "time",
+          "value": 68
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.79,
+        "minInterval": 0.65,
+        "pressureRate": 1.1
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-7",
+      "world": 9,
+      "level": 7,
+      "name": "Asteroid Belt",
+      "objective": {
+        "type": "reachScore",
+        "target": 5950,
+        "description": "Score 5950 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 8925
+        },
+        "three": {
+          "type": "score",
+          "value": 13090
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.76,
+        "minInterval": 0.61,
+        "pressureRate": 1.2
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-8",
+      "world": 9,
+      "level": 8,
+      "name": "Star Spin",
+      "objective": {
+        "type": "survive",
+        "target": 76,
+        "description": "Survive for 76 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1140
+        },
+        "three": {
+          "type": "score",
+          "value": 1800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.72,
+        "minInterval": 0.58,
+        "pressureRate": 1.3
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-9",
+      "world": 9,
+      "level": 9,
+      "name": "Cosmic Wave",
+      "objective": {
+        "type": "comboChain",
+        "target": 4,
+        "description": "Achieve a 4× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1700
+        },
+        "three": {
+          "type": "score",
+          "value": 2580
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.68,
+        "minInterval": 0.54,
+        "pressureRate": 1.4
+      },
+      "modifiers": [
+        "gravityFlip"
+      ]
+    },
+    {
+      "id": "9-10",
+      "world": 9,
+      "level": 10,
+      "name": "Event Horizon",
+      "objective": {
+        "type": "digDown",
+        "target": 17,
+        "description": "Dig through 17 garbage rows to clear the board."
+      },
+      "startingBoard": {
+        "garbageRows": 17
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 40
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 26
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.65,
+        "minInterval": 0.5,
+        "pressureRate": 1.5
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.52
+        }
+      ]
+    },
+    {
+      "id": "9-11",
+      "world": 9,
+      "level": 11,
+      "name": "Dark Matter",
+      "objective": {
+        "type": "clearLines",
+        "target": 84,
+        "description": "Clear 84 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 87
+        },
+        "three": {
+          "type": "time",
+          "value": 58
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.61,
+        "minInterval": 0.47,
+        "pressureRate": 1.6
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.49
+        }
+      ]
+    },
+    {
+      "id": "9-12",
+      "world": 9,
+      "level": 12,
+      "name": "Neutron Pulse",
+      "objective": {
+        "type": "reachScore",
+        "target": 8750,
+        "description": "Score 8750 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 13125
+        },
+        "three": {
+          "type": "score",
+          "value": 19250
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.58,
+        "minInterval": 0.43,
+        "pressureRate": 1.7
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.46
+        }
+      ]
+    },
+    {
+      "id": "9-13",
+      "world": 9,
+      "level": 13,
+      "name": "Flip Storm",
+      "objective": {
+        "type": "survive",
+        "target": 96,
+        "description": "Survive for 96 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1540
+        },
+        "three": {
+          "type": "score",
+          "value": 2300
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.54,
+        "minInterval": 0.4,
+        "pressureRate": 1.8
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 45,
+          "newBaseInterval": 0.43
+        }
+      ]
+    },
+    {
+      "id": "9-14",
+      "world": 9,
+      "level": 14,
+      "name": "Warp Speed",
+      "objective": {
+        "type": "comboChain",
+        "target": 5,
+        "description": "Achieve a 5× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2200
+        },
+        "three": {
+          "type": "score",
+          "value": 3180
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.5,
+        "minInterval": 0.36,
+        "pressureRate": 1.9
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.38
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.28
+        }
+      ]
+    },
+    {
+      "id": "9-15",
+      "world": 9,
+      "level": 15,
+      "name": "Singularity",
+      "objective": {
+        "type": "digDown",
+        "target": 19,
+        "description": "Dig through 19 garbage rows to clear the board."
+      },
+      "startingBoard": {
+        "garbageRows": 19
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "piecesUnder",
+          "value": 45
+        },
+        "three": {
+          "type": "piecesUnder",
+          "value": 29
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.47,
+        "minInterval": 0.32,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.35
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.26
+        }
+      ]
+    },
+    {
+      "id": "9-16",
+      "world": 9,
+      "level": 16,
+      "name": "Supernova",
+      "objective": {
+        "type": "clearLines",
+        "target": 111,
+        "description": "Clear 111 lines."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "time",
+          "value": 72
+        },
+        "three": {
+          "type": "time",
+          "value": 48
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.43,
+        "minInterval": 0.29,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.32
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.24
+        }
+      ]
+    },
+    {
+      "id": "9-17",
+      "world": 9,
+      "level": 17,
+      "name": "Cosmos Master",
+      "objective": {
+        "type": "reachScore",
+        "target": 11550,
+        "description": "Score 11550 points."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 17325
+        },
+        "three": {
+          "type": "score",
+          "value": 25410
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.4,
+        "minInterval": 0.25,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.3
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.22
+        }
+      ]
+    },
+    {
+      "id": "9-18",
+      "world": 9,
+      "level": 18,
+      "name": "Black Hole",
+      "objective": {
+        "type": "survive",
+        "target": 116,
+        "description": "Survive for 116 seconds."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 1940
+        },
+        "three": {
+          "type": "score",
+          "value": 2800
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.36,
+        "minInterval": 0.22,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.27
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.2
+        }
+      ]
+    },
+    {
+      "id": "9-19",
+      "world": 9,
+      "level": 19,
+      "name": "Final Frontier",
+      "objective": {
+        "type": "comboChain",
+        "target": 6,
+        "description": "Achieve a 6× combo chain."
+      },
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 2700
+        },
+        "three": {
+          "type": "score",
+          "value": 3780
+        }
+      },
+      "gravity": {
+        "baseInterval": 0.32,
+        "minInterval": 0.18,
+        "pressureRate": 2
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "speedEvents": [
+        {
+          "atSeconds": 30,
+          "newBaseInterval": 0.24
+        },
+        {
+          "atSeconds": 60,
+          "newBaseInterval": 0.18
+        }
+      ]
+    },
+    {
+      "id": "9-20",
+      "world": 9,
+      "level": 20,
+      "name": "Zero-G Boss",
+      "objective": {
+        "type": "clearLines",
+        "target": 40,
+        "description": "Clear 40 lines to defeat the boss!"
+      },
+      "boss": {
+        "type": "zeroG",
+        "hp": 40,
+        "phases": [
+          {
+            "hpThreshold": 1,
+            "attackInterval": 10
+          },
+          {
+            "hpThreshold": 0.5,
+            "attackInterval": 7
+          },
+          {
+            "hpThreshold": 0.25,
+            "attackInterval": 4
+          }
+        ]
+      },
+      "gravity": {
+        "baseInterval": 0.44,
+        "minInterval": 0.16,
+        "pressureRate": 1.1
+      },
+      "modifiers": [
+        "gravityFlip"
+      ],
+      "stars": {
+        "one": "objective",
+        "two": {
+          "type": "score",
+          "value": 7500
+        },
+        "three": {
+          "type": "score",
+          "value": 12200
+        }
+      }
+    }
+  ]
+}

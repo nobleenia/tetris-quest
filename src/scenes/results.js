@@ -13,6 +13,7 @@ import {
   getLives,
   getCoins,
   spendLife,
+  addLife,
   addStats,
 } from '../systems/progress.js';
 import { evaluateAchievements } from '../systems/achievements.js';
@@ -51,6 +52,11 @@ export const resultsScene = {
 // ─── Level Complete ──────────────────────────────────────────────────
 
 function renderComplete(result, ctx) {
+  // Refund the life spent at level start — success shouldn't cost a life
+  if (result.mode === 'adventure') {
+    addLife();
+  }
+
   // Record progress
   const isFirstClear = true; // progress.recordLevelResult handles dedup
   const progressResult = recordLevelResult(
