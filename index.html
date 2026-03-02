@@ -101,7 +101,7 @@
     </main>
 
     <!-- Overlays -->
-    <div id="homeOverlay" class="overlay" role="dialog" aria-modal="true">
+    <div id="homeOverlay" class="overlay hidden" role="dialog" aria-modal="true">
       <div class="overlay__panel">
         <h1 class="overlay__title">Stackr Quest</h1>
         <p class="overlay__lead">A block-stacking puzzle adventure. Choose a theme to start.</p>
@@ -155,12 +155,12 @@
     <div id="tetris-particles"></div>
 
     <!-- Scene containers (managed by scene manager) -->
-    <div data-scene="home" class="active"></div>
-    <div data-scene="map"></div>
-    <div data-scene="briefing"></div>
-    <div data-scene="game"></div>
-    <div data-scene="results"></div>
-    <div data-scene="shop"></div>
+    <div data-scene="home" class="scene active"></div>
+    <div data-scene="map" class="scene"></div>
+    <div data-scene="briefing" class="scene"></div>
+    <div data-scene="game" class="scene"></div>
+    <div data-scene="results" class="scene"></div>
+    <div data-scene="shop" class="scene"></div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

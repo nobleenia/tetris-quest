@@ -15,16 +15,14 @@ import { initQueue, spawnFromQueue } from '../game/spawn.js';
 import { activatePowerup } from '../game/powerups.js';
 import { showTutorial } from '../ui/tutorial.js';
 import { spendLife, getLives } from '../systems/progress.js';
+import { showGameUI } from './helpers.js';
 
 export const gameScene = {
   id: 'game',
 
   async enter(params, ctx) {
-    // Show the game board
-    const boardSection = document.querySelector('#board');
-    if (boardSection) boardSection.style.display = '';
-    const sidebar = document.querySelector('#sidebar');
-    if (sidebar) sidebar.style.display = '';
+    // Ensure game-only DOM elements are visible
+    showGameUI();
 
     const { state, session } = ctx;
 

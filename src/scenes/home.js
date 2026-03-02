@@ -6,6 +6,7 @@
  */
 
 import { getLives, getCoins, getTotalStars } from '../systems/progress.js';
+import { hideGameUI, showGameUI } from './helpers.js';
 
 let containerEl = null;
 
@@ -21,22 +22,15 @@ export const homeScene = {
     const legacyOverlay = document.querySelector('#homeOverlay');
     if (legacyOverlay) legacyOverlay.classList.add('hidden');
 
-    // Hide game board and sidebar while on home
-    const boardSection = document.querySelector('#board');
-    if (boardSection) boardSection.style.display = 'none';
-    const sidebar = document.querySelector('#sidebar');
-    if (sidebar) sidebar.style.display = 'none';
+    // Hide game-only elements while on home
+    hideGameUI();
 
     render(ctx);
   },
 
   exit(_ctx) {
     if (containerEl) containerEl.innerHTML = '';
-    // Show game elements again
-    const boardSection = document.querySelector('#board');
-    if (boardSection) boardSection.style.display = '';
-    const sidebar = document.querySelector('#sidebar');
-    if (sidebar) sidebar.style.display = '';
+    showGameUI();
   },
 };
 

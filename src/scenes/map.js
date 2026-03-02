@@ -18,6 +18,7 @@ import {
   getCoins,
   isWorldUnlocked,
 } from '../systems/progress.js';
+import { hideGameUI, showGameUI } from './helpers.js';
 
 // Inline the worlds index to avoid async fetch at scene enter
 const WORLDS = [
@@ -47,6 +48,7 @@ export const mapScene = {
     const sceneEl = document.querySelector('[data-scene="map"]');
     if (!sceneEl) return;
     containerEl = sceneEl;
+    hideGameUI();
 
     // Decide which world to show
     const targetWorld = params.world || getHighestReached().world;
@@ -57,6 +59,7 @@ export const mapScene = {
     if (containerEl) containerEl.innerHTML = '';
     expandedWorldId = null;
     _expandedWorldData = null;
+    showGameUI();
   },
 
   onRoute(params, ctx) {

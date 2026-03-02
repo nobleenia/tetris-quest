@@ -18,6 +18,7 @@ import {
 } from '../systems/progress.js';
 import { POWERUPS, POWERUP_IDS } from '../game/powerups.js';
 import { getStarDescriptions } from '../game/stars.js';
+import { hideGameUI, showGameUI } from './helpers.js';
 
 let containerEl = null;
 let levelCfg = null;
@@ -32,6 +33,7 @@ export const briefingScene = {
     if (!sceneEl) return;
     containerEl = sceneEl;
     selectedPowerups = [];
+    hideGameUI();
 
     const { world, level } = params;
     if (!world || !level) {
@@ -67,6 +69,7 @@ export const briefingScene = {
     levelCfg = null;
     worldCfg = null;
     selectedPowerups = [];
+    showGameUI();
   },
 };
 

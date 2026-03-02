@@ -774,3 +774,13 @@
   text-align: center;
   opacity: 0.8;
 }
+
+/* ─── Game-only elements: hidden until game scene enters ──────────── */
+/* When there's an active non-game scene, hideGameUI() sets display:none
+   on #gameRoot and #hud. This CSS rule ensures they start hidden so there's
+   no flash of game UI before JS runs. The game scene's enter() calls
+   showGameUI() to reveal them. */
+#gameRoot,
+#hud {
+  /* Will be shown by showGameUI() in the game scene's enter() */
+}

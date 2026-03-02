@@ -7,6 +7,7 @@
 
 import { getCoins, spendCoins, addPowerup, getLives, refillLives } from '../systems/progress.js';
 import { POWERUPS, POWERUP_IDS } from '../game/powerups.js';
+import { hideGameUI, showGameUI } from './helpers.js';
 
 let containerEl = null;
 
@@ -17,11 +18,13 @@ export const shopScene = {
     const sceneEl = document.querySelector('[data-scene="shop"]');
     if (!sceneEl) return;
     containerEl = sceneEl;
+    hideGameUI();
     render(ctx);
   },
 
   exit(_ctx) {
     if (containerEl) containerEl.innerHTML = '';
+    showGameUI();
   },
 };
 

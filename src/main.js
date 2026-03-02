@@ -110,6 +110,10 @@ session.on({
   },
 });
 
+// Legacy home overlay — hide immediately (Phase 3: home scene replaces it)
+const homeOverlay = document.querySelector('#homeOverlay');
+if (homeOverlay) homeOverlay.classList.add('hidden');
+
 // Start the router — this resolves the initial URL and shows the right scene
 router.start();
 
@@ -142,10 +146,6 @@ let prevPressureHigh = false;
 function getBag() {
   return session.isActive() ? session.getBag() : null;
 }
-
-// Legacy home overlay — hide if present (Phase 3: home scene replaces it)
-const homeOverlay = document.querySelector('#homeOverlay');
-if (homeOverlay) homeOverlay.classList.add('hidden');
 
 // ─── Pause Overlay ───────────────────────────────────────────────────
 bindPauseUI({

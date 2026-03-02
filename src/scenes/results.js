@@ -16,6 +16,7 @@ import {
   addStats,
 } from '../systems/progress.js';
 import { evaluateAchievements } from '../systems/achievements.js';
+import { hideGameUI, showGameUI } from './helpers.js';
 
 let containerEl = null;
 
@@ -26,6 +27,7 @@ export const resultsScene = {
     const sceneEl = document.querySelector('[data-scene="results"]');
     if (!sceneEl) return;
     containerEl = sceneEl;
+    hideGameUI();
 
     const result = params.result || ctx._lastResult;
     if (!result) {
@@ -42,6 +44,7 @@ export const resultsScene = {
 
   exit(_ctx) {
     if (containerEl) containerEl.innerHTML = '';
+    showGameUI();
   },
 };
 
