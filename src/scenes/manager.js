@@ -68,6 +68,11 @@ export function createSceneManager({ scenes, container, ctx }) {
     currentScene = next;
     currentParams = params;
 
+    // Juice feedback for scene change
+    if (ctx.juice && typeof ctx.juice.onSceneChange === 'function') {
+      ctx.juice.onSceneChange(sceneId);
+    }
+
     // Enter new scene
     if (typeof next.enter === 'function') {
       next.enter(params, ctx);

@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Stackr Quest — Phase 4: Juice & Polish CSS
+   Particles, score popups, screen shake, animations, theme expansions
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Particle Canvas Overlay ─────────────────────────────────────── */
+.particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ─── Score Popups ────────────────────────────────────────────────── */
+.score-popups {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  overflow: hidden;
+}
+
+.score-popup {
+  position: absolute;
+  font-weight: 800;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, 0);
+  animation: popup-rise 0.9s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+.popup--sm {
+  font-size: 16px;
+  color: #e9eefc;
+}
+.popup--md {
+  font-size: 20px;
+  color: #fbbf24;
+}
+.popup--lg {
+  font-size: 26px;
+  color: #f97316;
+  text-shadow: 0 0 12px rgba(249, 115, 22, 0.5);
+}
+.popup--epic {
+  font-size: 34px;
+  color: #ec4899;
+  text-shadow: 0 0 20px rgba(236, 72, 153, 0.6), 0 0 40px rgba(236, 72, 153, 0.3);
+  letter-spacing: 1px;
+}
+
+@keyframes popup-rise {
+  0% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--drift, 0px)), 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--drift, 0px)), -20px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--drift, 0px)), -80px) scale(0.8);
+  }
+}
+
+/* ─── Board Animations ────────────────────────────────────────────── */
+
+/* Piece spawn scale-in */
+.animations-enabled #boardGrid.piece-spawning .board__grid {
+  animation: piece-spawn 0.15s ease-out;
+}
+
+@keyframes piece-spawn {
+  0% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Line clear flash */
+.animations-enabled #boardGrid.line-clearing .board__grid {
+  animation: line-flash 0.3s ease-out;
+}
+
+@keyframes line-flash {
+  0% { filter: brightness(1); }
+  30% { filter: brightness(1.8); }
+  100% { filter: brightness(1); }
+}
+
+/* Tetris clear — more intense flash */
+.animations-enabled #boardGrid.tetris-clear .board__grid {
+  animation: tetris-flash-anim 0.3s ease-out;
+}
+
+@keyframes tetris-flash-anim {
+  0% { filter: brightness(1) saturate(1); }
+  20% { filter: brightness(2.5) saturate(1.5); }
+  50% { filter: brightness(1.5) saturate(1.2); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+/* Level complete dissolve */
+.animations-enabled #board.dissolving {
+  animation: board-dissolve 1.2s ease-in forwards;
+}
+
+@keyframes board-dissolve {
+  0% { opacity: 1; transform: scale(1); filter: blur(0); }
+  60% { opacity: 0.6; transform: scale(0.98); filter: blur(2px); }
+  100% { opacity: 0; transform: scale(0.9); filter: blur(8px); }
+}
+
+/* World unlock gate */
+.world-unlocking {
+  animation: gate-open 0.8s ease-out;
+}
+
+@keyframes gate-open {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Ghost piece pulse */
+.animations-enabled.ghost-pulse .cell[data-v^="ghost"] {
+  animation: ghost-pulse-anim 1.5s ease-in-out infinite;
+}
+
+@keyframes ghost-pulse-anim {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── Extended World Theme CSS ────────────────────────────────────── */
+
+/* CSS custom properties for theme-aware board border */
+:root {
+  --board-border-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Theme glow effect on blocks */
+body.theme-glow .cell:not([data-v='0']) {
+  box-shadow: 0 0 6px 1px currentColor;
+}
+
+/* Deep Sea theme */
+body.style-deepsea {
+  background: linear-gradient(180deg, #0c1929 0%, #0a2e4a 40%, #051a2e 100%);
+  color: #e0f2fe;
+}
+body.style-deepsea #board {
+  background: linear-gradient(180deg, rgba(8, 51, 82, 0.95), rgba(5, 26, 46, 0.95));
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.1);
+}
+body.style-deepsea .cell {
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+/* Volcano theme */
+body.style-volcano {
+  background: linear-gradient(180deg, #1a0000 0%, #2d0a0a 40%, #0f0000 100%);
+  color: #fef2f2;
+}
+body.style-volcano #board {
+  background: linear-gradient(180deg, rgba(45, 10, 10, 0.95), rgba(15, 0, 0, 0.95));
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.1);
+}
+body.style-volcano .cell {
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Storm theme */
+body.style-storm {
+  background: linear-gradient(180deg, #0f0f2e 0%, #1a1a3e 40%, #0a0a1e 100%);
+  color: #e0e7ff;
+}
+body.style-storm #board {
+  background: linear-gradient(180deg, rgba(26, 26, 62, 0.95), rgba(10, 10, 30, 0.95));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
+}
+body.style-storm .cell {
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+/* Arctic theme */
+body.style-arctic {
+  background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 40%, #f0f9ff 100%);
+  color: #0c4a6e;
+}
+body.style-arctic #board {
+  background: linear-gradient(180deg, rgba(186, 230, 253, 0.95), rgba(224, 242, 254, 0.95));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+body.style-arctic .cell {
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.05);
+}
+
+/* Cosmos theme */
+body.style-cosmos {
+  background: radial-gradient(ellipse at center, #0f172a 0%, #020617 60%, #000 100%);
+  color: #fef3c7;
+}
+body.style-cosmos #board {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.95));
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  box-shadow: 0 0 60px rgba(251, 191, 36, 0.05);
+}
+body.style-cosmos .cell {
+  border: 1px solid rgba(251, 191, 36, 0.1);
+  background: rgba(251, 191, 36, 0.03);
+}
+
+/* Nexus theme */
+body.style-nexus {
+  background: linear-gradient(135deg, #1e0030 0%, #0f0020 40%, #200010 100%);
+  color: #fdf2f8;
+}
+body.style-nexus #board {
+  background: linear-gradient(180deg, rgba(30, 0, 48, 0.95), rgba(15, 0, 32, 0.95));
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.1);
+}
+body.style-nexus .cell {
+  border: 1px solid rgba(244, 63, 94, 0.12);
+  background: rgba(168, 85, 247, 0.05);
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .score-popup,
+  .particle-canvas,
+  .piece-spawning .board__grid,
+  .line-clearing .board__grid,
+  .tetris-clear .board__grid,
+  .dissolving,
+  .world-unlocking,
+  .ghost-pulse-anim {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+body.animations-disabled .score-popup,
+body.animations-disabled .particle-canvas {
+  display: none;
+}

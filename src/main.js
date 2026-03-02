@@ -11,6 +11,7 @@ import './styles/hud.css';
 import './styles/board.css';
 import './styles/overlay.css';
 import './styles/scenes.css';
+import './styles/juice.css';
 
 // --- Engine ---
 import { createInitialState, initializeVisibleViews } from './engine/state.js';
@@ -58,6 +59,11 @@ import { recordClassicResult } from './systems/progress.js';
 import { createSession } from './game/session.js';
 import { installDevHarness } from './game/devHarness.js';
 
+// --- Juice / Feedback (Phase 4) ---
+import { juice } from './systems/juice.js';
+import { screenShake } from './systems/screenShake.js';
+import { getSettings } from './systems/progress.js';
+
 // ─── Boot ────────────────────────────────────────────────────────────
 const state = createInitialState();
 const input = createInput();
@@ -78,8 +84,12 @@ const session = createSession(state);
 // HUD (timer/score/lives + perf)
 const hud = createHUD();
 
+// Juice / feedback (Phase 4)
+juice.init({ settings: getSettings() });
+screenShake.setTarget(document.querySelector('#board'));
+
 // Scene manager + router — Phase 3: fully scene-driven
-const sceneCtx = { state, input, controls, touch, viewport, session, hud, router: null };
+const sceneCtx = { state, input, controls, touch, viewport, session, hud, juice, router: null };
 const sceneManager = createSceneManager({
   scenes: [homeScene, mapScene, briefingScene, gameScene, resultsScene, shopScene],
   container: document.body,
@@ -94,6 +104,7 @@ session.on({
     // eslint-disable-next-line no-console
     console.log('[session] Level complete!', result);
     state.paused = true;
+    juice.onLevelComplete({ stars: result.stars, score: result.score });
     sceneCtx._lastResult = result;
     router.navigate('#/results');
   },
@@ -101,6 +112,7 @@ session.on({
     // eslint-disable-next-line no-console
     console.log('[session] Level failed.', result);
     state.paused = true;
+    juice.onLevelFail();
     // For classic mode, record the result
     if (result.mode === 'classic') {
       recordClassicResult(result.score, result.linesCleared, result.elapsedSec);
@@ -225,21 +237,27 @@ const loop = createLoop({
 
       if (controls.pauseToggle()) {
         state.paused = !state.paused;
+        if (state.paused) juice.onPause();
+        else juice.onResume();
       }
 
       if (state.active) {
-        if (controls.moveLeft(SIM_STEP)) tryMove(state, -1, 0);
-        if (controls.moveRight(SIM_STEP)) tryMove(state, 1, 0);
+        if (controls.moveLeft(SIM_STEP) && tryMove(state, -1, 0)) juice.onPieceMove();
+        if (controls.moveRight(SIM_STEP) && tryMove(state, 1, 0)) juice.onPieceMove();
       }
 
-      if (controls.rotateCW()) tryRotateCW(state);
-      if (controls.rotateCCW()) tryRotateCCW(state);
+      if (controls.rotateCW()) { tryRotateCW(state); juice.onPieceRotate(); }
+      if (controls.rotateCCW()) { tryRotateCCW(state); juice.onPieceRotate(); }
 
       if (controls.hardDrop()) {
+        juice.onHardDrop();
         const hdCleared = hardDrop(state, tryMove, hud);
         session.onPieceLocked(hdCleared);
-        if (hdCleared > 0) session.onLinesCleared(hdCleared);
-        if (state.active) session.onPieceSpawned();
+        if (hdCleared > 0) {
+          session.onLinesCleared(hdCleared);
+          juice.onLineClear({ lines: hdCleared, combo: state.combo || 0, y: 0, score: state.score });
+        }
+        if (state.active) { session.onPieceSpawned(); juice.onPieceSpawn(); }
       }
 
       const softDrop = controls.softDrop();
@@ -249,13 +267,14 @@ const loop = createLoop({
       if (controls.hold()) {
         const didHold = tryHold(state);
         if (didHold) {
+          juice.onHold();
           state.dropAcc = 0;
           buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, state.active);
         }
         if (didHold && !state.active) {
           const bag = getBag();
           const ok = spawnFromQueue(state, bag);
-          if (ok) session.onPieceSpawned();
+          if (ok) { session.onPieceSpawned(); juice.onPieceSpawn(); }
           if (!ok) handleTopOut(state);
         }
       }
@@ -270,10 +289,15 @@ const loop = createLoop({
         if (!moved) {
           const holesBefore = countHoles(state.lockedBoard, state.cols, state.rows);
           lockActivePiece(state);
+          juice.onPieceLock();
           const cleared = clearFullLines(state);
           addLineClearScore(state, cleared);
           reducePressureOnClear(state, cleared);
           state.holdUsed = false;
+
+          if (cleared > 0) {
+            juice.onLineClear({ lines: cleared, combo: state.combo || 0, y: 0, score: state.score });
+          }
 
           // Session: notify lines cleared + combo tracking
           if (session.isActive()) {
@@ -283,7 +307,7 @@ const loop = createLoop({
 
           const bag = getBag();
           const ok = spawnFromQueue(state, bag);
-          if (ok) session.onPieceSpawned();
+          if (ok) { session.onPieceSpawned(); juice.onPieceSpawn(); }
 
           if (state.misplacedPlacementRule) {
             const holesAfter = countHoles(state.lockedBoard, state.cols, state.rows);
