@@ -1,22 +1,46 @@
 import { PIECE_IDS } from './pieces.js';
 import { canPlace } from './board.js';
 
-// Simple random for now (Phase 3.5 we’ll replace with 7-bag RNG)
+// --- Legacy random (fallback when no 7-bag is configured) ----------------
 export function randomPieceId() {
   return PIECE_IDS[Math.floor(Math.random() * PIECE_IDS.length)];
 }
 
-// Ensure state.nextId is always set
-export function initQueue(state) {
-  if (!state.nextId) state.nextId = randomPieceId();
+/**
+ * Pull the next piece ID from the session bag (7-bag) if available,
+ * otherwise fall back to pure random.
+ *
+ * @param {object|null} bag - 7-bag instance from session.getBag()
+ * @returns {string} piece ID
+ */
+function nextPieceId(bag) {
+  return bag ? bag.next() : randomPieceId();
 }
 
-// Spawns using state.nextId, then rolls a new nextId
-export function spawnFromQueue(state) {
-  initQueue(state);
+/**
+ * Ensure state.nextId is always set.
+ *
+ * @param {object} state
+ * @param {object|null} [bag] - 7-bag instance
+ */
+export function initQueue(state, bag = null) {
+  const b = bag || state._bag || null;
+  if (!state.nextId) state.nextId = nextPieceId(b);
+}
+
+/**
+ * Spawn the next piece from the queue. Pulls from 7-bag when available.
+ *
+ * @param {object} state
+ * @param {object|null} [bag] - 7-bag instance
+ * @returns {boolean} true if spawn succeeded
+ */
+export function spawnFromQueue(state, bag = null) {
+  const b = bag || state._bag || null;
+  initQueue(state, b);
 
   const pieceId = state.nextId;
-  state.nextId = randomPieceId();
+  state.nextId = nextPieceId(b);
 
   const x = 3;
   // spawn at top of hidden area so pieces can rotate into visible space
@@ -24,7 +48,7 @@ export function spawnFromQueue(state) {
 
   const candidate = { id: pieceId, rot: 0, x, y };
 
-  // If blocked, still set active (we’ll use this for top-out/lives later)
+  // If blocked, still set active (we'll use this for top-out/lives later)
   if (
     !canPlace(
       state.lockedBoard,

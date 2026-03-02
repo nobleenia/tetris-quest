@@ -43,6 +43,45 @@ export function createInitialState() {
 
     baseInterval: 0.85, // seconds at pressure 0
     minInterval: 0.1, // seconds at pressure 100 (cap)
+
+    // ── Level / Adventure mode (Phase 2) ──────────────────────────
+    mode: 'classic', // 'classic' | 'adventure'
+    levelId: null, // e.g. '1-5'
+    worldId: null, // 1–10
+    levelNum: null, // 1–20
+
+    // Objective tracking
+    objective: null, // { type, target, description }
+    objectiveComplete: false,
+    objectiveFailed: false,
+    starConfig: null, // { one, two, three }
+
+    // Constraints
+    timeLimit: 0, // seconds (0 = no limit)
+    pieceLimit: 0, // max pieces (0 = no limit)
+    levelLives: 0, // lives within a single level attempt
+
+    // Speed events
+    speedEvents: [], // [{ atSeconds, newBaseInterval }]
+    speedEventIdx: 0,
+
+    // Modifiers
+    modifiers: [], // ['iceBlocks', 'bombBlocks', ...]
+
+    // Boss
+    boss: null, // boss config object
+    bossHP: 0,
+    bossPhaseIdx: 0,
+    bossAttackTimer: 0,
+
+    // Counters
+    pieceCount: 0,
+    linesCleared: 0,
+    combo: 0,
+    maxCombo: 0,
+
+    // Bag reference (set by session, used as fallback by spawn)
+    _bag: null,
   };
 }
 
@@ -73,6 +112,18 @@ export function resetGame(state) {
   state.elapsedSec = 0;
 
   state.dropAcc = 0;
+  state._bag = null;
+
+  // ── Level / Adventure mode resets ──
+  state.objectiveComplete = false;
+  state.objectiveFailed = false;
+  state.speedEventIdx = 0;
+  state.bossPhaseIdx = 0;
+  state.bossAttackTimer = 0;
+  state.pieceCount = 0;
+  state.linesCleared = 0;
+  state.combo = 0;
+  state.maxCombo = 0;
 }
 
 // If called after createInitialState, setup visible views

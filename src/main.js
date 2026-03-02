@@ -2,8 +2,7 @@
  * Stackr Quest — Main Entry Point
  *
  * Bootstraps the game engine, wires UI, and starts the main loop.
- * This file will evolve into the app shell once the scene manager
- * is introduced in Phase 2.
+ * Phase 2: Session manager orchestrates level / classic play.
  */
 
 // --- CSS imports (Vite handles these) ---
@@ -13,7 +12,7 @@ import './styles/board.css';
 import './styles/overlay.css';
 
 // --- Engine ---
-import { createInitialState, resetGame, initializeVisibleViews } from './engine/state.js';
+import { createInitialState, initializeVisibleViews } from './engine/state.js';
 import { createLoop } from './engine/loop.js';
 import { createInput } from './engine/input.js';
 import { createControls } from './engine/controls.js';
@@ -52,6 +51,10 @@ import {
 import { handleTopOut } from './game/lives.js';
 import { loadDailyBestSec, updateDailyBest } from './game/dailyBest.js';
 
+// --- Session (Phase 2) ---
+import { createSession } from './game/session.js';
+import { installDevHarness } from './game/devHarness.js';
+
 // ─── Boot ────────────────────────────────────────────────────────────
 const state = createInitialState();
 const input = createInput();
@@ -66,8 +69,25 @@ const controls = createControls(input, touch);
 const viewport = createViewport();
 viewport.start();
 
+// Session manager (Phase 2) — orchestrates level / classic play
+const session = createSession(state);
+session.on({
+  onComplete: (result) => {
+    // eslint-disable-next-line no-console
+    console.log('[session] Level complete!', result);
+    state.paused = true;
+    // TODO Phase 3: transition to results scene
+  },
+  onFail: (result) => {
+    // eslint-disable-next-line no-console
+    console.log('[session] Level failed.', result);
+    state.paused = true;
+    // TODO Phase 3: transition to results scene
+  },
+});
+
 // Scene manager + router (wired but scenes run alongside legacy boot for now)
-const sceneCtx = { state, input, controls, touch, viewport };
+const sceneCtx = { state, input, controls, touch, viewport, session };
 const sceneManager = createSceneManager({
   scenes: [homeScene, mapScene, gameScene, resultsScene],
   container: document.body,
@@ -75,7 +95,7 @@ const sceneManager = createSceneManager({
 });
 const _router = createRouter(sceneManager);
 // Don't start router yet — legacy overlays still manage home/game transitions.
-// router.start() will be enabled in Phase 2 when overlays are migrated to scenes.
+// router.start() will be enabled in Phase 3 when overlays are migrated to scenes.
 
 // HUD (timer/score/lives + perf)
 const hud = createHUD();
@@ -106,6 +126,11 @@ const sidebarLivesStat = document.querySelector('.sidebar__stat--lives');
 let prevLives = state.lives;
 let prevPressureHigh = false;
 
+// ─── Helper: get bag from active session ─────────────────────────────
+function getBag() {
+  return session.isActive() ? session.getBag() : null;
+}
+
 // ─── Home Overlay / Start Flow ───────────────────────────────────────
 const homeOverlay = document.querySelector('#homeOverlay');
 const cfgMisplaced = document.querySelector('#cfgMisplacedRule');
@@ -118,9 +143,14 @@ document.querySelectorAll('.style-btn').forEach((btn) => {
     // Read config
     state.misplacedPlacementRule = !!cfgMisplaced.checked;
 
-    // Init queue + spawn
-    initQueue(state);
-    const ok = spawnFromQueue(state);
+    // Start a classic session (Phase 2: uses 7-bag)
+    session.startClassic();
+
+    // Init queue + spawn using 7-bag
+    const bag = getBag();
+    initQueue(state, bag);
+    const ok = spawnFromQueue(state, bag);
+    if (ok) session.onPieceSpawned();
     if (!ok) {
       const best = updateDailyBest(state);
       hud.setDailyBest(best);
@@ -145,9 +175,13 @@ bindPauseUI({
     hud.hideGameOver();
     state._gameOverShown = false;
 
-    resetGame(state);
-    initQueue(state);
-    const ok = spawnFromQueue(state);
+    // Restart via session
+    session.startClassic();
+
+    const bag = getBag();
+    initQueue(state, bag);
+    const ok = spawnFromQueue(state, bag);
+    if (ok) session.onPieceSpawned();
     if (!ok) handleTopOut(state);
     state.paused = false;
   },
@@ -182,6 +216,16 @@ const loop = createLoop({
       simStepsThisSec++;
       tickPressure(state, SIM_STEP);
 
+      // Session tick (objectives, boss, speed events, modifiers)
+      if (session.isActive()) {
+        const sessionResult = session.tick(SIM_STEP);
+        if (sessionResult && sessionResult.outcome) {
+          // Session ended — pause and let callback handle transition
+          simAcc = 0;
+          return;
+        }
+      }
+
       if (state.gameOver) {
         buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, null);
         simAcc = 0;
@@ -204,7 +248,10 @@ const loop = createLoop({
       if (controls.rotateCCW()) tryRotateCCW(state);
 
       if (controls.hardDrop()) {
-        hardDrop(state, tryMove, hud);
+        const hdCleared = hardDrop(state, tryMove, hud);
+        session.onPieceLocked(hdCleared);
+        if (hdCleared > 0) session.onLinesCleared(hdCleared);
+        if (state.active) session.onPieceSpawned();
       }
 
       const softDrop = controls.softDrop();
@@ -218,7 +265,9 @@ const loop = createLoop({
           buildNextBoard(state.lockedBoard, state.nextBoard, state.cols, state.rows, state.active);
         }
         if (didHold && !state.active) {
-          const ok = spawnFromQueue(state);
+          const bag = getBag();
+          const ok = spawnFromQueue(state, bag);
+          if (ok) session.onPieceSpawned();
           if (!ok) handleTopOut(state);
         }
       }
@@ -238,7 +287,15 @@ const loop = createLoop({
           reducePressureOnClear(state, cleared);
           state.holdUsed = false;
 
-          const ok = spawnFromQueue(state);
+          // Session: notify lines cleared + combo tracking
+          if (session.isActive()) {
+            session.onLinesCleared(cleared);
+            session.onPieceLocked(cleared);
+          }
+
+          const bag = getBag();
+          const ok = spawnFromQueue(state, bag);
+          if (ok) session.onPieceSpawned();
 
           if (state.misplacedPlacementRule) {
             const holesAfter = countHoles(state.lockedBoard, state.cols, state.rows);
@@ -326,3 +383,8 @@ const loop = createLoop({
 });
 
 loop.start();
+
+// ─── Dev Harness (development only) ─────────────────────────────────
+if (import.meta.env.DEV) {
+  installDevHarness({ state, session, hud });
+}

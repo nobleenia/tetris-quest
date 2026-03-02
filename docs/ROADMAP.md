@@ -11,7 +11,7 @@
 - [x] Difficulty curve model
 - [x] Economy balance spreadsheet (in GDD)
 
-## Phase 1 — Repo Restructure & Modern Tooling (IN PROGRESS)
+## Phase 1 — Repo Restructure & Modern Tooling (DONE)
 
 - [x] Initialize Vite project
 - [x] Migrate source to new directory structure
@@ -21,24 +21,26 @@
 - [x] Updated documentation (README, CONTRIBUTING, CHANGELOG, architecture)
 - [x] Entry point rewrite (src/main.js with CSS imports)
 - [x] Engine constants centralization
-- [ ] Mobile-first responsive CSS overhaul
-- [ ] Touch input system (src/engine/touch.js)
-- [ ] Scene manager (src/scenes/manager.js)
-- [ ] Hash router for navigation
-- [ ] Viewport & orientation handling
+- [x] Mobile-first responsive CSS overhaul
+- [x] Touch input system (src/engine/touch.js)
+- [x] Scene manager (src/scenes/manager.js)
+- [x] Hash router for navigation
+- [x] Viewport & orientation handling
 
-## Phase 2 — Parameterized Game Engine
+## Phase 2 — Parameterized Game Engine (DONE)
 
-- [ ] Level config loader (src/game/levelConfig.js)
-- [ ] Objective system (src/game/objectives.js)
-- [ ] Win/lose condition evaluator
-- [ ] Star rating calculator
-- [ ] Starting board state loader
-- [ ] Special block modifiers (ice, stone, bomb, dark)
-- [ ] Gravity & speed profiles from config
-- [ ] Boss level framework (src/game/boss.js)
-- [ ] Classic/endless mode preservation
-- [ ] Dev-mode level test harness
+- [x] Level config loader (src/game/levelConfig.js)
+- [x] Objective system (src/game/objectives.js)
+- [x] Win/lose condition evaluator
+- [x] Star rating calculator (src/game/stars.js)
+- [x] Starting board state loader
+- [x] Special block modifiers — ice, stone, bomb, dark (src/game/modifiers.js)
+- [x] Gravity & speed profiles from config
+- [x] Boss level framework (src/game/boss.js)
+- [x] Classic/endless mode preservation
+- [x] Game session manager (src/game/session.js)
+- [x] 7-bag piece randomizer (src/game/bag.js)
+- [x] Dev-mode level test harness (src/game/devHarness.js)
 
 ## Phase 3 — Progression, Map & Economy
 
