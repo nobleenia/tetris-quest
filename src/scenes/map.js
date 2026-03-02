@@ -19,6 +19,7 @@ import {
   isWorldUnlocked,
 } from '../systems/progress.js';
 import { hideGameUI, showGameUI } from './helpers.js';
+import { globalLevelNum } from '../engine/constants.js';
 
 // Inline the worlds index to avoid async fetch at scene enter
 const WORLDS = [
@@ -82,8 +83,8 @@ function render(focusWorld, ctx) {
   containerEl.innerHTML = /* html */ `
     <div class="map">
       <header class="map__header">
-        <button class="map__back-btn btn btn--small" data-action="home" aria-label="Back to home">
-          ← Home
+        <button class="map__back-btn btn btn--small" data-action="play-menu" aria-label="Back to Play Menu">
+          ← Play Menu
         </button>
         <div class="map__stats">
           <span class="map__stat" title="Total Stars">⭐ ${totalStars}</span>
@@ -212,6 +213,7 @@ async function renderLevelGrid(worldId) {
       orderedRow.forEach((level, colIdx) => {
         const stars = getLevelStars(level.id);
         const levelNum = level.level;
+        const globalNum = globalLevelNum(worldId, levelNum);
         const isReached =
           worldId < highest.world ||
           (worldId === highest.world && levelNum <= highest.level);
@@ -249,7 +251,7 @@ async function renderLevelGrid(worldId) {
                   ${!isReached ? 'disabled' : ''}>
             ${diffTag ? `<span class="map__node-tag map__node-tag--${level.difficulty}">${diffTag}</span>` : ''}
             <span class="map__node-face">
-              <span class="map__node-num">${isBoss ? '👑' : levelNum}</span>
+              <span class="map__node-num">${isBoss ? '👑' : globalNum}</span>
             </span>
             <span class="map__node-stars">
               ${stars >= 1 ? '★' : '☆'}${stars >= 2 ? '★' : '☆'}${stars >= 3 ? '★' : '☆'}
@@ -299,8 +301,8 @@ function wireEvents(ctx) {
 
     const action = btn.dataset.action;
 
-    if (action === 'home') {
-      ctx.router.navigate('#/');
+    if (action === 'play-menu') {
+      ctx.router.navigate('#/play-menu');
       return;
     }
 

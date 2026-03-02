@@ -11,6 +11,20 @@ export const VISIBLE_ROWS = 20;
 export const HIDDEN_ROWS = 4;
 export const TOTAL_ROWS = VISIBLE_ROWS + HIDDEN_ROWS;
 
+// ─── Worlds ──────────────────────────────────────────────────────────
+export const LEVELS_PER_WORLD = 20;
+
+/**
+ * Convert world + local level to a continuous global level number.
+ * World 1 Level 1 → 1, World 2 Level 1 → 21, etc.
+ * @param {number} worldId — 1-based
+ * @param {number} levelNum — 1-based within world
+ * @returns {number}
+ */
+export function globalLevelNum(worldId, levelNum) {
+  return (worldId - 1) * LEVELS_PER_WORLD + levelNum;
+}
+
 // ─── Lives ───────────────────────────────────────────────────────────
 export const STARTING_LIVES = 3;
 

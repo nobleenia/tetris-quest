@@ -5,7 +5,9 @@
  * Power-ups are purchased in the shop, stored in progress.powerups,
  * and activated either pre-level (briefing) or in-game (HUD button).
  *
- * Each power-up is single-use per level attempt.
+ * Each power-up is single-use per level attempt — UNLESS it is a
+ * "timed" powerup (gifted or purchased) which stays active for a
+ * random duration and can be used unlimited times within that window.
  */
 
 // ─── Power-up Definitions ────────────────────────────────────────────
@@ -18,6 +20,7 @@ export const POWERUPS = {
     description: '+30 seconds to time limit',
     cost: 100,
     activateIn: 'pre', // activated before the level starts
+    canBeTimed: false,
     effect(state) {
       if (state.timeLimit > 0) {
         state.timeLimit += 30;
@@ -32,6 +35,7 @@ export const POWERUPS = {
     description: 'Clears the bottom 3 rows instantly',
     cost: 200,
     activateIn: 'game', // activated during gameplay
+    canBeTimed: true,
     effect(state) {
       const { cols, rows, lockedBoard } = state;
       // Clear the bottom 3 visible rows
@@ -52,6 +56,7 @@ export const POWERUPS = {
     description: 'Shows next 3 pieces instead of 1',
     cost: 150,
     activateIn: 'pre',
+    canBeTimed: true,
     effect(state) {
       state._piecePeek = 3;
     },
@@ -59,15 +64,15 @@ export const POWERUPS = {
 
   slowMotion: {
     id: 'slowMotion',
-    name: 'Slow Motion',
+    name: 'Slow Mo',
     icon: '🐌',
     description: 'Halves gravity for 15 seconds',
     cost: 150,
     activateIn: 'game',
+    canBeTimed: true,
     effect(state) {
       state._slowMotionTimer = 15;
       state._slowMotionActive = true;
-      // The sim loop will check _slowMotionActive to halve the drop interval
     },
   },
 
@@ -78,6 +83,7 @@ export const POWERUPS = {
     description: 'Clears a 3×3 area around a target cell',
     cost: 250,
     activateIn: 'game',
+    canBeTimed: true,
     /**
      * Bomb needs a target location. Call activateBomb(state, cx, cy) directly.
      */
@@ -94,6 +100,7 @@ export const POWERUPS = {
     description: 'Rearranges bottom rows to fill gaps',
     cost: 200,
     activateIn: 'game',
+    canBeTimed: true,
     effect(state) {
       const { cols, rows, lockedBoard } = state;
       // Compact: for each column, push all filled cells to the bottom
@@ -177,4 +184,55 @@ export function tickSlowMotion(state, dt) {
  */
 export function getPowerupCost(type) {
   return POWERUPS[type]?.cost ?? 0;
+}
+
+// ─── Timed Power-ups ─────────────────────────────────────────────────
+
+/**
+ * Grant a timed powerup to the player for a random duration.
+ * Timed powerups can be activated unlimited times within the window.
+ *
+ * @param {object} state — mutable game state
+ * @param {string} type — powerup id
+ * @param {number} [durationSec] — seconds (random 30–120 if omitted)
+ */
+export function grantTimedPowerup(state, type, durationSec) {
+  const def = POWERUPS[type];
+  if (!def || !def.canBeTimed) return;
+
+  if (!state._timedPowerups) state._timedPowerups = {};
+
+  const duration = durationSec ?? (30 + Math.floor(Math.random() * 91)); // 30–120s
+  state._timedPowerups[type] = {
+    remaining: duration,
+    total: duration,
+  };
+}
+
+/**
+ * Tick all timed powerups. Call each sim step.
+ * @param {object} state
+ * @param {number} dt — seconds
+ */
+export function tickTimedPowerups(state, dt) {
+  if (!state._timedPowerups) return;
+  for (const [type, info] of Object.entries(state._timedPowerups)) {
+    if (info.remaining > 0) {
+      info.remaining -= dt;
+      if (info.remaining <= 0) {
+        info.remaining = 0;
+        // Powerup expired
+      }
+    }
+  }
+}
+
+/**
+ * Check if a timed powerup is currently active.
+ * @param {object} state
+ * @param {string} type
+ * @returns {boolean}
+ */
+export function isTimedPowerupActive(state, type) {
+  return (state._timedPowerups?.[type]?.remaining ?? 0) > 0;
 }

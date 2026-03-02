@@ -45,60 +45,67 @@
     </header>
 
     <main id="gameRoot" aria-label="Game" style="display:none">
-      <!-- In-game stats bar -->
-      <div id="gameHudBar" class="game-hud-bar">
-        <div class="game-hud-bar__stat">
-          <span class="game-hud-bar__label">⭐</span>
-          <span id="hudBarScore" class="game-hud-bar__value">0</span>
+      <!-- ── Top floating bar: Lives (left) · Level (center) · Pause (right) ── -->
+      <div id="gameTopFloat" class="gtop">
+        <div class="gtop__lives">
+          <span class="gtop__lives-icon">❤️</span>
+          <span id="gtopLives" class="gtop__lives-val">3</span>
         </div>
-        <div class="game-hud-bar__stat">
-          <span class="game-hud-bar__label">❤️</span>
-          <span id="hudBarLives" class="game-hud-bar__value">3</span>
+        <div id="gtopLevel" class="gtop__level">Level 1</div>
+        <button id="btnTopPause" class="gtop__pause" aria-label="Pause">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="3" width="5" height="18" rx="1.5"/><rect x="14" y="3" width="5" height="18" rx="1.5"/></svg>
+        </button>
+      </div>
+
+      <!-- ── Stats ribbon: Hold · ⭐ Score · ⏱ Time · 🔥 Pressure · Next ── -->
+      <div id="gameStatsRibbon" class="gribbon">
+        <div class="gribbon__preview gribbon__preview--hold">
+          <span class="gribbon__preview-label">HOLD</span>
+          <div id="holdPreview" class="gribbon__preview-box next-preview" aria-label="Held piece preview"></div>
         </div>
-        <div class="game-hud-bar__stat">
-          <span class="game-hud-bar__label">⏱</span>
-          <span id="hudBarTime" class="game-hud-bar__value">0:00</span>
+        <div class="gribbon__stat">
+          <span class="gribbon__stat-icon">⭐</span>
+          <span id="gribScore" class="gribbon__stat-val">0</span>
         </div>
-        <div class="game-hud-bar__stat game-hud-bar__stat--pressure">
-          <span class="game-hud-bar__label">🔥</span>
-          <span id="hudBarPressure" class="game-hud-bar__value">0%</span>
+        <div class="gribbon__stat">
+          <span class="gribbon__stat-icon">⏱</span>
+          <span id="gribTime" class="gribbon__stat-val">0:00</span>
+        </div>
+        <div class="gribbon__stat gribbon__stat--fire">
+          <span class="gribbon__stat-icon">🔥</span>
+          <span id="gribPressure" class="gribbon__stat-val">0%</span>
+        </div>
+        <div class="gribbon__preview gribbon__preview--next">
+          <span class="gribbon__preview-label">NEXT</span>
+          <div id="nextPreview" class="gribbon__preview-box next-preview" aria-label="Next piece preview"></div>
         </div>
       </div>
 
       <!-- Objective display -->
       <div id="gameHudObjective" class="game-hud-objective" style="display:none"></div>
 
-      <!-- Board area with hold/next flanking -->
-      <div class="game-board-area">
-        <div class="game-board-area__side game-board-area__left">
-          <div class="game-preview-box">
-            <span class="game-preview-box__label">HOLD</span>
-            <div id="holdPreview" class="next-preview" aria-label="Held piece preview"></div>
-          </div>
-        </div>
+      <!-- Board (no side panels — hold/next are in the ribbon now) -->
+      <section id="board" aria-label="Game Board">
+        <div id="boardGrid"></div>
+      </section>
 
-        <section id="board" aria-label="Game Board">
-          <div id="boardGrid"></div>
-        </section>
-
-        <div class="game-board-area__side game-board-area__right">
-          <div class="game-preview-box">
-            <span class="game-preview-box__label">NEXT</span>
-            <div id="nextPreview" class="next-preview" aria-label="Next piece preview"></div>
-          </div>
+      <!-- ── Bottom bar: Powerups + Hold button ── -->
+      <div id="gameBottomBar" class="gbot">
+        <div id="gPowerupSlots" class="gbot__powerups">
+          <!-- powerup buttons rendered dynamically -->
         </div>
+        <button id="btnTouchHold" class="gbot__hold-btn" aria-label="Hold piece">
+          <span class="gbot__hold-icon">🔄</span>
+          <span class="gbot__hold-label">Hold</span>
+        </button>
       </div>
 
-      <!-- Touch action buttons -->
-      <div id="gameTouchActions" class="game-touch-actions">
-        <button id="btnTouchHold" class="game-touch-btn" aria-label="Hold piece">
-          <span>📦</span>
-          <span class="game-touch-btn__label">Hold</span>
-        </button>
-        <button id="btnTouchPause" class="game-touch-btn" aria-label="Pause">
-          <span>⏸️</span>
-          <span class="game-touch-btn__label">Pause</span>
-        </button>
+      <!-- Old HUD bar (hidden, kept for backwards compat) -->
+      <div id="gameHudBar" class="game-hud-bar" style="display:none">
+        <div class="game-hud-bar__stat"><span class="game-hud-bar__label">⭐</span><span id="hudBarScore" class="game-hud-bar__value">0</span></div>
+        <div class="game-hud-bar__stat"><span class="game-hud-bar__label">❤️</span><span id="hudBarLives" class="game-hud-bar__value">3</span></div>
+        <div class="game-hud-bar__stat"><span class="game-hud-bar__label">⏱</span><span id="hudBarTime" class="game-hud-bar__value">0:00</span></div>
+        <div class="game-hud-bar__stat game-hud-bar__stat--pressure"><span class="game-hud-bar__label">🔥</span><span id="hudBarPressure" class="game-hud-bar__value">0%</span></div>
       </div>
 
       <!-- Old sidebar (hidden, kept for backwards compat with stat queries) -->

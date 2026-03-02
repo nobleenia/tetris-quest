@@ -19,6 +19,7 @@ import {
 import { POWERUPS, POWERUP_IDS } from '../game/powerups.js';
 import { getStarDescriptions } from '../game/stars.js';
 import { hideGameUI, showGameUI } from './helpers.js';
+import { globalLevelNum } from '../engine/constants.js';
 
 let containerEl = null;
 let levelCfg = null;
@@ -98,10 +99,10 @@ function render(worldId, levelNum, ctx) {
         <button class="briefing__close" data-action="back" aria-label="Back to map">✕</button>
 
         <h2 class="overlay__title briefing__title">
-          ${hasBoss ? '👑 ' : ''}${levelCfg.name || `Level ${levelId}`}
+          ${hasBoss ? '👑 ' : ''}${levelCfg.name || `Level ${globalLevelNum(worldId, levelNum)}`}
         </h2>
 
-        <p class="briefing__world">${worldCfg?.name || `World ${worldId}`} — Level ${levelNum}</p>
+        <p class="briefing__world">${worldCfg?.name || `World ${worldId}`} — Level ${globalLevelNum(worldId, levelNum)}</p>
 
         <div class="briefing__objective">
           <h3>Objective</h3>

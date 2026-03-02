@@ -12,9 +12,9 @@
 import { loadLevel } from '../game/levelConfig.js';
 import { applyWorldTheme, applyStyle } from '../ui/stylemanager.js';
 import { initQueue, spawnFromQueue } from '../game/spawn.js';
-import { activatePowerup, POWERUPS } from '../game/powerups.js';
+import { activatePowerup, POWERUPS, POWERUP_IDS } from '../game/powerups.js';
 import { showTutorial } from '../ui/tutorial.js';
-import { spendLife, getLives } from '../systems/progress.js';
+import { spendLife, getLives, getPowerups, usePowerup } from '../systems/progress.js';
 import { generateDailyChallenge } from '../game/dailyChallenge.js';
 import { showGameUI } from './helpers.js';
 
@@ -205,36 +205,136 @@ function updateObjectiveHUD(objective) {
 }
 
 /**
- * Render in-game powerup buttons in the touch-actions area.
- * These are powerups selected in the briefing with activateIn: 'game'.
+ * Render in-game powerup buttons in the bottom bar.
+ * Shows available powerups with activation count.
+ * When count is 0, shows a + button for quick in-game purchase.
  */
 function renderPowerupBar(state, ctx) {
-  const container = document.querySelector('#gameTouchActions');
+  const container = document.querySelector('#gPowerupSlots');
   if (!container) return;
+  container.innerHTML = '';
 
-  // Remove old powerup buttons
-  container.querySelectorAll('.game-powerup-btn').forEach((el) => el.remove());
+  // Only show in-game powerups (activateIn === 'game')
+  const inGameIds = POWERUP_IDS.filter(id => POWERUPS[id]?.activateIn === 'game');
+  const inventory = getPowerups();
+  const activePowerups = state._inGamePowerups || [];
 
-  const powerups = state._inGamePowerups || [];
-  if (powerups.length === 0) return;
-
-  // Insert powerup buttons before the pause button
-  const pauseBtn = container.querySelector('#btnTouchPause');
-  for (const pid of powerups) {
+  for (const pid of inGameIds) {
     const def = POWERUPS[pid];
     if (!def) continue;
-    const btn = document.createElement('button');
-    btn.className = 'game-touch-btn game-powerup-btn';
-    btn.setAttribute('aria-label', def.name);
-    btn.innerHTML = `<span>${def.icon}</span><span class="game-touch-btn__label">${def.name}</span>`;
-    btn.addEventListener('click', () => {
-      if (state.paused || state.gameOver) return;
-      activatePowerup(pid, state);
-      btn.remove();
-      // Remove from available list
-      const idx = state._inGamePowerups.indexOf(pid);
-      if (idx >= 0) state._inGamePowerups.splice(idx, 1);
-    });
-    container.insertBefore(btn, pauseBtn);
+
+    // Count: from inventory + any pre-selected for this level
+    const invCount = inventory[pid] || 0;
+    const activeCount = activePowerups.filter(id => id === pid).length;
+    const totalCount = invCount + activeCount;
+
+    // Check for timed powerup
+    const timedInfo = state._timedPowerups?.[pid];
+    const isTimed = timedInfo && timedInfo.remaining > 0;
+
+    if (totalCount > 0 || isTimed) {
+      const btn = document.createElement('button');
+      btn.className = 'gbot__pw-btn';
+      btn.setAttribute('aria-label', def.name);
+
+      const countBadge = isTimed
+        ? `<span class="gbot__pw-count gbot__pw-count--timed">${Math.ceil(timedInfo.remaining)}s</span>`
+        : `<span class="gbot__pw-count">${totalCount}</span>`;
+
+      btn.innerHTML = `<span class="gbot__pw-icon">${def.icon}</span>${countBadge}`;
+      btn.addEventListener('click', () => {
+        if (state.paused || state.gameOver) return;
+
+        if (isTimed) {
+          // Timed powerups are always active — just visual feedback
+          btn.style.transform = 'scale(0.8)';
+          setTimeout(() => { btn.style.transform = ''; }, 100);
+          return;
+        }
+
+        // Spend from inventory first, then from pre-selected
+        const idx = activePowerups.indexOf(pid);
+        if (idx >= 0) {
+          activePowerups.splice(idx, 1);
+        } else if (invCount > 0) {
+          usePowerup(pid);
+        } else {
+          return;
+        }
+
+        activatePowerup(pid, state);
+        renderPowerupBar(state, ctx); // re-render to update counts
+      });
+      container.appendChild(btn);
+    } else {
+      // Empty slot — show + for purchase
+      const plusBtn = document.createElement('button');
+      plusBtn.className = 'gbot__pw-empty';
+      plusBtn.setAttribute('aria-label', `Buy ${def.name}`);
+      plusBtn.innerHTML = `<span class="gbot__pw-icon" style="font-size:14px">${def.icon}</span>`;
+      plusBtn.title = `${def.name} — ${def.cost} 🪙`;
+      plusBtn.addEventListener('click', () => {
+        if (state.paused || state.gameOver) return;
+        // Quick in-game purchase overlay
+        showQuickPurchase(pid, state, ctx);
+      });
+      container.appendChild(plusBtn);
+    }
   }
+}
+
+/**
+ * Show a quick purchase popup without leaving the game.
+ */
+function showQuickPurchase(powerupId, state, ctx) {
+  const def = POWERUPS[powerupId];
+  if (!def) return;
+
+  state.paused = true;
+
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'gbot__purchase-overlay';
+  overlay.innerHTML = `
+    <div class="gbot__purchase-card">
+      <div class="gbot__purchase-icon">${def.icon}</div>
+      <div class="gbot__purchase-name">${def.name}</div>
+      <div class="gbot__purchase-desc">${def.description}</div>
+      <div class="gbot__purchase-price">🪙 ${def.cost}</div>
+      <div class="gbot__purchase-actions">
+        <button class="gbot__purchase-buy">Buy & Use</button>
+        <button class="gbot__purchase-cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  const gameRoot = document.querySelector('#gameRoot');
+  if (!gameRoot) return;
+  gameRoot.appendChild(overlay);
+
+  overlay.querySelector('.gbot__purchase-buy').addEventListener('click', () => {
+    const { default: progressModule } = { default: null }; // inline
+    // Import getCoins/spendCoins
+    import('../systems/progress.js').then(({ getCoins, spendCoins }) => {
+      const coins = getCoins();
+      if (coins >= def.cost) {
+        spendCoins(def.cost);
+        activatePowerup(powerupId, state);
+        overlay.remove();
+        state.paused = false;
+        renderPowerupBar(state, ctx);
+      } else {
+        // Not enough coins — flash the price
+        overlay.querySelector('.gbot__purchase-price').style.color = '#ef4444';
+        setTimeout(() => {
+          overlay.querySelector('.gbot__purchase-price').style.color = '';
+        }, 500);
+      }
+    });
+  });
+
+  overlay.querySelector('.gbot__purchase-cancel').addEventListener('click', () => {
+    overlay.remove();
+    state.paused = false;
+  });
 }

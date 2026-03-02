@@ -103,41 +103,114 @@ body.style-vaporwave .cell {
   border-radius: 4px;
 }
 
-/* ─── In-Game HUD Bar ──────────────────────────────────────────────── */
-.game-hud-bar {
+/* ─── Top Floating Bar (Lives · Level · Pause) ────────────────────── */
+.gtop {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  gap: 4px;
+  justify-content: space-between;
   width: 100%;
   max-width: 420px;
-  padding: 6px 8px;
-  background: rgba(10, 20, 40, 0.85);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  margin-bottom: 4px;
+  padding: 6px 10px;
+  z-index: 10;
+}
+.gtop__lives {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(255,60,80,0.18), rgba(255,60,80,0.08));
+  border: 1px solid rgba(255,100,120,0.25);
+  border-radius: 20px;
+  padding: 5px 12px;
+  backdrop-filter: blur(6px);
+}
+.gtop__lives-icon { font-size: 14px; }
+.gtop__lives-val {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: 15px;
+  color: #ff8a9e;
+  font-variant-numeric: tabular-nums;
+}
+.gtop__level {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: clamp(14px, 3.5vw, 18px);
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #ffd166, #ff9f43);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+}
+.gtop__pause {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+  transition: background 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.gtop__pause:active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
 }
 
-.game-hud-bar__stat {
+/* ─── Stats Ribbon (Hold · Score · Time · Fire · Next) ────────────── */
+.gribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  max-width: 420px;
+  padding: 4px 6px;
+  background: linear-gradient(180deg, rgba(15,25,50,0.85), rgba(8,14,32,0.92));
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 3px;
+}
+.gribbon__preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+}
+.gribbon__preview-label {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.4);
+}
+.gribbon__preview-box {
+  width: 36px;
+  height: 36px;
+}
+.gribbon__stat {
   display: flex;
   align-items: center;
   gap: 3px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+}
+.gribbon__stat-icon { font-size: 11px; }
+.gribbon__stat-val {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
   font-size: 13px;
-  color: #dbeafe;
-}
-
-.game-hud-bar__label {
-  font-size: 12px;
-}
-
-.game-hud-bar__value {
-  font-weight: 700;
-  color: var(--accent);
+  color: #6ee7b7;
   font-variant-numeric: tabular-nums;
-  min-width: 28px;
+  min-width: 24px;
 }
-
-.game-hud-bar__stat--pressure .game-hud-bar__value {
+.gribbon__stat--fire .gribbon__stat-val {
   color: #ff8a00;
 }
 
@@ -146,90 +219,129 @@ body.style-vaporwave .cell {
   width: 100%;
   max-width: 420px;
   text-align: center;
-  font-size: 12px;
-  padding: 3px 8px;
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(168,85,247,0.12));
+  border: 1px solid rgba(139,92,246,0.25);
   border-radius: 8px;
   color: #c7d2fe;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
+  letter-spacing: 0.3px;
 }
 
-/* ─── Board Area with Hold/Next flanking ──────────────────────────── */
-.game-board-area {
-  display: flex;
-  align-items: flex-start;
-  gap: 4px;
-  width: 100%;
-  justify-content: center;
-}
-
-.game-board-area__side {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-top: 8px;
-  min-width: 52px;
-}
-
-.game-preview-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.game-preview-box__label {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.6;
-  color: #9fb3d6;
-}
-
-/* ─── Touch Action Buttons ─────────────────────────────────────────── */
-.game-touch-actions {
+/* ─── Bottom Bar (Powerups + Hold) ─────────────────────────────────── */
+.gbot {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   max-width: 420px;
-  padding: 6px 0;
-  margin-top: 4px;
+  padding: 6px 8px;
+  margin-top: 3px;
 }
-
-.game-touch-btn {
+.gbot__powerups {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.gbot__pw-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(168,85,247,0.18));
+  border: 1px solid rgba(139,92,246,0.3);
+  color: #e0e7ff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  transition: transform 0.1s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.gbot__pw-btn:active {
+  transform: scale(0.92);
+  background: rgba(139,92,246,0.35);
+}
+.gbot__pw-icon { font-size: 18px; line-height: 1; }
+.gbot__pw-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  padding: 0 4px;
+}
+.gbot__pw-count--timed {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+.gbot__pw-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px dashed rgba(255,255,255,0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.3);
+  font-size: 18px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.gbot__pw-empty:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.5);
+}
+.gbot__hold-btn {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  color: #dbeafe;
-  font-size: 14px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #dbeafe;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   transition: background 0.1s;
 }
-
-.game-touch-btn:active {
-  background: rgba(255, 255, 255, 0.15);
+.gbot__hold-btn:active {
+  background: rgba(255,255,255,0.15);
 }
+.gbot__hold-icon { font-size: 15px; }
+.gbot__hold-label { font-size: 12px; }
 
-.game-touch-btn__label {
-  font-size: 12px;
-}
-
-/* Layout for board + sidebar — mobile: column, desktop: row */
+/* Layout for board — mobile: column */
 #gameRoot {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 0;
+  padding: 2px 0 0;
   gap: 0;
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 @media (orientation: landscape) and (min-width: 600px) {
@@ -268,8 +380,8 @@ body.style-vaporwave #sidebar {
 }
 
 .next-preview {
-  width: clamp(48px, 12vw, 92px);
-  height: clamp(48px, 12vw, 92px);
+  width: clamp(32px, 9vw, 48px);
+  height: clamp(32px, 9vw, 48px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -722,3 +834,83 @@ body.style-nexus .cell[data-v='7'] {
   50% { transform: scale(1.18); }
   100% { transform: scale(1); }
 }
+
+/* ─── Quick Purchase Overlay ───────────────────────────────────────── */
+.gbot__purchase-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.gbot__purchase-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 28px;
+  background: linear-gradient(160deg, rgba(30,20,60,0.95), rgba(15,10,40,0.98));
+  border: 1px solid rgba(139,92,246,0.35);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  max-width: 280px;
+  width: 85vw;
+  text-align: center;
+}
+.gbot__purchase-icon { font-size: 36px; }
+.gbot__purchase-name {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: 20px;
+  color: #e0e7ff;
+}
+.gbot__purchase-desc {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+.gbot__purchase-price {
+  font-family: 'Lilita One', 'Fredoka', sans-serif;
+  font-size: 18px;
+  color: #ffd166;
+  transition: color 0.15s;
+}
+.gbot__purchase-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.gbot__purchase-buy {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: #fff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 3px 0 #047857;
+  transition: transform 0.1s;
+}
+.gbot__purchase-buy:active { transform: translateY(2px); box-shadow: 0 1px 0 #047857; }
+.gbot__purchase-cancel {
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+.gbot__purchase-cancel:active { background: rgba(255,255,255,0.12); }

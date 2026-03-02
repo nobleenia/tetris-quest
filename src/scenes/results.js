@@ -21,6 +21,7 @@ import { hideGameUI, showGameUI } from './helpers.js';
 import { pushLevelResult } from '../systems/cloudSync.js';
 import { shareResult } from '../systems/share.js';
 import { getUserLevelRank, getLevelLeaderboard } from '../systems/leaderboard.js';
+import { globalLevelNum } from '../engine/constants.js';
 
 let containerEl = null;
 let _abortController = null;
@@ -103,7 +104,7 @@ function renderComplete(result, ctx) {
     <div class="overlay">
       <div class="overlay__panel results results--complete">
         <h2 class="overlay__title results__title">🎉 Level Complete!</h2>
-        <p class="results__level">${result.levelId} — ${result.mode}</p>
+        <p class="results__level">Level ${globalLevelNum(result.worldId || 1, result.levelNum || 1)} — ${result.mode}</p>
 
         <div class="results__stars" id="results-stars">
           <span class="results__star ${stars >= 1 ? 'results__star--earned' : ''}" data-delay="0">⭐</span>
@@ -214,7 +215,7 @@ function renderFail(result, ctx) {
     <div class="overlay">
       <div class="overlay__panel results results--fail">
         <h2 class="overlay__title results__title">💔 Level Failed</h2>
-        <p class="results__level">${result.levelId || 'Classic'}</p>
+        <p class="results__level">${result.worldId ? 'Level ' + globalLevelNum(result.worldId, result.levelNum || 1) : (result.levelId || 'Classic')}</p>
 
         ${shortfall ? `<p class="results__shortfall">${shortfall}</p>` : ''}
 

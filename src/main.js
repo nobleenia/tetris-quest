@@ -39,7 +39,7 @@ import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM, createPreviewDOM } from './ui/dom.js';
 import { renderBoardDiff, renderPreview } from './ui/render.js';
-import { tickSlowMotion } from './game/powerups.js';
+import { tickSlowMotion, tickTimedPowerups } from './game/powerups.js';
 
 // --- Game Logic ---
 import { spawnFromQueue } from './game/spawn.js';
@@ -174,6 +174,13 @@ const hudBarTimeEl = document.querySelector('#hudBarTime');
 const hudBarPressureEl = document.querySelector('#hudBarPressure');
 const hudObjectiveEl = document.querySelector('#gameHudObjective');
 
+// New sleek top/ribbon elements
+const gribScoreEl = document.querySelector('#gribScore');
+const gribTimeEl = document.querySelector('#gribTime');
+const gribPressureEl = document.querySelector('#gribPressure');
+const gtopLivesEl = document.querySelector('#gtopLives');
+const gtopLevelEl = document.querySelector('#gtopLevel');
+
 function formatHudTime(sec) {
   const s = Math.floor(sec || 0);
   const m = Math.floor(s / 60);
@@ -187,6 +194,7 @@ let prevPressureHigh = false;
 // ─── Touch action buttons (hold + pause) ─────────────────────────────
 const btnTouchHold = document.querySelector('#btnTouchHold');
 const btnTouchPause = document.querySelector('#btnTouchPause');
+const btnTopPause = document.querySelector('#btnTopPause');
 
 // Track touch-hold state — consumed by controls
 let _touchHoldPressed = false;
@@ -198,6 +206,15 @@ if (btnTouchHold) {
 }
 if (btnTouchPause) {
   btnTouchPause.addEventListener('click', () => {
+    if (sceneManager.current() === 'game' && !state.gameOver) {
+      state.paused = !state.paused;
+      if (state.paused) juice.onPause();
+      else juice.onResume();
+    }
+  });
+}
+if (btnTopPause) {
+  btnTopPause.addEventListener('click', () => {
     if (sceneManager.current() === 'game' && !state.gameOver) {
       state.paused = !state.paused;
       if (state.paused) juice.onPause();
@@ -265,6 +282,7 @@ const loop = createLoop({
       simStepsThisSec++;
       tickPressure(state, SIM_STEP);
       tickSlowMotion(state, SIM_STEP);
+      tickTimedPowerups(state, SIM_STEP);
 
       // Session tick (objectives, boss, speed events, modifiers)
       if (session.isActive()) {
@@ -410,6 +428,18 @@ const loop = createLoop({
     if (hudBarLivesEl) hudBarLivesEl.textContent = String(state.lives);
     if (hudBarTimeEl) hudBarTimeEl.textContent = formatHudTime(state.elapsedSec);
     if (hudBarPressureEl) hudBarPressureEl.textContent = `${Math.round(state.pressure)}%`;
+
+    // Sleek ribbon + top float HUD
+    if (gribScoreEl) gribScoreEl.textContent = String(state.score);
+    if (gribTimeEl) gribTimeEl.textContent = formatHudTime(state.elapsedSec);
+    if (gribPressureEl) gribPressureEl.textContent = `${Math.round(state.pressure)}%`;
+    if (gtopLivesEl) gtopLivesEl.textContent = String(state.lives);
+    if (gtopLevelEl) {
+      const globalLvl = state.mode === 'adventure' && state.worldId && state.levelNum
+        ? ((state.worldId - 1) * 20) + state.levelNum
+        : null;
+      gtopLevelEl.textContent = globalLvl ? `Level ${globalLvl}` : (state.mode === 'classic' ? 'Classic' : state.mode === 'daily' ? 'Daily' : '');
+    }
 
     // Legacy sidebar (hidden but synced for any code that reads them)
     hud.setTime(state.elapsedSec);
