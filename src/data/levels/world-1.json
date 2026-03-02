@@ -12,14 +12,37 @@
       "world": 1,
       "level": 1,
       "name": "First Steps",
+      "tutorial": "move",
+      "objective": {
+        "type": "clearLines",
+        "target": 3,
+        "description": "Clear 3 lines. Swipe left/right to move pieces!"
+      },
+      "gravity": {
+        "baseInterval": 1.4,
+        "minInterval": 1.2,
+        "pressureRate": 0
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "piecesUnder", "value": 15 },
+        "three": { "type": "piecesUnder", "value": 9 }
+      }
+    },
+    {
+      "id": "1-2",
+      "world": 1,
+      "level": 2,
+      "name": "Getting Started",
+      "tutorial": "rotate",
       "objective": {
         "type": "clearLines",
         "target": 5,
-        "description": "Clear 5 lines to complete the level."
+        "description": "Clear 5 lines. Tap the rotate button to spin pieces!"
       },
       "gravity": {
-        "baseInterval": 1.2,
-        "minInterval": 1.0,
+        "baseInterval": 1.3,
+        "minInterval": 1.1,
         "pressureRate": 0
       },
       "stars": {
@@ -29,18 +52,19 @@
       }
     },
     {
-      "id": "1-2",
+      "id": "1-3",
       "world": 1,
-      "level": 2,
-      "name": "Getting Started",
+      "level": 3,
+      "name": "Drop It!",
+      "tutorial": "harddrop",
       "objective": {
         "type": "clearLines",
         "target": 8,
-        "description": "Clear 8 lines."
+        "description": "Clear 8 lines. Swipe up to hard drop!"
       },
       "gravity": {
-        "baseInterval": 1.1,
-        "minInterval": 0.9,
+        "baseInterval": 1.2,
+        "minInterval": 1.0,
         "pressureRate": 0
       },
       "stars": {
@@ -50,44 +74,23 @@
       }
     },
     {
-      "id": "1-3",
-      "world": 1,
-      "level": 3,
-      "name": "Stack It Up",
-      "objective": {
-        "type": "reachScore",
-        "target": 500,
-        "description": "Score 500 points."
-      },
-      "gravity": {
-        "baseInterval": 1.0,
-        "minInterval": 0.8,
-        "pressureRate": 0.2
-      },
-      "stars": {
-        "one": "objective",
-        "two": { "type": "score", "value": 800 },
-        "three": { "type": "score", "value": 1200 }
-      }
-    },
-    {
       "id": "1-4",
       "world": 1,
       "level": 4,
-      "name": "Under Pressure",
+      "name": "Stack It Up",
       "objective": {
-        "type": "survive",
-        "target": 60,
-        "description": "Survive for 60 seconds."
+        "type": "reachScore",
+        "target": 400,
+        "description": "Score 400 points."
       },
       "gravity": {
-        "baseInterval": 0.9,
-        "minInterval": 0.4,
-        "pressureRate": 0.8
+        "baseInterval": 1.1,
+        "minInterval": 0.9,
+        "pressureRate": 0
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "score", "value": 600 },
+        "two": { "type": "score", "value": 650 },
         "three": { "type": "score", "value": 1000 }
       }
     },
@@ -95,6 +98,27 @@
       "id": "1-5",
       "world": 1,
       "level": 5,
+      "name": "Under Pressure",
+      "objective": {
+        "type": "survive",
+        "target": 45,
+        "description": "Survive for 45 seconds."
+      },
+      "gravity": {
+        "baseInterval": 1.0,
+        "minInterval": 0.5,
+        "pressureRate": 0.6
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 500 },
+        "three": { "type": "score", "value": 900 }
+      }
+    },
+    {
+      "id": "1-6",
+      "world": 1,
+      "level": 6,
       "name": "Clean Sweep",
       "objective": {
         "type": "clearLines",
@@ -105,14 +129,350 @@
         "timeLimit": 120
       },
       "gravity": {
+        "baseInterval": 1.0,
+        "minInterval": 0.7,
+        "pressureRate": 0.3
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "time", "value": 90 },
+        "three": { "type": "time", "value": 60 }
+      }
+    },
+    {
+      "id": "1-7",
+      "world": 1,
+      "level": 7,
+      "name": "Point Rush",
+      "objective": {
+        "type": "reachScore",
+        "target": 800,
+        "description": "Score 800 points."
+      },
+      "constraints": {
+        "timeLimit": 90
+      },
+      "gravity": {
+        "baseInterval": 0.95,
+        "minInterval": 0.6,
+        "pressureRate": 0.4
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 1200 },
+        "three": { "type": "score", "value": 1800 }
+      }
+    },
+    {
+      "id": "1-8",
+      "world": 1,
+      "level": 8,
+      "name": "Piece by Piece",
+      "objective": {
+        "type": "clearLines",
+        "target": 8,
+        "description": "Clear 8 lines using only 30 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 30
+      },
+      "gravity": {
+        "baseInterval": 1.0,
+        "minInterval": 0.8,
+        "pressureRate": 0
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "piecesUnder", "value": 25 },
+        "three": { "type": "piecesUnder", "value": 18 }
+      }
+    },
+    {
+      "id": "1-9",
+      "world": 1,
+      "level": 9,
+      "name": "Endurance",
+      "objective": {
+        "type": "survive",
+        "target": 75,
+        "description": "Survive for 75 seconds as pressure builds."
+      },
+      "gravity": {
+        "baseInterval": 0.9,
+        "minInterval": 0.35,
+        "pressureRate": 0.9
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 800 },
+        "three": { "type": "score", "value": 1500 }
+      }
+    },
+    {
+      "id": "1-10",
+      "world": 1,
+      "level": 10,
+      "name": "Double Digits",
+      "objective": {
+        "type": "clearLines",
+        "target": 15,
+        "description": "Clear 15 lines."
+      },
+      "gravity": {
+        "baseInterval": 0.9,
+        "minInterval": 0.5,
+        "pressureRate": 0.5
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "time", "value": 120 },
+        "three": { "type": "time", "value": 80 }
+      }
+    },
+    {
+      "id": "1-11",
+      "world": 1,
+      "level": 11,
+      "name": "Combo Intro",
+      "objective": {
+        "type": "comboChain",
+        "target": 3,
+        "description": "Achieve a 3× combo chain."
+      },
+      "gravity": {
+        "baseInterval": 0.95,
+        "minInterval": 0.6,
+        "pressureRate": 0.3
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 700 },
+        "three": { "type": "score", "value": 1200 }
+      }
+    },
+    {
+      "id": "1-12",
+      "world": 1,
+      "level": 12,
+      "name": "Sprint Lines",
+      "objective": {
+        "type": "clearLines",
+        "target": 12,
+        "description": "Clear 12 lines in 90 seconds."
+      },
+      "constraints": {
+        "timeLimit": 90
+      },
+      "gravity": {
         "baseInterval": 0.85,
         "minInterval": 0.5,
         "pressureRate": 0.5
       },
       "stars": {
         "one": "objective",
-        "two": { "type": "time", "value": 90 },
-        "three": { "type": "time", "value": 60 }
+        "two": { "type": "time", "value": 70 },
+        "three": { "type": "time", "value": 50 }
+      }
+    },
+    {
+      "id": "1-13",
+      "world": 1,
+      "level": 13,
+      "name": "High Roller",
+      "objective": {
+        "type": "reachScore",
+        "target": 1500,
+        "description": "Score 1500 points."
+      },
+      "constraints": {
+        "timeLimit": 120
+      },
+      "gravity": {
+        "baseInterval": 0.8,
+        "minInterval": 0.4,
+        "pressureRate": 0.6
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 2200 },
+        "three": { "type": "score", "value": 3000 }
+      }
+    },
+    {
+      "id": "1-14",
+      "world": 1,
+      "level": 14,
+      "name": "Tight Squeeze",
+      "objective": {
+        "type": "clearLines",
+        "target": 12,
+        "description": "Clear 12 lines with only 35 pieces."
+      },
+      "constraints": {
+        "pieceLimit": 35
+      },
+      "gravity": {
+        "baseInterval": 0.85,
+        "minInterval": 0.5,
+        "pressureRate": 0.2
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "piecesUnder", "value": 30 },
+        "three": { "type": "piecesUnder", "value": 22 }
+      }
+    },
+    {
+      "id": "1-15",
+      "world": 1,
+      "level": 15,
+      "name": "Combo Builder",
+      "objective": {
+        "type": "comboChain",
+        "target": 4,
+        "description": "Achieve a 4× combo chain."
+      },
+      "gravity": {
+        "baseInterval": 0.8,
+        "minInterval": 0.5,
+        "pressureRate": 0.4
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 1000 },
+        "three": { "type": "score", "value": 1800 }
+      }
+    },
+    {
+      "id": "1-16",
+      "world": 1,
+      "level": 16,
+      "name": "Pressure Cooker",
+      "objective": {
+        "type": "survive",
+        "target": 90,
+        "description": "Survive for 90 seconds under heavy pressure."
+      },
+      "gravity": {
+        "baseInterval": 0.75,
+        "minInterval": 0.25,
+        "pressureRate": 1.2
+      },
+      "speedEvents": [
+        { "atSeconds": 30, "newBaseInterval": 0.6 },
+        { "atSeconds": 60, "newBaseInterval": 0.45 }
+      ],
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 1200 },
+        "three": { "type": "score", "value": 2000 }
+      }
+    },
+    {
+      "id": "1-17",
+      "world": 1,
+      "level": 17,
+      "name": "Line Frenzy",
+      "objective": {
+        "type": "clearLines",
+        "target": 20,
+        "description": "Clear 20 lines."
+      },
+      "constraints": {
+        "timeLimit": 150
+      },
+      "gravity": {
+        "baseInterval": 0.75,
+        "minInterval": 0.35,
+        "pressureRate": 0.7
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "time", "value": 110 },
+        "three": { "type": "time", "value": 75 }
+      }
+    },
+    {
+      "id": "1-18",
+      "world": 1,
+      "level": 18,
+      "name": "Master Class",
+      "objective": {
+        "type": "reachScore",
+        "target": 2500,
+        "description": "Score 2500 points under time pressure."
+      },
+      "constraints": {
+        "timeLimit": 120
+      },
+      "gravity": {
+        "baseInterval": 0.7,
+        "minInterval": 0.3,
+        "pressureRate": 0.8
+      },
+      "speedEvents": [
+        { "atSeconds": 40, "newBaseInterval": 0.55 },
+        { "atSeconds": 80, "newBaseInterval": 0.4 }
+      ],
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 3500 },
+        "three": { "type": "score", "value": 5000 }
+      }
+    },
+    {
+      "id": "1-19",
+      "world": 1,
+      "level": 19,
+      "name": "Gauntlet",
+      "objective": {
+        "type": "clearLines",
+        "target": 25,
+        "description": "Clear 25 lines with 50 pieces. Every piece counts!"
+      },
+      "constraints": {
+        "pieceLimit": 50
+      },
+      "gravity": {
+        "baseInterval": 0.7,
+        "minInterval": 0.35,
+        "pressureRate": 0.5
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "piecesUnder", "value": 45 },
+        "three": { "type": "piecesUnder", "value": 35 }
+      }
+    },
+    {
+      "id": "1-20",
+      "world": 1,
+      "level": 20,
+      "name": "Foundation Boss",
+      "objective": {
+        "type": "clearLines",
+        "target": 30,
+        "description": "Clear 30 lines to defeat the Garbage Boss!"
+      },
+      "boss": {
+        "type": "garbagePush",
+        "hp": 30,
+        "attackInterval": 8,
+        "phases": [
+          { "hpThreshold": 1.0, "attackInterval": 8, "rowCount": 1 },
+          { "hpThreshold": 0.5, "attackInterval": 6, "rowCount": 2 },
+          { "hpThreshold": 0.25, "attackInterval": 4, "rowCount": 2 }
+        ]
+      },
+      "gravity": {
+        "baseInterval": 0.65,
+        "minInterval": 0.3,
+        "pressureRate": 0.4
+      },
+      "stars": {
+        "one": "objective",
+        "two": { "type": "score", "value": 3000 },
+        "three": { "type": "score", "value": 5000 }
       }
     }
   ]

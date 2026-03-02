@@ -5,33 +5,143 @@
  * and all in-game UI. Receives level params from the router/scene
  * manager and configures the engine accordingly.
  *
- * For now, this wraps the existing classic-mode gameplay.
- * Phase 2 will add level config loading and objective tracking.
+ * Phase 3: Loads level config, starts session, applies power-ups,
+ * shows tutorial if needed, tracks objective progress in HUD.
  */
+
+import { loadLevel } from '../game/levelConfig.js';
+import { applyWorldTheme } from '../ui/stylemanager.js';
+import { initQueue, spawnFromQueue } from '../game/spawn.js';
+import { activatePowerup } from '../game/powerups.js';
+import { showTutorial } from '../ui/tutorial.js';
+import { spendLife, getLives } from '../systems/progress.js';
 
 export const gameScene = {
   id: 'game',
 
-  enter(_params, _ctx) {
-    // params: { world, level } for adventure, or { mode: 'classic' }
-    // TODO Phase 2: load level config from params
-
+  async enter(params, ctx) {
     // Show the game board
     const boardSection = document.querySelector('#board');
     if (boardSection) boardSection.style.display = '';
-
     const sidebar = document.querySelector('#sidebar');
     if (sidebar) sidebar.style.display = '';
-  },
 
-  exit(_ctx) {
-    // Pause the game when leaving
-    if (_ctx && _ctx.state) {
-      _ctx.state.paused = true;
+    const { state, session } = ctx;
+
+    if (params.mode === 'classic') {
+      // ── Classic mode ──
+      session.startClassic();
+      const bag = session.getBag();
+      initQueue(state, bag);
+      const ok = spawnFromQueue(state, bag);
+      if (ok) session.onPieceSpawned();
+      state.paused = false;
+      state._gameOverShown = false;
+      updateObjectiveHUD(null);
+      return;
+    }
+
+    // ── Adventure mode ──
+    const { world, level } = params;
+    if (!world || !level) {
+      ctx.router.navigate('#/map');
+      return;
+    }
+
+    // Check lives
+    const { lives } = getLives();
+    if (lives <= 0) {
+      ctx.router.navigate('#/shop');
+      return;
+    }
+
+    // Spend a life for the attempt
+    spendLife();
+
+    try {
+      // Use cached data from briefing if available
+      let levelCfg, worldCfg;
+      if (ctx._pendingLevelCfg && ctx._pendingWorldCfg) {
+        levelCfg = ctx._pendingLevelCfg;
+        worldCfg = ctx._pendingWorldCfg;
+        ctx._pendingLevelCfg = null;
+        ctx._pendingWorldCfg = null;
+      } else {
+        const data = await loadLevel(world, level);
+        levelCfg = data.level;
+        worldCfg = data.world;
+      }
+
+      applyWorldTheme(world);
+      session.startLevel(levelCfg, worldCfg);
+
+      // Apply pre-level power-ups
+      if (ctx._pendingPowerups?.length > 0) {
+        for (const pid of ctx._pendingPowerups) {
+          activatePowerup(pid, state);
+        }
+        ctx._pendingPowerups = null;
+      }
+
+      // Spawn the initial piece
+      const bag = session.getBag();
+      initQueue(state, bag);
+      const ok = spawnFromQueue(state, bag);
+      if (ok) session.onPieceSpawned();
+
+      state.paused = false;
+      state._gameOverShown = false;
+
+      // Show tutorial if this level has one
+      if (levelCfg.tutorial) {
+        showTutorial(levelCfg.tutorial);
+      }
+
+      // Update objective HUD
+      updateObjectiveHUD(state.objective);
+    } catch (err) {
+      console.error('[game] Failed to load level', err);
+      ctx.router.navigate('#/map');
     }
   },
 
+  exit(ctx) {
+    // Pause the game when leaving
+    if (ctx && ctx.state) {
+      ctx.state.paused = true;
+    }
+    // Clear objective HUD
+    updateObjectiveHUD(null);
+  },
+
   onRoute(_params, _ctx) {
-    // TODO Phase 2: reload level config when route changes within game
+    // Route changes within the game scene are handled by exit + enter
   },
 };
+
+/**
+ * Update the objective display in the HUD sidebar.
+ * @param {object|null} objective
+ */
+function updateObjectiveHUD(objective) {
+  let el = document.querySelector('#objectiveHUD');
+  if (!objective) {
+    if (el) el.style.display = 'none';
+    return;
+  }
+
+  if (!el) {
+    // Create objective HUD element
+    el = document.createElement('div');
+    el.id = 'objectiveHUD';
+    el.className = 'sidebar__stat sidebar__stat--objective';
+    const sidebar = document.querySelector('#sidebarStats');
+    if (sidebar) sidebar.prepend(el);
+  }
+
+  el.style.display = '';
+  el.innerHTML = `
+    <span class="sidebar__label">Objective</span>
+    <span class="sidebar__value" id="objectiveText">${objective.description || objective.type}</span>
+  `;
+}

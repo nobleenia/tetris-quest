@@ -37,10 +37,17 @@ export function createRouter(sceneManager) {
       },
     },
     {
-      pattern: /^#\/results$/,
+      pattern: /^#\/briefing\/(\d+)-(\d+)$/,
+      scene: 'briefing',
+      parseParams(match) {
+        return { world: Number(match[1]), level: Number(match[2]) };
+      },
+    },
+    {
+      pattern: /^#\/results(?:\/(.+))?$/,
       scene: 'results',
-      parseParams() {
-        return {};
+      parseParams(match) {
+        return match[1] ? { resultId: match[1] } : {};
       },
     },
     {
@@ -52,9 +59,9 @@ export function createRouter(sceneManager) {
     },
     {
       pattern: /^#\/shop$/,
-      scene: 'map', // placeholder — shop is a future scene
+      scene: 'shop',
       parseParams() {
-        return { tab: 'shop' };
+        return {};
       },
     },
     {

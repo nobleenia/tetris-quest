@@ -10,6 +10,7 @@ import './styles/base.css';
 import './styles/hud.css';
 import './styles/board.css';
 import './styles/overlay.css';
+import './styles/scenes.css';
 
 // --- Engine ---
 import { createInitialState, initializeVisibleViews } from './engine/state.js';
@@ -24,15 +25,17 @@ import { createSceneManager } from './scenes/manager.js';
 import { createRouter } from './scenes/router.js';
 import { homeScene } from './scenes/home.js';
 import { mapScene } from './scenes/map.js';
+import { briefingScene } from './scenes/briefing.js';
 import { gameScene } from './scenes/game.js';
 import { resultsScene } from './scenes/results.js';
+import { shopScene } from './scenes/shop.js';
 
 // --- UI ---
-import { applyStyle } from './ui/stylemanager.js';
 import { bindPauseUI } from './ui/pause.js';
 import { createHUD } from './ui/hud.js';
 import { createBoardDOM, createPreviewDOM } from './ui/dom.js';
 import { renderBoardDiff, renderPreview } from './ui/render.js';
+import { tickSlowMotion } from './game/powerups.js';
 
 // --- Game Logic ---
 import { initQueue, spawnFromQueue } from './game/spawn.js';
@@ -49,7 +52,7 @@ import {
   reducePressureOnClear,
 } from './game/pressure.js';
 import { handleTopOut } from './game/lives.js';
-import { loadDailyBestSec, updateDailyBest } from './game/dailyBest.js';
+import { recordClassicResult } from './systems/progress.js';
 
 // --- Session (Phase 2) ---
 import { createSession } from './game/session.js';
@@ -69,37 +72,46 @@ const controls = createControls(input, touch);
 const viewport = createViewport();
 viewport.start();
 
-// Session manager (Phase 2) — orchestrates level / classic play
+// Session manager — orchestrates level / classic play
 const session = createSession(state);
+
+// HUD (timer/score/lives + perf)
+const hud = createHUD();
+
+// Scene manager + router — Phase 3: fully scene-driven
+const sceneCtx = { state, input, controls, touch, viewport, session, hud, router: null };
+const sceneManager = createSceneManager({
+  scenes: [homeScene, mapScene, briefingScene, gameScene, resultsScene, shopScene],
+  container: document.body,
+  ctx: sceneCtx,
+});
+const router = createRouter(sceneManager);
+sceneCtx.router = router;
+
+// Session callbacks — navigate to results scene on complete/fail
 session.on({
   onComplete: (result) => {
     // eslint-disable-next-line no-console
     console.log('[session] Level complete!', result);
     state.paused = true;
-    // TODO Phase 3: transition to results scene
+    sceneCtx._lastResult = result;
+    router.navigate('#/results');
   },
   onFail: (result) => {
     // eslint-disable-next-line no-console
     console.log('[session] Level failed.', result);
     state.paused = true;
-    // TODO Phase 3: transition to results scene
+    // For classic mode, record the result
+    if (result.mode === 'classic') {
+      recordClassicResult(result.score, result.linesCleared, result.elapsedSec);
+    }
+    sceneCtx._lastResult = result;
+    router.navigate('#/results');
   },
 });
 
-// Scene manager + router (wired but scenes run alongside legacy boot for now)
-const sceneCtx = { state, input, controls, touch, viewport, session };
-const sceneManager = createSceneManager({
-  scenes: [homeScene, mapScene, gameScene, resultsScene],
-  container: document.body,
-  ctx: sceneCtx,
-});
-const _router = createRouter(sceneManager);
-// Don't start router yet — legacy overlays still manage home/game transitions.
-// router.start() will be enabled in Phase 3 when overlays are migrated to scenes.
-
-// HUD (timer/score/lives + perf)
-const hud = createHUD();
-hud.setDailyBest(loadDailyBestSec());
+// Start the router — this resolves the initial URL and shows the right scene
+router.start();
 
 // Board DOM
 const boardEl = document.querySelector('#boardGrid');
@@ -131,37 +143,9 @@ function getBag() {
   return session.isActive() ? session.getBag() : null;
 }
 
-// ─── Home Overlay / Start Flow ───────────────────────────────────────
+// Legacy home overlay — hide if present (Phase 3: home scene replaces it)
 const homeOverlay = document.querySelector('#homeOverlay');
-const cfgMisplaced = document.querySelector('#cfgMisplacedRule');
-
-document.querySelectorAll('.style-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const style = btn.dataset.style;
-    applyStyle(style);
-
-    // Read config
-    state.misplacedPlacementRule = !!cfgMisplaced.checked;
-
-    // Start a classic session (Phase 2: uses 7-bag)
-    session.startClassic();
-
-    // Init queue + spawn using 7-bag
-    const bag = getBag();
-    initQueue(state, bag);
-    const ok = spawnFromQueue(state, bag);
-    if (ok) session.onPieceSpawned();
-    if (!ok) {
-      const best = updateDailyBest(state);
-      hud.setDailyBest(best);
-      handleTopOut(state);
-    }
-
-    // Hide overlay + unpause
-    homeOverlay.classList.add('hidden');
-    state.paused = false;
-  });
-});
+if (homeOverlay) homeOverlay.classList.add('hidden');
 
 // ─── Pause Overlay ───────────────────────────────────────────────────
 bindPauseUI({
@@ -169,21 +153,22 @@ bindPauseUI({
     state.paused = false;
   },
   onRestart: () => {
-    const best = updateDailyBest(state);
-    hud.setDailyBest(best);
-
     hud.hideGameOver();
     state._gameOverShown = false;
 
-    // Restart via session
-    session.startClassic();
-
-    const bag = getBag();
-    initQueue(state, bag);
-    const ok = spawnFromQueue(state, bag);
-    if (ok) session.onPieceSpawned();
-    if (!ok) handleTopOut(state);
-    state.paused = false;
+    // Navigate back to map (adventure) or restart classic
+    if (session.isActive() && session.getMode && session.getMode() === 'level') {
+      router.navigate('#/map');
+    } else {
+      // Classic mode — restart via session
+      session.startClassic();
+      const bag = getBag();
+      initQueue(state, bag);
+      const ok = spawnFromQueue(state, bag);
+      if (ok) session.onPieceSpawned();
+      if (!ok) handleTopOut(state);
+      state.paused = false;
+    }
   },
 });
 
@@ -215,6 +200,7 @@ const loop = createLoop({
       state.elapsedSec += SIM_STEP;
       simStepsThisSec++;
       tickPressure(state, SIM_STEP);
+      tickSlowMotion(state, SIM_STEP);
 
       // Session tick (objectives, boss, speed events, modifiers)
       if (session.isActive()) {
@@ -365,9 +351,8 @@ const loop = createLoop({
       prevPressureHigh = pressureHigh;
     }
 
-    // Overlay visibility
-    const homeHidden = !homeOverlay || homeOverlay.classList.contains('hidden');
-    hud.setPaused(state.paused && !state.gameOver && homeHidden);
+    // Pause overlay visibility
+    hud.setPaused(state.paused && !state.gameOver);
 
     if (state.gameOver && !state._gameOverShown) {
       hud.showGameOver(state.score);
