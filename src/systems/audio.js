@@ -523,6 +523,127 @@ function sfxSoftDrop() {
   setTimeout(() => synth.dispose(), 100);
 }
 
+/**
+ * Brand Jingle — the "Stackr Quest" signature sound.
+ *
+ * A playful, brain-tickling 2-second jingle:
+ * 1. Bouncy ascending pentatonic arpeggio (xylophone-like FM bells)
+ * 2. Bright major chord bloom (pad + shimmer)
+ * 3. Sparkle tail with descending fairy dust
+ *
+ * Designed to be instantly recognizable and dopamine-triggering.
+ */
+function sfxBrandJingle() {
+  ensureSfxChain();
+  const vol = -10 + (_sfxVol - 0.7) * 20;
+
+  // --- Wide reverb just for the jingle ---
+  const jingleReverb = new Tone.Reverb({ decay: 1.8, wet: 0.3 }).toDestination();
+  const jingleGain = new Tone.Gain(0.9).connect(jingleReverb);
+
+  // --- Phase 1: Bouncy ascending pentatonic "boing-boing-boing" ---
+  // C major pentatonic: C E G A C — mapped to bell-like FM tones
+  const bounceNotes = ['C5', 'E5', 'G5', 'A5', 'C6'];
+  const bounceTimings = [0, 110, 200, 280, 350]; // ms — accelerating rhythm
+
+  bounceNotes.forEach((note, i) => {
+    const bell = new Tone.FMSynth({
+      harmonicity: 3.5,
+      modulationIndex: 6,
+      oscillator: { type: 'sine' },
+      modulation: { type: 'triangle' },
+      envelope: { attack: 0.002, decay: 0.18, sustain: 0.02, release: 0.2 },
+      modulationEnvelope: { attack: 0.002, decay: 0.1, sustain: 0, release: 0.15 },
+      volume: vol - 2 + i * 0.5, // crescendo
+    }).connect(jingleGain);
+
+    // Bounce "body" — a second detuned layer for width
+    const body = new Tone.Synth({
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.003, decay: 0.12, sustain: 0.01, release: 0.15 },
+      volume: vol - 8,
+      detune: 5,
+    }).connect(jingleGain);
+
+    setTimeout(() => {
+      bell.triggerAttackRelease(note, 0.12);
+      body.triggerAttackRelease(note, 0.1);
+    }, bounceTimings[i]);
+
+    setTimeout(() => { bell.dispose(); body.dispose(); }, bounceTimings[i] + 400);
+  });
+
+  // --- Phase 2: Chord bloom at beat peak (major triad + octave) ---
+  setTimeout(() => {
+    const chordNotes = ['C5', 'E5', 'G5', 'C6'];
+    const bloom = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.03, decay: 0.5, sustain: 0.15, release: 0.6 },
+      volume: vol - 4,
+    }).connect(jingleGain);
+
+    // Bright shimmer layer
+    const shimmerBloom = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.02, decay: 0.3, sustain: 0.08, release: 0.4 },
+      volume: vol - 10,
+      detune: 8,
+    }).connect(jingleGain);
+
+    bloom.triggerAttackRelease(chordNotes, 0.4);
+    shimmerBloom.triggerAttackRelease(chordNotes, 0.3);
+
+    // Sub-bass "punch" under the chord
+    const sub = new Tone.MembraneSynth({
+      pitchDecay: 0.03,
+      octaves: 2,
+      envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.15 },
+      volume: vol - 6,
+    }).connect(jingleGain);
+    sub.triggerAttackRelease('C3', '8n');
+
+    setTimeout(() => { bloom.dispose(); shimmerBloom.dispose(); sub.dispose(); }, 1200);
+  }, 420);
+
+  // --- Phase 3: Sparkle tail — descending fairy-dust notes ---
+  const sparkleNotes = ['E7', 'C7', 'A6', 'G6', 'E6'];
+  const sparkleStart = 650;
+  sparkleNotes.forEach((note, i) => {
+    const sparkle = new Tone.FMSynth({
+      harmonicity: 5,
+      modulationIndex: 8,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.1 },
+      modulationEnvelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.08 },
+      volume: vol - 6 - i * 1.5, // fade out
+    }).connect(jingleGain);
+
+    setTimeout(() => sparkle.triggerAttackRelease(note, '64n'), sparkleStart + i * 60);
+    setTimeout(() => sparkle.dispose(), sparkleStart + i * 60 + 250);
+  });
+
+  // --- Final shimmer (metallic sparkle) ---
+  setTimeout(() => {
+    const finalShimmer = new Tone.MetalSynth({
+      frequency: 1200,
+      envelope: { attack: 0.001, decay: 0.3, release: 0.2 },
+      harmonicity: 5.1,
+      modulationIndex: 20,
+      resonance: 5000,
+      octaves: 1.5,
+      volume: vol - 14,
+    }).connect(jingleGain);
+    finalShimmer.triggerAttackRelease('16n');
+    setTimeout(() => finalShimmer.dispose(), 600);
+  }, sparkleStart + sparkleNotes.length * 60);
+
+  // Clean up jingle effects
+  setTimeout(() => {
+    jingleGain.dispose();
+    jingleReverb.dispose();
+  }, 2500);
+}
+
 /** SFX dispatch map. */
 const SFX_MAP = {
   move: sfxMove,
@@ -544,6 +665,7 @@ const SFX_MAP = {
   bossAttack: sfxBossAttack,
   bossDefeat: sfxBossDefeat,
   hold: sfxHold,
+  brandJingle: sfxBrandJingle,
 };
 
 // ─── BGM: Procedural Per-World Music via Tone.js ─────────────────────
@@ -950,6 +1072,17 @@ export const audio = {
   /** @returns {{ sfxVol: number, musicVol: number, muted: boolean }} */
   getState() {
     return { sfxVol: _sfxVol, musicVol: _musicVol, muted: _muted };
+  },
+
+  /**
+   * Play the brand jingle — signature "Stackr Quest" sound.
+   * Designed to play once on app launch / home screen entry.
+   */
+  async playBrandJingle() {
+    if (_muted || _sfxVol <= 0) return;
+    const ok = await ensureTone();
+    if (!ok) return;
+    try { sfxBrandJingle(); } catch { /* audio not available */ }
   },
 
   /** Get the current BGM track name. */

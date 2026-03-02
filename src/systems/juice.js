@@ -244,6 +244,10 @@ export const juice = {
   onSceneChange(sceneId, opts = {}) {
     switch (sceneId) {
       case 'home':
+        audio.playBrandJingle();
+        // Start menu BGM after jingle finishes (~1.5s)
+        setTimeout(() => audio.playBgm('menu'), 1500);
+        break;
       case 'map':
       case 'shop':
         audio.playBgm('menu');
