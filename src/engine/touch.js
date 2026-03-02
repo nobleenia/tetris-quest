@@ -35,6 +35,7 @@ export function createTouchInput(targetEl) {
   let isSwiping = false;
   let repeatTimer = null;
   let _softDropping = false;
+  let _tracking = false; // true when we own the current touch gesture
 
   // Virtual action queue — consumed per frame like keyboard pressedOnce
   const actions = new Set();
@@ -45,6 +46,10 @@ export function createTouchInput(targetEl) {
 
   function onTouchStart(e) {
     if (e.touches.length !== 1) return;
+    // Don't intercept touches on interactive elements (buttons, links, etc.)
+    const interactive = e.target.closest('button, a, input, select, textarea, [role="button"]');
+    if (interactive) { _tracking = false; return; }
+    _tracking = true;
     const t = e.touches[0];
     startX = t.clientX;
     startY = t.clientY;
@@ -58,7 +63,7 @@ export function createTouchInput(targetEl) {
   }
 
   function onTouchMove(e) {
-    if (e.touches.length !== 1) return;
+    if (!_tracking || e.touches.length !== 1) return;
     const t = e.touches[0];
     const dx = t.clientX - lastEmitX;
     const dy = t.clientY - lastEmitY;
@@ -94,6 +99,7 @@ export function createTouchInput(targetEl) {
   }
 
   function onTouchEnd(e) {
+    if (!_tracking) return;
     const elapsed = performance.now() - startTime;
     clearRepeat();
 
@@ -129,10 +135,12 @@ export function createTouchInput(targetEl) {
     }
 
     isSwiping = false;
+    _tracking = false;
     e.preventDefault();
   }
 
   function onTouchCancel() {
+    _tracking = false;
     clearRepeat();
     _softDropping = false;
     held.delete('softDrop');

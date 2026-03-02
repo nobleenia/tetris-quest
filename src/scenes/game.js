@@ -12,7 +12,7 @@
 import { loadLevel } from '../game/levelConfig.js';
 import { applyWorldTheme, applyStyle } from '../ui/stylemanager.js';
 import { initQueue, spawnFromQueue } from '../game/spawn.js';
-import { activatePowerup, POWERUPS, POWERUP_IDS } from '../game/powerups.js';
+import { activatePowerup, POWERUPS, POWERUP_IDS, grantTimedPowerup } from '../game/powerups.js';
 import { showTutorial } from '../ui/tutorial.js';
 import { spendLife, getLives, getPowerups, usePowerup } from '../systems/progress.js';
 import { generateDailyChallenge } from '../game/dailyChallenge.js';
@@ -267,12 +267,11 @@ function renderPowerupBar(state, ctx) {
       });
       container.appendChild(btn);
     } else {
-      // Empty slot — show + for purchase
+      // Empty slot — show icon + "+" for purchase
       const plusBtn = document.createElement('button');
       plusBtn.className = 'gbot__pw-empty';
       plusBtn.setAttribute('aria-label', `Buy ${def.name}`);
-      plusBtn.innerHTML = `<span class="gbot__pw-icon" style="font-size:14px">${def.icon}</span>`;
-      plusBtn.title = `${def.name} — ${def.cost} 🪙`;
+      plusBtn.innerHTML = `<span class="gbot__pw-icon" style="font-size:16px">${def.icon}</span><span class="gbot__pw-plus">+</span>`;
       plusBtn.addEventListener('click', () => {
         if (state.paused || state.gameOver) return;
         // Quick in-game purchase overlay
@@ -285,12 +284,16 @@ function renderPowerupBar(state, ctx) {
 
 /**
  * Show a quick purchase popup without leaving the game.
+ * Offers qty-based and duration-based purchase when applicable.
  */
 function showQuickPurchase(powerupId, state, ctx) {
   const def = POWERUPS[powerupId];
   if (!def) return;
 
   state.paused = true;
+
+  const timedCost = Math.floor(def.cost * 1.5);
+  const showTimedOption = def.canBeTimed;
 
   // Create overlay
   const overlay = document.createElement('div');
@@ -300,11 +303,18 @@ function showQuickPurchase(powerupId, state, ctx) {
       <div class="gbot__purchase-icon">${def.icon}</div>
       <div class="gbot__purchase-name">${def.name}</div>
       <div class="gbot__purchase-desc">${def.description}</div>
-      <div class="gbot__purchase-price">🪙 ${def.cost}</div>
-      <div class="gbot__purchase-actions">
-        <button class="gbot__purchase-buy">Buy & Use</button>
-        <button class="gbot__purchase-cancel">Cancel</button>
+      <div class="gbot__purchase-options">
+        <button class="gbot__purchase-opt gbot__purchase-opt--qty" data-type="qty">
+          <span class="gbot__purchase-opt-label">1× Use</span>
+          <span class="gbot__purchase-opt-price">🪙 ${def.cost}</span>
+        </button>
+        ${showTimedOption ? `
+        <button class="gbot__purchase-opt gbot__purchase-opt--timed" data-type="timed">
+          <span class="gbot__purchase-opt-label">⏱ 30s</span>
+          <span class="gbot__purchase-opt-price">🪙 ${timedCost}</span>
+        </button>` : ''}
       </div>
+      <button class="gbot__purchase-cancel">Cancel</button>
     </div>
   `;
 
@@ -312,9 +322,8 @@ function showQuickPurchase(powerupId, state, ctx) {
   if (!gameRoot) return;
   gameRoot.appendChild(overlay);
 
-  overlay.querySelector('.gbot__purchase-buy').addEventListener('click', () => {
-    const { default: progressModule } = { default: null }; // inline
-    // Import getCoins/spendCoins
+  // Buy by quantity
+  overlay.querySelector('.gbot__purchase-opt--qty')?.addEventListener('click', () => {
     import('../systems/progress.js').then(({ getCoins, spendCoins }) => {
       const coins = getCoins();
       if (coins >= def.cost) {
@@ -324,17 +333,40 @@ function showQuickPurchase(powerupId, state, ctx) {
         state.paused = false;
         renderPowerupBar(state, ctx);
       } else {
-        // Not enough coins — flash the price
-        overlay.querySelector('.gbot__purchase-price').style.color = '#ef4444';
-        setTimeout(() => {
-          overlay.querySelector('.gbot__purchase-price').style.color = '';
-        }, 500);
+        flashPrice(overlay);
       }
     });
   });
 
+  // Buy by duration (timed)
+  if (showTimedOption) {
+    overlay.querySelector('.gbot__purchase-opt--timed')?.addEventListener('click', () => {
+      import('../systems/progress.js').then(({ getCoins, spendCoins }) => {
+        const coins = getCoins();
+        if (coins >= timedCost) {
+          spendCoins(timedCost);
+          grantTimedPowerup(state, powerupId, 30);
+          activatePowerup(powerupId, state);
+          overlay.remove();
+          state.paused = false;
+          renderPowerupBar(state, ctx);
+        } else {
+          flashPrice(overlay);
+        }
+      });
+    });
+  }
+
   overlay.querySelector('.gbot__purchase-cancel').addEventListener('click', () => {
     overlay.remove();
     state.paused = false;
+  });
+}
+
+/** Flash prices red briefly to indicate insufficient coins */
+function flashPrice(overlay) {
+  overlay.querySelectorAll('.gbot__purchase-opt-price').forEach(el => {
+    el.style.color = '#ef4444';
+    setTimeout(() => { el.style.color = ''; }, 500);
   });
 }
