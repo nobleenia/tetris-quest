@@ -74,7 +74,7 @@ export function createRouter(sceneManager) {
     },
   ];
 
-  let currentHash = '';
+  let currentHash = null; // null so the first onHashChange() always resolves
 
   function resolve(hash) {
     const normalized = hash || '#/';
