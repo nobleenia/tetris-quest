@@ -8,6 +8,7 @@
 import { getCoins, spendCoins, addPowerup, getLives, refillLives } from '../systems/progress.js';
 import { POWERUPS, POWERUP_IDS } from '../game/powerups.js';
 import { hideGameUI, showGameUI } from './helpers.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 
 let containerEl = null;
 
@@ -23,7 +24,7 @@ export const shopScene = {
   },
 
   exit(_ctx) {
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     showGameUI();
   },
 };
@@ -89,6 +90,7 @@ function render(ctx) {
   `;
 
   wireEvents(ctx);
+  injectAnimatedBg(containerEl);
 }
 
 function formatMs(ms) {

@@ -8,6 +8,7 @@
 import { hideGameUI, showGameUI } from './helpers.js';
 import { getProfile, hasRealAccount } from '../systems/auth.js';
 import { isSupabaseConfigured } from '../systems/supabase.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 
 let containerEl = null;
 let _abort = null;
@@ -31,37 +32,10 @@ export const homeScene = {
 
   exit(_ctx) {
     if (_abort) { _abort.abort(); _abort = null; }
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     showGameUI();
   },
 };
-
-/* ─── Tetromino shapes for the background ──────────────────────── */
-const TETROMINO_SHAPES = ['I', 'O', 'T', 'S', 'Z', 'L', 'J'];
-const TETROMINO_COLORS = ['#00e5ff', '#ffd600', '#ab47bc', '#66bb6a', '#ef5350', '#ff9800', '#42a5f5'];
-
-function buildBackgroundTetrominoes(count = 18) {
-  let html = '';
-  for (let i = 0; i < count; i++) {
-    const idx = i % TETROMINO_SHAPES.length;
-    const color = TETROMINO_COLORS[idx];
-    const size = 24 + Math.random() * 28;
-    const left = Math.random() * 100;
-    const delay = Math.random() * 12;
-    const duration = 10 + Math.random() * 14;
-    const rotate = Math.floor(Math.random() * 360);
-    html += `<div class="splash__tetro" style="
-      left:${left}%;
-      width:${size}px;height:${size}px;
-      background:${color};
-      animation-delay:${delay}s;
-      animation-duration:${duration}s;
-      transform:rotate(${rotate}deg);
-      opacity:0.18;
-    "></div>`;
-  }
-  return html;
-}
 
 function render(ctx) {
   if (!containerEl) return;
@@ -74,9 +48,6 @@ function render(ctx) {
 
   containerEl.innerHTML = /* html */ `
     <div class="splash">
-      <!-- Animated background -->
-      <div class="splash__bg">${buildBackgroundTetrominoes()}</div>
-
       <!-- Foreground content -->
       <div class="splash__content">
         <div class="splash__logo">
@@ -97,6 +68,9 @@ function render(ctx) {
   `;
 
   wireEvents(ctx);
+  // Inject animated bg into the splash wrapper
+  const splashEl = containerEl.querySelector('.splash');
+  if (splashEl) injectAnimatedBg(splashEl);
 }
 
 function wireEvents(ctx) {

@@ -20,6 +20,7 @@ import { POWERUPS, POWERUP_IDS } from '../game/powerups.js';
 import { getStarDescriptions } from '../game/stars.js';
 import { hideGameUI, showGameUI } from './helpers.js';
 import { globalLevelNum } from '../engine/constants.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 
 let containerEl = null;
 let levelCfg = null;
@@ -66,7 +67,7 @@ export const briefingScene = {
   },
 
   exit(_ctx) {
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     levelCfg = null;
     worldCfg = null;
     selectedPowerups = [];
@@ -187,6 +188,7 @@ function render(worldId, levelNum, ctx) {
   `;
 
   wireEvents(worldId, levelNum, ctx);
+  injectAnimatedBg(containerEl);
 }
 
 function getModifierIcon(modifier) {

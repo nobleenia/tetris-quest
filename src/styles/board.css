@@ -856,8 +856,6 @@ body.style-nexus .cell[data-v='7'] {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(6px);
   animation: fadeIn 0.15s ease;
 }
 @keyframes fadeIn {

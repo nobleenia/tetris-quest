@@ -9,6 +9,7 @@
 import { getLives, getCoins, getTotalStars } from '../systems/progress.js';
 import { getDailyStatus, generateDailyChallenge } from '../game/dailyChallenge.js';
 import { hideGameUI, showGameUI } from './helpers.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 
 let containerEl = null;
 let _abort = null;
@@ -28,7 +29,7 @@ export const playMenuScene = {
 
   exit(_ctx) {
     if (_abort) { _abort.abort(); _abort = null; }
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     showGameUI();
   },
 };
@@ -104,6 +105,7 @@ function render(ctx) {
   `;
 
   wireEvents(ctx);
+  injectAnimatedBg(containerEl.querySelector('.play-menu'));
 }
 
 function wireEvents(ctx) {

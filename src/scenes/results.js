@@ -22,6 +22,7 @@ import { pushLevelResult } from '../systems/cloudSync.js';
 import { shareResult } from '../systems/share.js';
 import { getUserLevelRank, getLevelLeaderboard } from '../systems/leaderboard.js';
 import { globalLevelNum } from '../engine/constants.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 
 let containerEl = null;
 let _abortController = null;
@@ -59,7 +60,7 @@ export const resultsScene = {
       _abortController.abort();
       _abortController = null;
     }
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     showGameUI();
   },
 };
@@ -187,6 +188,7 @@ function renderComplete(result, ctx) {
   animateStars();
 
   wireEvents(result, ctx);
+  injectAnimatedBg(containerEl);
 
   // Push to cloud (non-blocking)
   pushLevelResult(result.levelId, result.stars, result.score, result.elapsedSec);
@@ -260,6 +262,7 @@ function renderFail(result, ctx) {
   `;
 
   wireEvents(result, ctx);
+  injectAnimatedBg(containerEl);
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────

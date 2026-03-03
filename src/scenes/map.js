@@ -20,6 +20,7 @@ import {
 } from '../systems/progress.js';
 import { hideGameUI, showGameUI } from './helpers.js';
 import { globalLevelNum } from '../engine/constants.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 
 // Inline the worlds index to avoid async fetch at scene enter
 const WORLDS = [
@@ -57,7 +58,7 @@ export const mapScene = {
   },
 
   exit(_ctx) {
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     expandedWorldId = null;
     _expandedWorldData = null;
     showGameUI();
@@ -106,6 +107,7 @@ function render(focusWorld, ctx) {
 
   // Wire up event listeners
   wireEvents(ctx);
+  injectAnimatedBg(containerEl);
 
   // If a world is focused, auto-expand and load levels
   if (focusWorld > 0) {

@@ -10,6 +10,7 @@
 
 import { hideGameUI, showGameUI } from './helpers.js';
 import { isSupabaseConfigured } from '../systems/supabase.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 import {
   getProfile,
   hasRealAccount,
@@ -36,7 +37,7 @@ export const accountScene = {
   },
 
   exit(_ctx) {
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     showGameUI();
   },
 };
@@ -116,6 +117,7 @@ function render(ctx) {
   `;
 
   wireEvents(ctx);
+  injectAnimatedBg(containerEl);
 }
 
 function wireEvents(ctx) {

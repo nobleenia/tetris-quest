@@ -12,6 +12,7 @@ import './styles/board.css';
 import './styles/overlay.css';
 import './styles/scenes.css';
 import './styles/juice.css';
+import './styles/animatedBg.css';
 
 // --- Engine ---
 import { createInitialState, initializeVisibleViews } from './engine/state.js';

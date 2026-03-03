@@ -7,6 +7,7 @@
 
 import { hideGameUI, showGameUI } from './helpers.js';
 import { isSupabaseConfigured } from '../systems/supabase.js';
+import { injectAnimatedBg, destroyAnimatedBg } from '../ui/animatedBg.js';
 import {
   getGlobalLeaderboard,
   getDailyLeaderboard,
@@ -28,7 +29,7 @@ export const leaderboardScene = {
   },
 
   exit(_ctx) {
-    if (containerEl) containerEl.innerHTML = '';
+    if (containerEl) { destroyAnimatedBg(containerEl); containerEl.innerHTML = ''; }
     showGameUI();
   },
 };
@@ -55,6 +56,7 @@ async function render(ctx) {
   `;
 
   wireEvents(ctx);
+  injectAnimatedBg(containerEl);
 
   // Load default tab
   await loadTab('global');
