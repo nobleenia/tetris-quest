@@ -264,6 +264,10 @@ export const juice = {
         break;
       case 'map':
       case 'shop':
+      case 'play-menu':
+      case 'briefing':
+      case 'leaderboard':
+      case 'account':
         audio.playBgm('menu');
         break;
       case 'game':
@@ -277,14 +281,14 @@ export const juice = {
     }
   },
 
-  /** Pause — mute BGM. */
+  /** Pause — keep music playing (don't kill the vibe). */
   onPause() {
-    audio.pauseBgm();
+    // Music continues during pause for atmosphere
   },
 
-  /** Resume — restore BGM. */
+  /** Resume. */
   onResume() {
-    audio.resumeBgm();
+    // Music was never paused, nothing to resume
   },
 
   /** Cleanup. */

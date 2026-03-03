@@ -1,7 +1,7 @@
 /* ─── Design Tokens ────────────────────────────────────────────────── */
 :root {
-  /* Board cell size adapts to viewport */
-  --cell: clamp(22px, 6vw, 34px);
+  /* Board cell size adapts to viewport — constrained by BOTH width and height */
+  --cell: min(clamp(22px, 6vw, 34px), clamp(22px, 3.6dvh, 34px));
   --cols: 10;
   --rows: 20;
 
@@ -84,8 +84,6 @@ body.style-gameboy #game-container {
   justify-content: center;
   gap: var(--gap-xs);
   padding: var(--gap-xs) var(--gap-xs) var(--safe-bottom, 0px);
-  min-height: 100vh;
-  min-height: 100dvh;
 }
 
 /* Landscape: switch to row layout */

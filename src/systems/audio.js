@@ -24,6 +24,7 @@ let _musicVol = 0.4;
 let _muted = false;
 let _initialized = false;
 let _toneStarted = false;
+let _pendingBgm = null;  // queued BGM theme awaiting first user gesture
 
 // ─── Shared Effects Chain ────────────────────────────────────────────
 
@@ -1075,11 +1076,16 @@ export const audio = {
     if (settings.soundEnabled === false) _muted = true;
     if (settings.musicEnabled === false) _musicVol = 0;
 
-    // Start Tone.js on first user interaction
+    // Start Tone.js on first user interaction and play any pending BGM
     const unlock = async () => {
-      await ensureTone();
       document.removeEventListener('touchstart', unlock);
       document.removeEventListener('click', unlock);
+      const ok = await ensureTone();
+      if (ok && _pendingBgm) {
+        const theme = _pendingBgm;
+        _pendingBgm = null;
+        audio.playBgm(theme);
+      }
     };
     document.addEventListener('touchstart', unlock, { once: true });
     document.addEventListener('click', unlock, { once: true });
@@ -1121,6 +1127,13 @@ export const audio = {
     this.stopBgm();
 
     if (_muted || _musicVol <= 0) {
+      _currentBgmTrack = theme;
+      return;
+    }
+
+    // If Tone hasn't been unlocked yet (no user gesture), queue for later
+    if (!_toneStarted) {
+      _pendingBgm = theme;
       _currentBgmTrack = theme;
       return;
     }
