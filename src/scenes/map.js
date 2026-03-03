@@ -150,7 +150,7 @@ function renderWorldNode(world, totalStars, highest, focusWorld) {
       <div class="map__world-header">
         <div class="map__world-icon">${unlocked ? getWorldIcon(world.id) : '🔒'}</div>
         <div class="map__world-info">
-          <h3 class="map__world-name">World ${world.id}: ${world.name}</h3>
+          <h3 class="map__world-name">${world.name}</h3>
           <div class="map__world-stars">${worldStars}/${maxStars} ⭐</div>
         </div>
         ${!unlocked ? `<div class="map__world-gate">Need ${world.starsToUnlock} ⭐</div>` : ''}
@@ -191,8 +191,8 @@ async function renderLevelGrid(worldId) {
     const highest = getHighestReached();
     const levels = worldData.levels || [];
 
-    // Build winding path: 3 columns, snaking left→right then right→left
-    const COLS = 3;
+    // Build winding path: 4 columns, snaking left→right then right→left
+    const COLS = 4;
     const rows = [];
     for (let i = 0; i < levels.length; i += COLS) {
       rows.push(levels.slice(i, i + COLS));

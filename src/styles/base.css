@@ -82,8 +82,8 @@ body.style-gameboy #game-container {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--gap-sm);
-  padding: var(--gap-sm) var(--gap-sm) calc(var(--gap-sm) + var(--safe-bottom, 0px));
+  gap: var(--gap-xs);
+  padding: var(--gap-xs) var(--gap-xs) var(--safe-bottom, 0px);
   min-height: 100vh;
   min-height: 100dvh;
 }

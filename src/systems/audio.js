@@ -39,7 +39,13 @@ function ensureSfxChain() {
 }
 
 async function ensureTone() {
-  if (_toneStarted) return true;
+  // Always resume if context was suspended (mobile background, tab switch, etc.)
+  if (_toneStarted) {
+    if (Tone.context.state !== 'running') {
+      try { await Tone.context.resume(); } catch { /* ignore */ }
+    }
+    return Tone.context.state === 'running';
+  }
   try {
     await Tone.start();
     _toneStarted = true;
