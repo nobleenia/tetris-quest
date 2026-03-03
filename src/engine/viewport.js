@@ -37,6 +37,7 @@ export function createViewport() {
     if (orientationWarning) {
       if (isLandscape && isMobile) {
         orientationWarning.classList.remove('hidden');
+        orientationWarning.style.display = '';
       } else {
         orientationWarning.classList.add('hidden');
       }

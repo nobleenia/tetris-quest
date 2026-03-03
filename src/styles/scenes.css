@@ -408,10 +408,11 @@
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 16px;
+  padding: 14px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   position: relative;
+  overflow: hidden;
 }
 
 .map__world:hover {
@@ -463,10 +464,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .map__world-icon {
-  font-size: 36px;
+  font-size: 28px;
   flex-shrink: 0;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
@@ -479,9 +481,10 @@
 .map__world-name {
   margin: 0;
   font-family: 'Fredoka', sans-serif;
-  font-size: clamp(15px, 4vw, 19px);
+  font-size: clamp(14px, 3.5vw, 17px);
   font-weight: 700;
   letter-spacing: 0.3px;
+  line-height: 1.2;
 }
 
 .map__world-stars {
@@ -491,13 +494,14 @@
 }
 
 .map__world-gate {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 5px 12px;
+  padding: 4px 10px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   white-space: nowrap;
   border: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
 }
 
 /* Winding path connectors */
