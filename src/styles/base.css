@@ -81,9 +81,11 @@ body.style-gameboy #game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--gap-sm);
   padding: var(--gap-sm);
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Landscape: switch to row layout */
@@ -107,7 +109,10 @@ body.style-gameboy #game-container {
 .scene.active {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ─── Utility ──────────────────────────────────────────────────────── */

@@ -1,11 +1,40 @@
 .overlay {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  background: transparent;
+  padding: var(--safe-top, 0) var(--safe-right, 0) var(--safe-bottom, 0) var(--safe-left, 0);
+  overflow: hidden;
+}
+
+/* Legacy game overlays (pause, game-over, orientation) — fixed centered cards */
+#pauseOverlay,
+#gameOverOverlay,
+#homeOverlay,
+#orientationWarning {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
-  background: transparent;
-  padding: var(--safe-top, 0) var(--safe-right, 0) var(--safe-bottom, 0) var(--safe-left, 0);
-  z-index: 100;
+  min-height: unset;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+}
+#pauseOverlay > .overlay__panel,
+#gameOverOverlay > .overlay__panel,
+#homeOverlay > .overlay__panel,
+#orientationWarning > .overlay__panel {
+  width: min(var(--game-w), 92vw);
+  flex: unset;
+  background: linear-gradient(180deg, rgba(18, 28, 54, 0.98), rgba(6, 12, 28, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
 }
 
 .hidden {
@@ -13,13 +42,13 @@
 }
 
 .overlay__panel {
-  width: min(var(--game-w), 92vw);
-  background: linear-gradient(180deg, rgba(18, 28, 54, 0.98), rgba(6, 12, 28, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.06);
-  backdrop-filter: blur(8px);
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  padding: 16px;
+  overflow-y: auto;
   animation: panel-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
