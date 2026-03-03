@@ -274,7 +274,7 @@ const loop = createLoop({
   onUpdate: (dt) => {
     // Only tick the simulation when the game scene is active
     if (sceneManager.current() !== 'game') return;
-    if (state.paused || state.gameOver) return;
+    if (state.paused || state.gameOver || state._purchaseOpen) return;
 
     simAcc += dt;
     while (simAcc >= SIM_STEP) {
@@ -471,8 +471,8 @@ const loop = createLoop({
       prevPressureHigh = pressureHigh;
     }
 
-    // Pause overlay visibility
-    hud.setPaused(state.paused && !state.gameOver);
+    // Pause overlay visibility (suppress when purchase overlay is open)
+    hud.setPaused(state.paused && !state.gameOver && !state._purchaseOpen);
 
     if (state.gameOver && !state._gameOverShown) {
       state._gameOverShown = true;

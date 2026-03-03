@@ -290,7 +290,8 @@ function showQuickPurchase(powerupId, state, ctx) {
   const def = POWERUPS[powerupId];
   if (!def) return;
 
-  state.paused = true;
+  // Freeze the game without triggering the pause overlay
+  state._purchaseOpen = true;
 
   const timedCost = Math.floor(def.cost * 1.5);
   const showTimedOption = def.canBeTimed;
@@ -330,7 +331,7 @@ function showQuickPurchase(powerupId, state, ctx) {
         spendCoins(def.cost);
         activatePowerup(powerupId, state);
         overlay.remove();
-        state.paused = false;
+        state._purchaseOpen = false;
         renderPowerupBar(state, ctx);
       } else {
         flashPrice(overlay);
@@ -348,7 +349,7 @@ function showQuickPurchase(powerupId, state, ctx) {
           grantTimedPowerup(state, powerupId, 30);
           activatePowerup(powerupId, state);
           overlay.remove();
-          state.paused = false;
+          state._purchaseOpen = false;
           renderPowerupBar(state, ctx);
         } else {
           flashPrice(overlay);
@@ -359,7 +360,7 @@ function showQuickPurchase(powerupId, state, ctx) {
 
   overlay.querySelector('.gbot__purchase-cancel').addEventListener('click', () => {
     overlay.remove();
-    state.paused = false;
+    state._purchaseOpen = false;
   });
 }
 
